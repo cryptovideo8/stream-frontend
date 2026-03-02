@@ -12,7 +12,10 @@ import {
   Cog6ToothIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
+import { useAppSelector } from '../store/hooks';
+import { selectCurrentUser } from '../store/slices/authSlice';
 
 interface SideNavigationProps {
   mobileOpen: boolean;
@@ -23,6 +26,14 @@ interface SideNavigationProps {
 export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }: SideNavigationProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const currentUser = useAppSelector(selectCurrentUser);
+  // isSuperAdmin is only true after mount — Redux is null on SSR (localStorage unavailable)
+  const isSuperAdmin = mounted && currentUser?.role === 'superadmin';
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Reset collapse state when switching between mobile and desktop
   useEffect(() => {
@@ -50,6 +61,12 @@ export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }
     { text: 'Channels', icon: UserCircleIcon, path: '/dashboard/channels' },
     { text: 'Payouts', icon: CurrencyDollarIcon, path: '/dashboard/payouts' },
     { text: 'Settings', icon: Cog6ToothIcon, path: '/dashboard/settings' },
+    ...(isSuperAdmin
+      ? [
+        { text: 'Admin Payouts', icon: ShieldCheckIcon, path: '/dashboard/admin/payouts' },
+        { text: 'Admin Subs', icon: CurrencyDollarIcon, path: '/dashboard/admin/subscriptions' },
+      ]
+      : []),
   ];
 
   const drawer = (
@@ -80,11 +97,10 @@ export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }
                   onMobileClose();
                 }
               }}
-              className={`flex items-center space-x-2 px-3 py-2.5 rounded-lg mb-1 transition-all duration-200 ${
-                isActive
-                  ? 'bg-red-45 text-primary'
-                  : 'text-grey-70 hover:text-primary hover:bg-dark-15'
-              }`}
+              className={`flex items-center space-x-2 px-3 py-2.5 rounded-lg mb-1 transition-all duration-200 ${isActive
+                ? 'bg-red-45 text-primary'
+                : 'text-grey-70 hover:text-primary hover:bg-dark-15'
+                }`}
             >
               <Icon className="h-6 w-6 flex-shrink-0" />
               {!isCollapsed && <span className="truncate">{item.text}</span>}
@@ -99,7 +115,7 @@ export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }
     <>
       {/* Mobile navigation overlay */}
       {mobileOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
           onClick={onMobileClose}
         />

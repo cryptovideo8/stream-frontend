@@ -1,130 +1,280 @@
-"use client";
-import { log } from 'node:console';
+'use client';
 import { useSearchVideosQuery } from '../../store/api/videoApi';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import {
+  FireIcon,
+  ClockIcon,
+  SparklesIcon,
+  StarIcon,
+  TrophyIcon,
+} from '@heroicons/react/24/outline';
+
+function formatCount(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+  return String(n);
+}
+
+const CATEGORY_CHIPS = [
+  { label: 'All', icon: FireIcon, query: {} },
+  { label: 'Trending', icon: FireIcon, query: { sortBy: 'views', sortOrder: 'desc' } },
+  { label: 'Newest', icon: ClockIcon, query: { sortBy: 'createdAt', sortOrder: 'desc' } },
+  { label: 'Moments', icon: SparklesIcon, query: { category: 'Moments' } },
+  { label: 'Premium', icon: StarIcon, query: { monetization: 'premium' } },
+  { label: 'Top Rated', icon: TrophyIcon, query: { sortBy: 'likes', sortOrder: 'desc' } },
+  { label: 'Indian', query: { category: 'Indian' } },
+  { label: 'Amateur', query: { category: 'Amateur' } },
+  { label: 'Mature', query: { category: 'Mature' } },
+];
+
+// Shimmer skeleton card
+function VideoCardSkeleton() {
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: '#1a1a1a' }}>
+      <div
+        className="aspect-video"
+        style={{
+          background: 'linear-gradient(90deg, #1a1a1a 0px, #262626 40%, #1a1a1a 80%)',
+          backgroundSize: '700px 100%',
+          animation: 'shimmer 2s infinite linear',
+        }}
+      />
+      <div className="p-3 space-y-2">
+        <div className="h-4 rounded" style={{ background: 'linear-gradient(90deg, #1f1f1f 0px, #2a2a2a 40%, #1f1f1f 80%)', backgroundSize: '700px 100%', animation: 'shimmer 2s infinite linear', width: '75%' }} />
+        <div className="h-3 rounded" style={{ background: 'linear-gradient(90deg, #1f1f1f 0px, #2a2a2a 40%, #1f1f1f 80%)', backgroundSize: '700px 100%', animation: 'shimmer 2s infinite linear', width: '50%' }} />
+      </div>
+    </div>
+  );
+}
+
+interface VideoCardProps {
+  video: any;
+}
+
+function VideoCard({ video }: VideoCardProps) {
+  const isPremium = ['rent', 'paid'].includes(video.monetization?.type);
+  const href = video.type === 'thirdparty' ? video.filePath : `/watch/${video._id}`;
+  const isExternal = video.type === 'thirdparty';
+
+  return (
+    <a
+      href={href}
+      target={isExternal ? '_blank' : '_self'}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      className="video-card block group"
+    >
+      {/* Thumbnail */}
+      <div className="video-card-thumb">
+        <img
+          src={video.thumbnailPath || '/placeholder.jpg'}
+          alt={video.title}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+        {/* Preview on hover */}
+        {video.previewPath && (
+          <img
+            src={video.previewPath}
+            alt="Preview"
+            className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            loading="lazy"
+          />
+        )}
+        {/* Gradient overlay on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        {/* Badges */}
+        {isPremium && <span className="badge-premium">Premium</span>}
+
+        {/* Duration badge (placeholder — no duration field in current data) */}
+        {video.duration && (
+          <span className="badge-duration">{video.duration}</span>
+        )}
+
+        {/* Play icon on hover */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="w-10 h-10 rounded-full bg-red-45/90 flex items-center justify-center shadow-lg">
+            <svg className="w-5 h-5 text-white fill-current ml-0.5" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* Info */}
+      <div className="p-2.5">
+        <h3 className="text-sm font-medium text-white line-clamp-2 leading-snug group-hover:text-red-45 transition-colors duration-200">
+          {video.title}
+        </h3>
+        <div className="flex items-center gap-1.5 mt-1.5 text-xs text-grey-60">
+          <span>{formatCount(video.stats?.views || 0)} views</span>
+          <span>•</span>
+          <span>{new Date(video.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+        </div>
+        {video.channel?.name && (
+          <p className="text-xs text-grey-60 mt-0.5 hover:text-grey-70 transition-colors">{video.channel.name}</p>
+        )}
+      </div>
+    </a>
+  );
+}
 
 export default function Home() {
   const [page, setPage] = useState(1);
+  const [activeChip, setActiveChip] = useState(0);
   const searchParams = useSearchParams();
   const search = searchParams.get('search') || '';
-  
-  console.log("search", search);
-  
+
   const { data, isLoading } = useSearchVideosQuery({
     page,
     limit: 20,
     sortBy: 'views',
     sortOrder: 'desc',
-    search
+    search,
   });
 
-  // Reset page when search changes
   useEffect(() => {
     setPage(1);
   }, [search]);
 
-  const handleSearch = (query: string) => {
-    console.log("handleSearch");
-
-    console.log("query", query);
-
-    // setSearch(query);
-    setPage(1); // Reset to first page when searching
-
-    console.log("search", search);
-  };
+  const featuredVideo = data?.videos?.[0];
+  const totalPages = Math.ceil((data?.total || 0) / 20);
 
   return (
-    <div className="p-4 sm:p-6 bg-dark-6">
-      <div className="max-w-[1600px] mx-auto">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-primary">
-            {search ? `Search Results for "${search}"` : 'Trending Videos'}
-          </h1>
+    <div className="min-h-screen bg-dark-6">
+
+      {/* ── Hero Banner ─────────────────────────────────── */}
+      {!search && featuredVideo && (
+        <div className="relative w-full overflow-hidden" style={{ height: '420px' }}>
+          {/* Background thumbnail */}
+          <img
+            src={featuredVideo.thumbnailPath || '/placeholder.jpg'}
+            alt={featuredVideo.title}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: 'brightness(0.45) blur(1px)' }}
+          />
+          {/* Gradient overlays */}
+          <div className="hero-overlay absolute inset-0" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #0F0F0F 0%, transparent 60%)' }} />
+
+          {/* Hero content */}
+          <div className="relative h-full flex items-center max-w-[1600px] mx-auto px-6">
+            <div className="max-w-lg animate-fade-in">
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-red-45 mb-3">
+                <FireIcon className="h-3.5 w-3.5" /> Featured
+              </span>
+              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 leading-tight text-shadow line-clamp-2">
+                {featuredVideo.title}
+              </h1>
+              <p className="text-grey-70 text-sm mb-6">
+                {formatCount(featuredVideo.stats?.views || 0)} views
+                {featuredVideo.channel?.name && <> · {featuredVideo.channel.name}</>}
+              </p>
+              <a
+                href={featuredVideo.type === 'thirdparty' ? featuredVideo.filePath : `/watch/${featuredVideo._id}`}
+                className="inline-flex items-center gap-2 bg-red-45 hover:bg-red-55 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-lg shadow-red-45/30 hover:shadow-red-45/50 active:scale-95"
+              >
+                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                Watch Now
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6">
+
+        {/* ── Category Chips ─────────────────────────────── */}
+        {!search && (
+          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-2" style={{ scrollbarWidth: 'none' }}>
+            {CATEGORY_CHIPS.map((chip, idx) => {
+              const Icon = chip.icon;
+              return (
+                <button
+                  key={chip.label}
+                  onClick={() => setActiveChip(idx)}
+                  className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all duration-200 ${activeChip === idx
+                      ? 'bg-red-45 text-white shadow-md shadow-red-45/30'
+                      : 'bg-dark-12 text-grey-70 hover:bg-dark-15 hover:text-white border border-dark-25'
+                    }`}
+                >
+                  {Icon && <Icon className="h-3.5 w-3.5" />}
+                  {chip.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ── Section Heading ────────────────────────────── */}
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            {search ? (
+              <>Search Results for &ldquo;<span className="text-red-45">{search}</span>&rdquo;</>
+            ) : (
+              <><FireIcon className="h-5 w-5 text-red-45" /> Trending Videos</>
+            )}
+          </h2>
+          {data?.total != null && (
+            <span className="text-xs text-grey-60">{data.total.toLocaleString()} videos</span>
+          )}
         </div>
 
-        {/* Video Grid */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
-            {[...Array(10)].map((_, index) => (
-              <div key={index} className="animate-pulse">
-                <div className="aspect-video bg-dark-10 rounded-lg"></div>
-                <div className="mt-2 space-y-2">
-                  <div className="h-4 bg-dark-10 rounded w-3/4"></div>
-                  <div className="h-3 bg-dark-10 rounded w-1/2"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
-              {data?.videos?.map((video: any) => {
-                const isPremium = ['rent', 'paid'].includes(video.monetization?.type);
+        {/* ── Video Grid ─────────────────────────────────── */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+          {isLoading
+            ? [...Array(12)].map((_, i) => <VideoCardSkeleton key={i} />)
+            : data?.videos?.map((video: any) => <VideoCard key={video._id} video={video} />)
+          }
+        </div>
+
+        {/* ── Pagination ─────────────────────────────────── */}
+        {!isLoading && totalPages > 1 && (
+          <div className="mt-8 flex items-center justify-center gap-2">
+            <button
+              onClick={() => setPage(p => Math.max(p - 1, 1))}
+              disabled={page === 1}
+              className="px-4 py-2 bg-dark-12 hover:bg-dark-15 text-grey-70 hover:text-white rounded-lg border border-dark-25 disabled:opacity-40 disabled:cursor-not-allowed transition-all text-sm font-medium"
+            >
+              ← Previous
+            </button>
+
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                let p;
+                if (totalPages <= 7) {
+                  p = i + 1;
+                } else if (page <= 4) {
+                  p = i + 1;
+                } else if (page >= totalPages - 3) {
+                  p = totalPages - 6 + i;
+                } else {
+                  p = page - 3 + i;
+                }
                 return (
-                  <a
-                    href={video.type === 'thirdparty' ? video.filePath : `/watch/${video._id}`}
-                    target={video.type === 'thirdparty' ? '_blank' : '_self'}
-                    rel={video.type === 'thirdparty' ? 'noopener noreferrer' : undefined}
-                    key={video._id}
-                    className="block"
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${page === p
+                        ? 'bg-red-45 text-white shadow-md shadow-red-45/30'
+                        : 'bg-dark-12 text-grey-70 hover:bg-dark-15 hover:text-white border border-dark-25'
+                      }`}
                   >
-                    <div className="bg-dark-10 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-200 h-full">
-                      <div className="aspect-video bg-dark-15 relative group">
-                        <img
-                          src={video.thumbnailPath || '/placeholder.jpg'}
-                          alt={video.title}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                        {video.previewPath && (
-                          <img
-                            src={video.previewPath}
-                            alt="Preview"
-                            className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                            loading="lazy"
-                          />
-                        )}
-                        {isPremium && (
-                          <span className="absolute top-2 right-2 bg-red-45 text-primary text-xs font-bold px-1.5 py-0.5 rounded">
-                            PREMIUM
-                          </span>
-                        )}
-                      </div>
-                      <div className="p-2 sm:p-3">
-                        <h3 className="text-primary text-sm sm:text-[15px] font-medium line-clamp-2">{video.title}</h3>
-                        <p className="text-grey-70 text-xs sm:text-[13px] mt-1">
-                          {video.stats?.views?.toLocaleString() || 0} views • {new Date(video.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                  </a>
+                    {p}
+                  </button>
                 );
               })}
             </div>
 
-            {/* Pagination Controls */}
-            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4">
-              <button
-                onClick={() => setPage(prev => Math.max(prev - 1, 1))}
-                disabled={page === 1}
-                className="w-full sm:w-auto px-4 py-2 bg-dark-10 text-primary rounded-lg hover:bg-dark-15 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                Previous
-              </button>
-              <span className="text-primary text-sm sm:text-base">
-                Page {page} of {Math.ceil((data?.total || 0) / 20)}
-              </span>
-              <button
-                onClick={() => setPage(prev => prev + 1)}
-                disabled={!data?.videos || data.videos.length < 20}
-                className="w-full sm:w-auto px-4 py-2 bg-dark-10 text-primary rounded-lg hover:bg-dark-15 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                Next
-              </button>
-            </div>
-          </>
+            <button
+              onClick={() => setPage(p => p + 1)}
+              disabled={!data?.videos || data.videos.length < 20}
+              className="px-4 py-2 bg-dark-12 hover:bg-dark-15 text-grey-70 hover:text-white rounded-lg border border-dark-25 disabled:opacity-40 disabled:cursor-not-allowed transition-all text-sm font-medium"
+            >
+              Next →
+            </button>
+          </div>
         )}
       </div>
     </div>

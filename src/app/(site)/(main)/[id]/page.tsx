@@ -1,15 +1,16 @@
 "use client";
 import { useSearchVideosQuery, useGetLikedVideosQuery } from '../../../store/api/videoApi';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function Home({ params }: PageProps) {
+  const resolvedParams = use(params);
   const searchParams = useSearchParams();
   const [page, setPage] = useState(1);
   const limit = 20;
@@ -47,7 +48,7 @@ export default function Home({ params }: PageProps) {
     tags,
     sortBy,
     sortOrder,
-    id : params.id
+    id: resolvedParams.id
   });
   const videos = data?.videos || [];
   const totalVideos = data?.total || 0;

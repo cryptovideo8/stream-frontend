@@ -62,65 +62,73 @@ export const videoApi = baseApi.injectEndpoints({
 
 
     getVideos: builder.query<GetVideosResponse, GetVideosParams>({
-        query: ({ page = 1, limit = 10, search = '' }) => ({
-          url: '/video/getVideos',
-          method: 'GET',
-          params: { page, limit, search },
-        }),
-        // providesTags: ['Videos'],
+      query: ({ page = 1, limit = 10, search = '' }) => ({
+        url: '/video/getVideos',
+        method: 'GET',
+        params: { page, limit, search },
       }),
+      // providesTags: ['Videos'],
+    }),
 
-      //  upload thridPary  video
-      uploadExternalVideo : builder.mutation<UploadVideoResponse, FormData>({
-        query: (formData) => ({
-          url: '/video/thirdparty/upload',
-          method: 'POST',
-          body: formData,
-        }),
+    //  upload thridPary  video
+    uploadExternalVideo: builder.mutation<UploadVideoResponse, FormData>({
+      query: (formData) => ({
+        url: '/video/thirdparty/upload',
+        method: 'POST',
+        body: formData,
       }),
-      searchVideos: builder.query<GetVideosResponse, {
-        page?: number;
-        limit?: number;
-        search?: string;
-        category?: string;
-        monetization?: string;
-        visibility?: string;
-        tags?: string;
-        sortBy?: string;
-        sortOrder?: 'asc' | 'desc';
-        id?: string;
-      }>({
-        query: (params) => ({
-          url: '/video/search',
-          method: 'GET',
-          params,
-        }),
+    }),
+    searchVideos: builder.query<GetVideosResponse, {
+      page?: number;
+      limit?: number;
+      search?: string;
+      category?: string;
+      monetization?: string;
+      visibility?: string;
+      tags?: string;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+      id?: string;
+    }>({
+      query: (params) => ({
+        url: '/video/search',
+        method: 'GET',
+        params,
       }),
-  
-      getVideoById: builder.query<any, string>({
-        query: (id) => `/video/${id}`,
-      }),
+    }),
 
-      getRelatedVideos: builder.query<GetVideosResponse, GetRelatedVideosParams>({
-        query: ({ videoId, limit = 20 }) => ({
-          url: `/video/related/${videoId}`,
-          method: 'GET',
-          params: { limit },
-        }),
+    getVideoById: builder.query<any, string>({
+      query: (id) => `/video/${id}`,
+    }),
+
+    getRelatedVideos: builder.query<GetVideosResponse, GetRelatedVideosParams>({
+      query: ({ videoId, limit = 20 }) => ({
+        url: `/video/related/${videoId}`,
+        method: 'GET',
+        params: { limit },
       }),
+    }),
 
 
-      getLikedVideos: builder.query<GetVideosResponse, GetLikedVideosParams>({
-        query: ({ page = 1, limit = 10 }) => ({
-          url: '/video/liked',
-          method: 'GET',
-          params: { page, limit },
-        }),
-        // You might want to add a tag for cache invalidation
-        // providesTags: ['LikedVideos'],
+    getLikedVideos: builder.query<GetVideosResponse, GetLikedVideosParams>({
+      query: ({ page = 1, limit = 10 }) => ({
+        url: '/video/liked',
+        method: 'GET',
+        params: { page, limit },
       }),
-      
+      // You might want to add a tag for cache invalidation
+      // providesTags: ['LikedVideos'],
+    }),
 
+
+
+    updateVideo: builder.mutation<any, { id: string; data: FormData | Record<string, any> }>({
+      query: ({ id, data }) => ({
+        url: `/video/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -133,5 +141,7 @@ export const {
   useSearchVideosQuery,
   useGetVideoByIdQuery,
   useGetRelatedVideosQuery,
-  useGetLikedVideosQuery
+  useGetLikedVideosQuery,
+  useUpdateVideoMutation,
 } = videoApi;
+

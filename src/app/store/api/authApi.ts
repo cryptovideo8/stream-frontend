@@ -10,9 +10,9 @@ interface LoginResponse {
     id: string;
     email: string;
     name: string;
-    role : string,
-    subscriptionId : string,
-    autoplay : boolean
+    role: string,
+    subscriptionId: string,
+    autoplay: boolean
   };
   token: string;
 }
@@ -26,6 +26,16 @@ interface SignupRequest {
   email: string;
   password: string;
   otp: string;
+}
+
+interface RequestResetPasswordRequest {
+  email: string;
+}
+
+interface VerifyResetPasswordRequest {
+  email: string;
+  otp: string;
+  newPassword: string;
 }
 
 export const authApi = baseApi.injectEndpoints({
@@ -61,6 +71,24 @@ export const authApi = baseApi.injectEndpoints({
         body: { name, email, password, otp },
       }),
     }),
+
+    // ✅ Request Reset Password
+    requestResetPassword: builder.mutation<void, RequestResetPasswordRequest>({
+      query: (body) => ({
+        url: '/auth/requestResetPassword',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    // ✅ Verify Reset Password
+    verifyResetPassword: builder.mutation<void, VerifyResetPasswordRequest>({
+      query: (body) => ({
+        url: '/auth/verifyResetPassword',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 export const {
@@ -68,4 +96,6 @@ export const {
   useLogoutMutation,
   useSendOtpMutation,
   useSignUpMutation,
+  useRequestResetPasswordMutation,
+  useVerifyResetPasswordMutation,
 } = authApi;

@@ -47,21 +47,35 @@ export const authSlice = createSlice({
       state.user = user
       state.token = token
       state.isAuthenticated = true
+      // Sync with localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+      }
     },
     logout: (state) => {
       state.user = null
       state.token = null
       state.isAuthenticated = false
+      // Sync with localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
     },
     setSubscriptionId: (state, action: PayloadAction<string>) => {
       if (state.user) {
         state.user.subscriptionId = action.payload
+        // Sync with localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(state.user));
+        }
       }
     }
   },
 })
 
-export const { setCredentials, logout , setSubscriptionId  } = authSlice.actions
+export const { setCredentials, logout, setSubscriptionId } = authSlice.actions
 
 // Selectors
 export const selectCurrentUser = (state: RootState) => state.auth.user

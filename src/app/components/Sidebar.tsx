@@ -1,129 +1,101 @@
-"use client";
-import { useState } from "react";
-import Link from "next/link";
-import { useGetGenericMasterByKeyQuery } from "../store/api/commonApi";
+'use client';
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useGetGenericMasterByKeyQuery } from '../store/api/commonApi';
 import {
   RssIcon,
   HandThumbUpIcon,
   ClockIcon,
-  BoltIcon,
   SparklesIcon,
   TrophyIcon,
   MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
+  TagIcon,
+  FireIcon,
+} from '@heroicons/react/24/outline';
+
+function SidebarLink({ href, icon: Icon, label }: { href: string; icon: React.ElementType; label: string }) {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+  return (
+    <Link
+      href={href}
+      className={`sidebar-link ${isActive ? 'active' : ''}`}
+    >
+      <Icon className="h-4.5 w-4.5 flex-shrink-0" style={{ width: 18, height: 18 }} />
+      <span>{label}</span>
+    </Link>
+  );
+}
 
 export default function Sidebar() {
-  const { data: categoryData = [], isLoading } = useGetGenericMasterByKeyQuery("category");
-  // const { data: categoryData = [], isLoading } = useGetGenericMasterByKeyQuery('category');
+  const { data: categoryData = [], isLoading } = useGetGenericMasterByKeyQuery('category');
   const [filter, setFilter] = useState('');
 
-  // // Apply filter to categories
-  const filteredCategories = categoryData.filter((cat: any) =>
+  const filteredCategories = (categoryData as any[]).filter((cat: any) =>
     cat.value.toLowerCase().includes(filter.toLowerCase())
   );
 
-
   return (
-    <div className="w-64 min-h-full bg-[#0f1216] text-gray-100">
-      <div className="px-4 py-2">
-        {/* Main Navigation */}
-        <nav className="space-y-2">
-          <Link
-            href="/subscriptions"
-            className="flex items-center gap-3 px-3 py-2.5 text-[15px] hover:bg-white/10 rounded-lg"
-          >
-            <RssIcon className="h-5 w-5" />
-            <span>Subscriptions</span>
-          </Link>
-          <Link
-            href="/liked"
-            className="flex items-center gap-3 px-3 py-2.5 text-[15px] hover:bg-white/10 rounded-lg"
-          >
-            <HandThumbUpIcon className="h-5 w-5" />
-            <span>Liked</span>
-          </Link>
-          <Link
-            href="/history"
-            className="flex items-center gap-3 px-3 py-2.5 text-[15px] hover:bg-white/10 rounded-lg"
-          >
-            <ClockIcon className="h-5 w-5" />
-            <span>Watch History</span>
-          </Link>
-        </nav>
+    <div
+      className="w-60 min-h-full flex-shrink-0 py-3"
+      style={{ background: '#0a0a0a', borderRight: '1px solid rgba(255,255,255,0.05)' }}
+    >
+      <div className="px-3 space-y-1">
 
-        <div className="border-t border-white/10 my-4"></div>
+        {/* Library */}
+        <p className="sidebar-section-title">Library</p>
+        <SidebarLink href="/subscriptions" icon={RssIcon} label="Subscriptions" />
+        <SidebarLink href="/liked" icon={HandThumbUpIcon} label="Liked Videos" />
+        <SidebarLink href="/history" icon={ClockIcon} label="Watch History" />
 
-        {/* Video Categories */}
-        <nav className="space-y-2">
-          <Link
-            href={`/${Math.floor(Math.random() * 1000000)}?sortBy=createdAt&sortOrder=desc`}
-            className="flex items-center gap-1 px-3 py-3 hover:text-red-45"
-          >
-            <ClockIcon className="h-5 w-5" />
-            <span>Newest Videos</span>
-          </Link>
-          <Link
-            href={`/${Math.floor(Math.random() * 1000000)}?sortBy=views`}
-            className="flex items-center gap-1 px-3 py-3 hover:text-red-45"
-          >
-            <HandThumbUpIcon className="h-5 w-5" />
-            <span>Best Videos</span>
-          </Link>
-          <Link
-            href="/moments"
-            className="flex items-center gap-3 px-3 py-2.5 text-[15px] hover:bg-white/10 rounded-lg"
-          >
-            <SparklesIcon className="h-5 w-5" />
-            <span>Moments</span>
-          </Link>
-          <Link
-            href="/top-creators"
-            className="flex items-center gap-3 px-3 py-2.5 text-[15px] hover:bg-white/10 rounded-lg"
-          >
-            <TrophyIcon className="h-5 w-5" />
-            <span>Top Creators</span>
-          </Link>
-          <Link
-            href="/awards-2024"
-            className="flex items-center gap-3 px-3 py-2.5 text-[15px] hover:bg-white/10 rounded-lg"
-          >
-            <TrophyIcon className="h-5 w-5" />
-            <span>Awards 2024</span>
-          </Link>
-        </nav>
+        <div className="my-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }} />
 
-        {/* Category Filter */}
-        <div className="mt-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Filter by category..."
-              className="w-full bg-[#1a1f25] rounded-lg py-2 px-4 pl-10 text-[15px] focus:outline-none focus:ring-1 focus:ring-white/20"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            />
-            <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-          </div>
+        {/* Discover */}
+        <p className="sidebar-section-title">Discover</p>
+        <SidebarLink href="/?sortBy=views&sortOrder=desc" icon={FireIcon} label="Trending" />
+        <SidebarLink href="/?sortBy=createdAt&sortOrder=desc" icon={ClockIcon} label="Newest Videos" />
+        <SidebarLink href="/?sortBy=views&sortOrder=desc" icon={HandThumbUpIcon} label="Most Viewed" />
+        <SidebarLink href="/moments" icon={SparklesIcon} label="Moments" />
+        <SidebarLink href="/top-creators" icon={TrophyIcon} label="Top Creators" />
+        <SidebarLink href="/awards-2024" icon={TrophyIcon} label="Awards 2024" />
 
+        <div className="my-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }} />
 
-          {/* Categories List (Dynamic) */}
-          <div className="mt-2 max-h-[200px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-            {isLoading ? (
-              <p className="text-sm text-gray-400 px-3 py-2">Loading categories...</p>
-            ) : filteredCategories.length === 0 ? (
-              <p className="text-sm text-gray-400 px-3 py-2">No matching categories</p>
-            ) : (
-              filteredCategories.map((cat: any) => (
-                <Link
-                  key={cat._id}
-                  href={`/${Math.floor(Math.random() * 1000000)}?category=${cat.value}`}
-                  className="flex items-center gap-2 px-3 py-2.5 text-[15px] hover:bg-white/10 rounded-lg"
-                >
-                  <span>{cat.value}</span>
-                </Link>
-              ))
-            )}
-          </div>
+        {/* Categories */}
+        <p className="sidebar-section-title">Categories</p>
+        <div className="relative mb-2">
+          <input
+            type="text"
+            placeholder="Filter categories..."
+            className="w-full h-8 bg-dark-12 rounded-lg py-1.5 px-3 pl-8 text-xs text-grey-70 placeholder-grey-60 border border-dark-20/50 focus:outline-none focus:border-dark-25 transition-colors"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          />
+          <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-grey-60" />
+        </div>
+
+        <div className="max-h-[300px] overflow-y-auto pr-1 space-y-0.5" style={{ scrollbarWidth: 'thin', scrollbarColor: '#333 transparent' }}>
+          {isLoading ? (
+            <>
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-8 rounded-lg animate-pulse" style={{ background: 'rgba(255,255,255,0.05)' }} />
+              ))}
+            </>
+          ) : filteredCategories.length === 0 ? (
+            <p className="text-xs text-grey-60 px-2 py-2">No matching categories</p>
+          ) : (
+            filteredCategories.map((cat: any) => (
+              <Link
+                key={cat._id}
+                href={`/?category=${encodeURIComponent(cat.value)}`}
+                className="sidebar-link text-xs"
+              >
+                <TagIcon className="h-3.5 w-3.5 flex-shrink-0" />
+                <span className="truncate">{cat.value}</span>
+              </Link>
+            ))
+          )}
         </div>
       </div>
     </div>

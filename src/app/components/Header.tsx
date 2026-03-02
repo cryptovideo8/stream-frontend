@@ -1,27 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
-  Bars3Icon,
-  UserCircleIcon,
-  Cog6ToothIcon,
+  MagnifyingGlassIcon,
+  GlobeAltIcon,
+  VideoCameraIcon,
+  ChatBubbleLeftIcon,
+  UserGroupIcon,
+  PhotoIcon,
+  StarIcon,
+  HandThumbUpIcon,
+  ClockIcon,
+  ChevronDownIcon,
   HomeIcon,
+  Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
-  PresentationChartLineIcon
-} from '@heroicons/react/24/outline';
-
-import {
-  MagnifyingGlassIcon, GlobeAltIcon, VideoCameraIcon, ChatBubbleLeftIcon,
-  UserGroupIcon, PhotoIcon, StarIcon, HandThumbUpIcon,
-  ClockIcon, ChevronDownIcon
+  PresentationChartLineIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { useAppSelector } from '../store/hooks';
 import { selectCurrentUser, selectIsAuthenticated } from '../store/slices/authSlice';
 import { useLogoutMutation } from '../store/api/authApi';
 import { useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
-import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 interface HeaderProps {
@@ -30,249 +33,352 @@ interface HeaderProps {
 
 export default function Header({ hideNavMenu = false }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [profileDropDown, setprofileDropDown] = useState(false);
+  const [profileDropDown, setProfileDropDown] = useState(false);
+  const [videosDropDown, setVideosDropDown] = useState(false);
+  const [mobileSearch, setMobileSearch] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const profileRef = useRef<HTMLDivElement>(null);
+  const videosRef = useRef<HTMLLIElement>(null);
 
   const user = useAppSelector(selectCurrentUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const dispatch = useDispatch();
 
-  console.log("user", user);
-
-  const userName = user?.name || "Rahul Vibs";
-  const userEmail = user?.email || "rahul@example.com";
+  const userName = user?.name || 'Guest';
+  const userEmail = user?.email || '';
   const userInitial = userName.charAt(0).toUpperCase();
 
-  // Initialize search query from URL params
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const search = searchParams.get('search');
-    if (search) {
-      setSearchQuery(search);
-    }
+    if (search) setSearchQuery(search);
   }, [searchParams]);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileDropDown(false);
+      }
+      if (videosRef.current && !videosRef.current.contains(e.target as Node)) {
+        setVideosDropDown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   const [logoutMutation] = useLogoutMutation();
 
   const handleLogout = async () => {
     try {
+      // Best-effort server logout — we don't block on failure
       await logoutMutation().unwrap();
-      // Clear local storage
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      // Clear Redux state
+    } catch {
+      // Session may have already expired on server (404 or 401) — still log out client
+    } finally {
+      // Clear client state via Redux (syncs with localStorage automatically)
       dispatch(logout());
-      // Show success message
       toast.success('Logged out successfully');
-      // Redirect to login page
       router.push('/login');
-    } catch (error) {
-      toast.error('Failed to logout');
-      console.error('Logout error:', error);
     }
   };
-
-  const userNavigation = [
-    { name: 'Home', href: '/', icon: HomeIcon },
-    { name: 'Profile', href: '/profile', icon: Cog6ToothIcon },
-    // Add dashboard navigation only for non-viewer roles
-    ...(isAuthenticated && user?.role && user.role !== 'viewer' ? [
-      { name: 'Dashboard', href: '/dashboard', icon: PresentationChartLineIcon }
-    ] : []),
-    { 
-      name: 'Sign out', 
-      onClick: handleLogout,
-      icon: ArrowRightOnRectangleIcon 
-    },
-  ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+      setMobileSearch(false);
     }
   };
 
+  const navItems = [
+    { href: '/', label: 'Home' },
+    { href: '/categories', label: 'Categories' },
+    { href: '/stars', label: 'Stars' },
+    { href: '/creators', label: 'Creators' },
+    { href: '/channels', label: 'Channels' },
+  ];
+
   return (
-    <header className="bg-dark-6 text-primary fixed w-full z-[9999] shadow-xl">
-      <div className="max-w-screen-xl mx-auto px-4 py-3">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+    <header
+      className="fixed w-full z-[9999] shadow-header"
+      style={{
+        background: 'rgba(10,10,10,0.85)',
+        backdropFilter: 'blur(16px)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}
+    >
+      <div className="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
 
-          {/* Logo */}
-          <Link href="/" className="flex-shrink-0 text-2xl font-bold text-red-45">
-            NightKing
-          </Link>
+        {/* Logo */}
+        <Link
+          href="/"
+          className="flex-shrink-0 text-xl font-black tracking-tight"
+          style={{ background: 'linear-gradient(135deg, #E30000, #FF5555)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+        >
+          NightKing
+        </Link>
 
-          {/* Search */}
-          <form onSubmit={handleSearch} className="flex-1 w-full sm:w-auto max-w-2xl">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search for videos"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-dark-10 rounded-full py-2 px-4 pr-10 focus:outline-none focus:ring-2 focus:ring-red-45 text-primary"
-              />
-              <button type="submit" className="absolute right-3 top-2.5">
-                <MagnifyingGlassIcon className="h-5 w-5 text-grey-70" />
-              </button>
-            </div>
-          </form>
-
-          {/* Right Actions */}
-          <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end">
-            <button className="flex items-center gap-1 hover:text-red-45">
-              <GlobeAltIcon className="h-5 w-5" />
-              <span className="hidden sm:inline">EN</span>
+        {/* Desktop Search */}
+        <form
+          onSubmit={handleSearch}
+          className="hidden sm:flex flex-1 max-w-xl"
+        >
+          <div className="relative w-full group">
+            <input
+              type="text"
+              placeholder="Search videos, creators, categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-9 bg-dark-12 rounded-full py-2 pl-4 pr-10 text-sm text-white placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 focus:bg-dark-10 transition-all duration-200"
+            />
+            <button
+              type="submit"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-grey-60 hover:text-red-45 transition-colors"
+            >
+              <MagnifyingGlassIcon className="h-4 w-4" />
             </button>
+          </div>
+        </form>
 
-            {!isAuthenticated ? (
-              <>
-                <Link href="/login" className="px-4 py-2 text-dark-6 bg-grey-70 hover:bg-grey-80 rounded-md font-medium">
-                  Login
-                </Link>
-                <Link href="/signup" className="px-4 py-2 bg-red-45 hover:bg-red-55 rounded-md font-medium">
-                  Sign up
-                </Link>
-              </>
-            ) : (
-              <>
-                <div className="relative">
-                  <button
-                    className="flex items-center space-x-3 text-grey-70 hover:text-primary p-2 rounded-lg"
-                    onClick={() => setprofileDropDown(!profileDropDown)}
+        {/* Right Actions */}
+        <div className="flex items-center gap-1 sm:gap-2">
+          {/* Mobile Search Toggle */}
+          <button
+            className="sm:hidden p-2 text-grey-70 hover:text-white transition-colors"
+            onClick={() => setMobileSearch(!mobileSearch)}
+          >
+            {mobileSearch ? <XMarkIcon className="h-5 w-5" /> : <MagnifyingGlassIcon className="h-5 w-5" />}
+          </button>
+
+          {/* Language */}
+          <button className="hidden sm:flex items-center gap-1 p-2 text-grey-70 hover:text-white text-sm transition-colors">
+            <GlobeAltIcon className="h-4 w-4" />
+            <span className="text-xs font-medium">EN</span>
+          </button>
+
+          {/* Auth section — only render on client to avoid hydration mismatch */}
+          {!mounted ? (
+            /* SSR placeholder */
+            <div className="w-[130px] h-8" />
+          ) : (
+            <>
+              {!isAuthenticated ? (
+                <>
+                  <Link
+                    href="/login"
+                    className="px-3 py-1.5 text-sm text-grey-70 hover:text-white border border-dark-25 hover:border-dark-30 rounded-lg font-medium transition-all duration-200"
                   >
-                    <div className="relative w-8 h-8 rounded-full bg-dark-15 flex items-center justify-center text-primary">
+                    Login
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="px-3 py-1.5 text-sm bg-red-45 hover:bg-red-55 rounded-lg font-semibold text-white transition-all duration-200 shadow-md shadow-red-45/20"
+                  >
+                    Sign up
+                  </Link>
+                </>
+              ) : (
+                <div className="relative" ref={profileRef}>
+                  <button
+                    className="flex items-center gap-2 p-1 rounded-lg hover:bg-dark-15 transition-colors"
+                    onClick={() => setProfileDropDown(!profileDropDown)}
+                  >
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white overflow-hidden border-2"
+                      style={{ borderColor: profileDropDown ? '#E30000' : 'rgba(255,255,255,0.1)', transition: 'border-color 0.2s' }}
+                    >
                       {avatarError ? (
-                        <span className="text-sm font-medium">{userInitial}</span>
+                        <span>{userInitial}</span>
                       ) : (
                         <img
                           src="/avatar.jpg"
-                          alt={`${userName}'s avatar`}
-                          className="w-full h-full object-cover rounded-full"
+                          alt={`${userName}`}
+                          className="w-full h-full object-cover"
                           onError={() => setAvatarError(true)}
                         />
                       )}
                     </div>
-                    <span className="hidden sm:inline text-sm font-medium">{userName}</span>
+                    <span className="hidden sm:inline text-sm font-medium text-grey-70 hover:text-white transition-colors">
+                      {userName}
+                    </span>
+                    <ChevronDownIcon className={`h-3.5 w-3.5 text-grey-60 transition-transform duration-200 ${profileDropDown ? 'rotate-180' : ''}`} />
                   </button>
 
                   {profileDropDown && (
-                    <div
-                      className="absolute right-0 mt-2 w-40 bg-dark-10 border border-dark-20 rounded-lg shadow-lg z-[99999]"
-                      onMouseLeave={() => setprofileDropDown(false)}
-                    >
-                      {userNavigation.map((item) => {
-                        const Icon = item.icon;
-                        return (
-                          item.onClick ? (
-                            <button
-                              key={item.name}
-                              onClick={item.onClick}
-                              className="flex items-center space-x-3 px-4 py-2 text-sm text-grey-70 hover:text-primary hover:bg-dark-15 w-full text-left"
-                            >
-                              <Icon className="h-5 w-5" />
-                              <span>{item.name}</span>
-                            </button>
-                          ) : (
-                            <Link
-                              key={item.name}
-                              href={item.href}
-                              className="flex items-center space-x-3 px-4 py-2 text-sm text-grey-70 hover:text-primary hover:bg-dark-15"
-                              onClick={() => setprofileDropDown(false)}
-                            >
-                              <Icon className="h-5 w-5" />
-                              <span>{item.name}</span>
-                            </Link>
-                          )
-                        );
-                      })}
+                    <div className="dropdown-menu min-w-[200px] animate-fade-in">
+                      {/* User info header */}
+                      <div className="px-4 py-3 border-b border-white/[0.06]">
+                        <p className="text-sm font-semibold text-white">{userName}</p>
+                        <p className="text-xs text-grey-60 mt-0.5">{userEmail}</p>
+                      </div>
+                      <div className="py-1">
+                        <Link href="/" className="dropdown-item" onClick={() => setProfileDropDown(false)}>
+                          <HomeIcon className="h-4 w-4" /> Home
+                        </Link>
+                        <Link href="/profile" className="dropdown-item" onClick={() => setProfileDropDown(false)}>
+                          <Cog6ToothIcon className="h-4 w-4" /> Settings
+                        </Link>
+                        {isAuthenticated && user?.role && user.role !== 'viewer' && (
+                          <Link href="/dashboard" className="dropdown-item" onClick={() => setProfileDropDown(false)}>
+                            <PresentationChartLineIcon className="h-4 w-4" /> Dashboard
+                          </Link>
+                        )}
+                      </div>
+                      <div className="border-t border-white/[0.06] py-1">
+                        <button onClick={handleLogout} className="dropdown-item text-red-45 hover:text-red-55 hover:bg-red-45/5">
+                          <ArrowRightOnRectangleIcon className="h-4 w-4" /> Sign out
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
-              </>
-            )}
-          </div>
+              )}
+            </>
+          )}
         </div>
       </div>
 
+      {/* Mobile Search Bar */}
+      {mobileSearch && (
+        <div className="sm:hidden px-4 pb-3 animate-slide-up">
+          <form onSubmit={handleSearch}>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search videos..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+                className="w-full h-9 bg-dark-12 rounded-full py-2 pl-4 pr-10 text-sm text-white placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 transition-all"
+              />
+              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-grey-60">
+                <MagnifyingGlassIcon className="h-4 w-4" />
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Navigation Bar */}
       {!hideNavMenu && (
-        <nav className="border-t border-dark-20 overflow-x-auto">
+        <nav
+          className="border-t overflow-x-auto"
+          style={{ borderColor: 'rgba(255,255,255,0.05)' }}
+        >
           <div className="max-w-screen-xl mx-auto px-4">
-            <ul className="flex items-center gap-4 sm:gap-6 text-sm whitespace-nowrap">
-              <li className="relative">
+            <ul className="flex items-center gap-1 text-sm whitespace-nowrap h-10">
+
+              {/* Videos Dropdown */}
+              <li className="relative" ref={videosRef}>
                 <button
-                  className="flex items-center gap-1 px-3 py-3 hover:text-red-45"
-                  onMouseEnter={() => setprofileDropDown(true)}
-                  onMouseLeave={() => setprofileDropDown(false)}
+                  className={`nav-link ${videosDropDown ? 'active' : ''}`}
+                  onMouseEnter={() => setVideosDropDown(true)}
+                  onMouseLeave={() => setVideosDropDown(false)}
                 >
-                  <VideoCameraIcon className="h-5 w-5" />
+                  <VideoCameraIcon className="h-4 w-4" />
                   <span>Videos</span>
-                  <ChevronDownIcon className={`h-4 w-4 ml-1 transition-transform duration-200 ${profileDropDown ? 'rotate-180' : ''}`} />
+                  <ChevronDownIcon className={`h-3.5 w-3.5 transition-transform duration-200 ${videosDropDown ? 'rotate-180' : ''}`} />
                 </button>
-                {profileDropDown && (
+                {videosDropDown && (
                   <div
-                    style={{ zIndex: 99999 }}
-                    className="fixed mt-1 w-48 bg-dark-10 rounded-md shadow-xl py-1"
-                    onMouseEnter={() => setprofileDropDown(true)}
-                    onMouseLeave={() => setprofileDropDown(false)}
+                    className="absolute top-full left-0 mt-1 min-w-[180px] rounded-xl shadow-2xl shadow-black/50 py-1.5 animate-fade-in"
+                    style={{ background: 'rgba(20,20,20,0.95)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.08)', zIndex: 99999 }}
+                    onMouseEnter={() => setVideosDropDown(true)}
+                    onMouseLeave={() => setVideosDropDown(false)}
                   >
-                    <Link href="/videos/best" className="flex items-center gap-2 px-4 py-2 text-sm text-grey-70 hover:bg-dark-15 hover:text-primary">
-                      <HandThumbUpIcon className="h-5 w-5" />
-                      Best Videos
+                    <Link href="/?sortBy=views&sortOrder=desc" className="dropdown-item">
+                      <HandThumbUpIcon className="h-4 w-4" /> Best Videos
                     </Link>
-                    <Link href="/videos/moments" className="flex items-center gap-2 px-4 py-2 text-sm text-grey-70 hover:bg-dark-15 hover:text-primary">
-                      <VideoCameraIcon className="h-5 w-5" />
-                      Moments
+                    <Link href="/?sortBy=createdAt&sortOrder=desc" className="dropdown-item">
+                      <ClockIcon className="h-4 w-4" /> Newest
                     </Link>
-                    <Link href="/videos/history" className="flex items-center gap-2 px-4 py-2 text-sm text-grey-70 hover:bg-dark-15 hover:text-primary">
-                      <ClockIcon className="h-5 w-5" />
-                      Watch History
+                    <Link href="/videos/moments" className="dropdown-item">
+                      <VideoCameraIcon className="h-4 w-4" /> Moments
                     </Link>
-                    <div className="border-t border-dark-20 my-1"></div>
-                    <Link href="/videos/indian" className="flex items-center gap-2 px-4 py-2 text-sm text-grey-70 hover:bg-dark-15 hover:text-primary">
-                      <span className="w-5 h-5 flex items-center">🇮🇳</span>
-                      Indian
+                    <Link href="/videos/history" className="dropdown-item">
+                      <ClockIcon className="h-4 w-4" /> Watch History
                     </Link>
-                    <Link href="/videos/amateur" className="flex items-center gap-2 px-4 py-2 text-sm text-grey-70 hover:bg-dark-15 hover:text-primary">
-                      Amateur
+                    <div className="my-1 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }} />
+                    <Link href="/?category=Indian" className="dropdown-item">
+                      <span className="text-sm">🇮🇳</span> Indian
                     </Link>
-                    <Link href="/videos/mature" className="flex items-center gap-2 px-4 py-2 text-sm text-grey-70 hover:bg-dark-15 hover:text-primary">
-                      Mature
-                    </Link>
-                    <Link href="/videos/old-young" className="flex items-center gap-2 px-4 py-2 text-sm text-grey-70 hover:bg-dark-15 hover:text-primary">
-                      Old & Young
-                    </Link>
+                    <Link href="/?category=Amateur" className="dropdown-item">Amateur</Link>
+                    <Link href="/?category=Mature" className="dropdown-item">Mature</Link>
                   </div>
                 )}
               </li>
-              <li><Link href="/live" className="flex items-center gap-1 px-3 py-3 hover:text-red-45"><span className="relative flex h-3 w-3"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-45 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-red-55"></span></span><span>Live Cams</span></Link></li>
-              <li><Link href="/categories" className="px-3 py-3 hover:text-red-45">Categories</Link></li>
-              <li><Link href="/stars" className="px-3 py-3 hover:text-red-45">Stars</Link></li>
-              <li><Link href="/creators" className="px-3 py-3 hover:text-red-45">Creators</Link></li>
-              <li><Link href="/channels" className="px-3 py-3 hover:text-red-45">Channels</Link></li>
-              <li><Link href="/photos" className="flex items-center gap-1 px-3 py-3 hover:text-red-45"><PhotoIcon className="h-5 w-5" /><span>Photos</span></Link></li>
-              <li><Link href="/chat" className="flex items-center gap-1 px-3 py-3 hover:text-red-45"><ChatBubbleLeftIcon className="h-5 w-5" /><span>Chat</span></Link></li>
-              {/* Add Dashboard link for non-viewer roles */}
-              {isAuthenticated && user?.role && user.role !== 'viewer' && (
+
+              {/* Live */}
+              <li>
+                <Link href="/live" className="nav-link">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-45 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-55" />
+                  </span>
+                  <span>Live</span>
+                </Link>
+              </li>
+
+              {/* Regular nav items */}
+              {navItems.slice(1).map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`nav-link ${pathname === item.href ? 'active' : ''}`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+
+              <li>
+                <Link href="/photos" className="nav-link">
+                  <PhotoIcon className="h-4 w-4" /> Photos
+                </Link>
+              </li>
+              <li>
+                <Link href="/chat" className="nav-link">
+                  <ChatBubbleLeftIcon className="h-4 w-4" /> Chat
+                </Link>
+              </li>
+              <li>
+                <Link href="/dating" className="nav-link">
+                  <UserGroupIcon className="h-4 w-4" /> Dating
+                </Link>
+              </li>
+
+              {/* Premium */}
+              <li>
+                <Link
+                  href="/?monetization=premium"
+                  className="nav-link text-amber-400 hover:text-amber-300"
+                >
+                  <StarIcon className="h-4 w-4" />
+                  <span>Premium</span>
+                </Link>
+              </li>
+
+              {/* Dashboard for creators — only render on client */}
+              {mounted && isAuthenticated && user?.role && user.role !== 'viewer' && (
                 <li>
-                  <Link href="/dashboard" className="flex items-center gap-1 px-3 py-3 hover:text-red-45">
-                    <PresentationChartLineIcon className="h-5 w-5" />
+                  <Link
+                    href="/dashboard"
+                    className={`nav-link ${pathname?.startsWith('/dashboard') ? 'active' : ''}`}
+                  >
+                    <PresentationChartLineIcon className="h-4 w-4" />
                     <span>Dashboard</span>
                   </Link>
                 </li>
               )}
-              <li>
-                <Link
-                  href={`/${Math.floor(Math.random() * 1000000)}?monetization=premium`}
-                  className="flex items-center gap-1 px-3 py-3 text-yellow-400 hover:text-yellow-300"
-                >
-                  <StarIcon className="h-5 w-5" />
-                  <span>Premium Videos</span>
-                </Link>
-              </li>
-              <li><Link href="/dating" className="flex items-center gap-1 px-3 py-3 hover:text-red-45"><UserGroupIcon className="h-5 w-5" /><span>Dating</span></Link></li>
             </ul>
           </div>
         </nav>

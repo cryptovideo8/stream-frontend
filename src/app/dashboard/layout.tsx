@@ -1,10 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Provider } from 'react-redux';
-import { store } from '../store/store';
 import Navigation from '../components/SideNavigation';
-import Header from '../components/Header';
+import DashboardHeader from '../components/DashboardHeader';
 import DashboardFooter from '../components/DashboardFooter';
 
 export default function DashboardLayout({
@@ -36,21 +34,20 @@ export default function DashboardLayout({
   };
 
   return (
-    <Provider store={store}>
-      <div className="flex flex-col min-h-screen bg-dark-6 text-primary">
-      <Header hideNavMenu={true} />
-        
-        {/* Main content area */}
-        <div className="flex flex-1 pt-16">
-          <Navigation 
-            mobileOpen={mobileOpen} 
-            onMobileClose={handleDrawerToggle} 
-            onCollapse={handleCollapse}
-          />
-          
-          {/* Main content wrapper */}
-          <main 
-            className={`
+    <div className="flex flex-col min-h-screen bg-dark-6 text-primary">
+      <DashboardHeader onMobileMenuToggle={handleDrawerToggle} />
+
+      {/* Main content area */}
+      <div className="flex flex-1 pt-16">
+        <Navigation
+          mobileOpen={mobileOpen}
+          onMobileClose={handleDrawerToggle}
+          onCollapse={handleCollapse}
+        />
+
+        {/* Main content wrapper */}
+        <main
+          className={`
               flex-1 
               min-h-[calc(100vh-4rem)] 
               overflow-y-auto
@@ -59,23 +56,22 @@ export default function DashboardLayout({
               ${mobileOpen ? 'blur-sm md:blur-none pointer-events-none md:pointer-events-auto' : ''} 
               ${isCollapsed ? 'md:ml-[72px]' : 'md:ml-[240px]'}
             `}
-          >
-            {/* Content container with max width */}
-            <div className="max-w-7xl mx-auto w-full">
-              {children}
-            </div>
-          </main>
-        </div>
+        >
+          {/* Content container with max width */}
+          <div className="max-w-7xl mx-auto w-full">
+            {children}
+          </div>
+        </main>
+      </div>
 
-        {/* Footer */}
-        <div className={`
+      {/* Footer */}
+      <div className={`
           relative 
           ${isCollapsed ? 'md:ml-[72px]' : 'md:ml-[240px]'}
           transition-all duration-200
         `}>
-          <DashboardFooter />
-        </div>
+        <DashboardFooter />
       </div>
-    </Provider>
+    </div>
   );
-} 
+}

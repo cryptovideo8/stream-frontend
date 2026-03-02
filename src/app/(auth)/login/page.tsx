@@ -36,9 +36,6 @@ export default function LoginPage() {
     try {
       const res = await login({ email, password }).unwrap();
 
-      localStorage.setItem('token', res.token);
-      localStorage.setItem('user', JSON.stringify(res.user));
-
       dispatch(setCredentials({ user: res.user, token: res.token }));
       toast.success('Login successful');
       router.push('/subscriptions'); // or dashboard

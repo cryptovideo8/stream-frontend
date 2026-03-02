@@ -1,495 +1,322 @@
 'use client';
+
 import { useState } from 'react';
-import {
-  useReactTable,
-  getCoreRowModel,
-  getPaginationRowModel,
-  flexRender,
-  createColumnHelper,
-} from '@tanstack/react-table';
+import { Formik, Form, Field } from 'formik';
+import * as Yup from 'yup';
 import {
   CurrencyDollarIcon,
-  WalletIcon,
-  CreditCardIcon,
-  DocumentTextIcon,
-  CalendarDaysIcon,
-  ArrowDownTrayIcon,
-  XMarkIcon,
+  ClockIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  ArrowUpTrayIcon,
+  LockClosedIcon,
+  InformationCircleIcon,
 } from '@heroicons/react/24/outline';
+import toast from 'react-hot-toast';
+import {
+  useGetEarningsQuery,
+  useRequestPayoutMutation,
+  useGetMyPayoutRequestsQuery,
+} from '../../store/api/payoutApi';
 
-interface Transaction {
-  id: number;
-  date: string;
-  amount: number;
-  type: 'payout' | 'earning';
-  status: 'completed' | 'pending' | 'processing';
-  reference: string;
-  source: string;
-}
+const payoutSchema = Yup.object({
+  paymentMethod: Yup.string().required('Required'),
+  paymentDetails: Yup.string().required('Payment details are required'),
+});
 
-const mockTransactions: Transaction[] = [
-  {
-    id: 1,
-    date: '2024-03-01',
-    amount: 1500.00,
-    type: 'payout',
-    status: 'completed',
-    reference: 'PAY-2024-001',
-    source: 'Bank Transfer'
-  },
-  {
-    id: 2,
-    date: '2024-03-05',
-    amount: 250.50,
-    type: 'earning',
-    status: 'completed',
-    reference: 'EARN-2024-002',
-    source: 'Video: Getting Started with Crypto Trading'
-  },
-  {
-    id: 3,
-    date: '2024-03-10',
-    amount: 750.00,
-    type: 'payout',
-    status: 'processing',
-    reference: 'PAY-2024-003',
-    source: 'PayPal'
-  }
-];
+const STATUS_COLORS: Record<string, string> = {
+  pending: 'bg-yellow-900 text-yellow-300',
+  settled: 'bg-green-900 text-green-300',
+  rejected: 'bg-red-900 text-red-300',
+};
 
-const columnHelper = createColumnHelper<Transaction>();
+export default function CreatorPayoutsPage() {
+  const [showModal, setShowModal] = useState(false);
+  const [myRequestsPage, setMyRequestsPage] = useState(1);
 
-export default function PayoutTransactions() {
-  const [dateFilter, setDateFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [showPayoutDialog, setShowPayoutDialog] = useState(false);
-  const [payoutData, setPayoutData] = useState({
-    method: 'bank',
-    amount: '',
-    accountName: '',
-    accountNumber: '',
-    bankName: '',
-    swiftCode: '',
-    upiId: '',
-  });
-  const [error, setError] = useState('');
+  const { data: earnings, isLoading: loadingEarnings, refetch: refetchEarnings } = useGetEarningsQuery();
+  const { data: myRequests, isLoading: loadingRequests, refetch: refetchRequests } = useGetMyPayoutRequestsQuery({ page: myRequestsPage });
+  const [requestPayout] = useRequestPayoutMutation();
 
-  const handleDownload = (id: number) => {
-    // Handle receipt download
-    console.log('Downloading receipt for transaction:', id);
-  };
-
-  const columns = [
-    columnHelper.accessor('date', {
-      header: 'Date',
-      cell: (info) => (
-        <div className="flex items-center space-x-2">
-          <CalendarDaysIcon className="h-5 w-5 text-grey-70" />
-          <span>{new Date(info.getValue()).toLocaleDateString()}</span>
-        </div>
-      ),
-    }),
-    columnHelper.accessor('amount', {
-      header: 'Amount',
-      cell: (info) => (
-        <div className={`flex items-center space-x-1 ${info.row.original.type === 'earning' ? 'text-green-500' : 'text-red-45'}`}>
-          <CurrencyDollarIcon className="h-5 w-5" />
-          <span>${info.getValue().toFixed(2)}</span>
-        </div>
-      ),
-    }),
-    columnHelper.accessor('type', {
-      header: 'Type',
-      cell: (info) => (
-        <span className={`px-3 py-1 rounded-md text-xs ${
-          info.getValue() === 'earning' ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300'
-        }`}>
-          {info.getValue().charAt(0).toUpperCase() + info.getValue().slice(1)}
-        </span>
-      ),
-    }),
-    columnHelper.accessor('status', {
-      header: 'Status',
-      cell: (info) => (
-        <span className={`px-3 py-1 rounded-md text-xs ${
-          info.getValue() === 'completed' ? 'bg-green-900 text-green-300' :
-          info.getValue() === 'processing' ? 'bg-yellow-900 text-yellow-300' :
-          'bg-blue-900 text-blue-300'
-        }`}>
-          {info.getValue().charAt(0).toUpperCase() + info.getValue().slice(1)}
-        </span>
-      ),
-    }),
-    columnHelper.accessor('reference', {
-      header: 'Reference',
-      cell: (info) => <div>{info.getValue()}</div>,
-    }),
-    columnHelper.accessor('source', {
-      header: 'Source',
-      cell: (info) => <div>{info.getValue()}</div>,
-    }),
-    columnHelper.display({
-      id: 'actions',
-      header: 'Actions',
-      cell: (info) => (
-        <button
-          onClick={() => handleDownload(info.row.original.id)}
-          className="text-grey-70 hover:text-white"
-        >
-          <ArrowDownTrayIcon className="h-5 w-5" />
-        </button>
-      ),
-    }),
-  ];
-
-  const table = useReactTable({
-    data: mockTransactions,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
-
-  const totalEarnings = mockTransactions
-    .filter(t => t.type === 'earning')
-    .reduce((sum, t) => sum + t.amount, 0);
-
-  const pendingPayouts = mockTransactions
-    .filter(t => t.type === 'payout' && t.status === 'processing')
-    .reduce((sum, t) => sum + t.amount, 0);
-
-  const availableBalance = totalEarnings - mockTransactions
-    .filter(t => t.type === 'payout' && t.status === 'completed')
-    .reduce((sum, t) => sum + t.amount, 0);
-
-  const handlePayoutSubmit = () => {
-    // Validate form
-    if (!payoutData.amount || parseFloat(payoutData.amount) <= 0) {
-      setError('Please enter a valid amount');
-      return;
+  const handleSubmit = async (values: any, { setSubmitting, resetForm }: any) => {
+    try {
+      await requestPayout(values).unwrap();
+      toast.success('Payout request submitted!');
+      setShowModal(false);
+      resetForm();
+      refetchEarnings();
+      refetchRequests();
+    } catch (err: any) {
+      toast.error(err?.data?.message || 'Failed to submit payout request');
+    } finally {
+      setSubmitting(false);
     }
-
-    if (parseFloat(payoutData.amount) > availableBalance) {
-      setError('Amount exceeds available balance');
-      return;
-    }
-
-    if (payoutData.method === 'bank') {
-      if (!payoutData.accountName || !payoutData.accountNumber || !payoutData.bankName || !payoutData.swiftCode) {
-        setError('Please fill in all bank details');
-        return;
-      }
-    } else if (payoutData.method === 'upi') {
-      if (!payoutData.upiId) {
-        setError('Please enter UPI ID');
-        return;
-      }
-      // Validate UPI ID format (example@upi or example@bank)
-      const upiRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+$/;
-      if (!upiRegex.test(payoutData.upiId)) {
-        setError('Please enter a valid UPI ID (e.g., username@upi)');
-        return;
-      }
-    }
-
-    // TODO: Handle payout request submission
-    console.log('Submitting payout request:', payoutData);
-    setShowPayoutDialog(false);
-    resetPayoutForm();
   };
 
-  const resetPayoutForm = () => {
-    setPayoutData({
-      method: 'bank',
-      amount: '',
-      accountName: '',
-      accountNumber: '',
-      bankName: '',
-      swiftCode: '',
-      upiId: '',
-    });
-    setError('');
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setPayoutData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    setError('');
-  };
+  const e = earnings;
+  const fmt = (n: number) => `₹${n?.toFixed(2) ?? '0.00'}`;
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-white">Payout Transactions</h1>
+      <div className="flex flex-wrap justify-between items-center gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Payouts</h1>
+          <p className="text-grey-70 text-sm mt-0.5">
+            Earnings are calculated on <span className="text-yellow-400 font-medium">paid &amp; rent videos only</span>
+          </p>
+        </div>
         <button
-          className="bg-red-45 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-red-60"
-          onClick={() => setShowPayoutDialog(true)}
+          onClick={() => setShowModal(true)}
+          disabled={loadingEarnings || (e?.totalAmount ?? 0) <= 0}
+          className="bg-red-45 text-white px-4 py-2 rounded-lg hover:bg-red-60 disabled:opacity-50 text-sm flex items-center space-x-2"
         >
-          <CurrencyDollarIcon className="h-5 w-5" />
+          <ArrowUpTrayIcon className="h-4 w-4" />
           <span>Request Payout</span>
         </button>
       </div>
 
+      {/* Period Info */}
+      {!loadingEarnings && e && (
+        <div className="text-sm text-grey-70 bg-dark-10 border border-dark-20 rounded-lg px-4 py-2 flex items-center space-x-2">
+          <InformationCircleIcon className="h-4 w-4 text-blue-400 flex-shrink-0" />
+          <span>
+            Current period:{' '}
+            <span className="text-white">
+              {e.periodStart ? new Date(e.periodStart).toLocaleDateString() : 'Account start'}
+            </span>{' '}
+            →{' '}
+            <span className="text-white">{new Date(e.periodEnd).toLocaleDateString()}</span>
+          </span>
+          <span className="ml-4">
+            Rate: <span className="text-green-400 font-medium">₹{e.ratePerMinute}/min</span>
+          </span>
+        </div>
+      )}
+
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-dark-8 rounded-lg p-6">
-          <div className="flex items-center space-x-3 mb-2">
-            <CurrencyDollarIcon className="h-8 w-8 text-green-500" />
-            <h3 className="text-grey-70">Total Earnings</h3>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[
+          {
+            label: 'Eligible Watch Time',
+            value: loadingEarnings ? '—' : `${e?.totalWatchMinutes?.toFixed(1) ?? 0} min`,
+            icon: ClockIcon,
+            color: 'text-blue-400',
+          },
+          {
+            label: 'Current Period Earnings',
+            value: loadingEarnings ? '—' : fmt(e?.totalAmount),
+            icon: CurrencyDollarIcon,
+            color: 'text-green-400',
+          },
+          {
+            label: 'Eligible Videos',
+            value: loadingEarnings ? '—' : `${e?.breakdown?.length ?? 0}`,
+            icon: CheckCircleIcon,
+            color: 'text-yellow-400',
+          },
+        ].map((card) => (
+          <div key={card.label} className="bg-dark-10 rounded-lg p-4 border border-dark-20">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-grey-70 text-sm">{card.label}</p>
+              <card.icon className={`h-5 w-5 ${card.color}`} />
+            </div>
+            {loadingEarnings ? (
+              <div className="h-7 bg-dark-20 rounded animate-pulse w-24 mt-1" />
+            ) : (
+              <p className={`text-2xl font-bold ${card.color}`}>{card.value}</p>
+            )}
           </div>
-          <p className="text-2xl font-bold text-white">${totalEarnings.toFixed(2)}</p>
-        </div>
-        <div className="bg-dark-8 rounded-lg p-6">
-          <div className="flex items-center space-x-3 mb-2">
-            <WalletIcon className="h-8 w-8 text-blue-500" />
-            <h3 className="text-grey-70">Available Balance</h3>
-          </div>
-          <p className="text-2xl font-bold text-white">${availableBalance.toFixed(2)}</p>
-        </div>
-        <div className="bg-dark-8 rounded-lg p-6">
-          <div className="flex items-center space-x-3 mb-2">
-            <CreditCardIcon className="h-8 w-8 text-yellow-500" />
-            <h3 className="text-grey-70">Pending Payouts</h3>
-          </div>
-          <p className="text-2xl font-bold text-white">${pendingPayouts.toFixed(2)}</p>
-        </div>
+        ))}
       </div>
 
-      {/* Filters */}
-      <div className="flex space-x-4">
-        <select
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value)}
-          className="bg-dark-8 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
-        >
-          <option value="all">All Time</option>
-          <option value="today">Today</option>
-          <option value="week">This Week</option>
-          <option value="month">This Month</option>
-          <option value="year">This Year</option>
-        </select>
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
-          className="bg-dark-8 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
-        >
-          <option value="all">All Types</option>
-          <option value="earning">Earnings</option>
-          <option value="payout">Payouts</option>
-        </select>
-      </div>
-
-      {/* Transactions Table */}
-      <div className="bg-dark-8 rounded-lg overflow-hidden">
+      {/* Eligible Video Breakdown */}
+      <div className="bg-dark-10 rounded-lg border border-dark-20">
+        <div className="px-4 py-3 border-b border-dark-20">
+          <h3 className="text-white font-semibold text-sm">Paid/Rent Video Breakdown</h3>
+          <p className="text-grey-70 text-xs">Only these videos contribute to earnings</p>
+        </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <tr key={headerGroup.id} className="border-b border-gray-800">
-                  {headerGroup.headers.map(header => (
-                    <th key={header.id} className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </th>
-                  ))}
+          {loadingEarnings ? (
+            <div className="p-6 space-y-2">
+              {[1, 2, 3].map((i) => <div key={i} className="h-8 bg-dark-20 rounded animate-pulse" />)}
+            </div>
+          ) : !e?.breakdown?.length ? (
+            <div className="text-center py-10 text-grey-70">
+              <LockClosedIcon className="h-8 w-8 mx-auto mb-2 opacity-30" />
+              <p className="text-sm">No paid/rent videos yet. Upload a paid or rent video to start earning.</p>
+            </div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-800">
+                  <th className="px-4 py-2 text-left text-xs text-grey-70 uppercase">Video</th>
+                  <th className="px-4 py-2 text-left text-xs text-grey-70 uppercase">Type</th>
+                  <th className="px-4 py-2 text-left text-xs text-grey-70 uppercase">Watch Time</th>
+                  <th className="px-4 py-2 text-left text-xs text-grey-70 uppercase">Earnings</th>
                 </tr>
-              ))}
-            </thead>
-            <tbody>
-              {table.getRowModel().rows.map(row => (
-                <tr key={row.id} className="border-b border-gray-800 hover:bg-gray-800/50">
-                  {row.getVisibleCells().map(cell => (
-                    <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </thead>
+              <tbody>
+                {e.breakdown.map((v: any) => (
+                  <tr key={String(v.videoId)} className="border-b border-gray-800/50 hover:bg-gray-800/20">
+                    <td className="px-4 py-3 text-white font-medium">{v.title}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-0.5 rounded text-xs ${v.monetizationType === 'rent' ? 'bg-orange-900 text-orange-300' : 'bg-blue-900 text-blue-300'}`}>
+                        {v.monetizationType}
+                      </span>
                     </td>
+                    <td className="px-4 py-3 text-grey-70">{v.watchMinutes.toFixed(1)} min</td>
+                    <td className="px-4 py-3 text-green-400 font-semibold">
+                      {fmt(v.watchMinutes * (e.ratePerMinute ?? 0))}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* Not Eligible */}
+        {!!e?.notEligible?.length && (
+          <div className="border-t border-dark-20">
+            <div className="px-4 py-2 bg-dark-8">
+              <p className="text-grey-60 text-xs uppercase tracking-wide">Not Eligible (Free videos)</p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm opacity-50">
+                <tbody>
+                  {e.notEligible.map((v: any) => (
+                    <tr key={String(v.videoId)} className="border-b border-gray-800/30">
+                      <td className="px-4 py-2 text-grey-70">{v.title}</td>
+                      <td className="px-4 py-2">
+                        <span className="px-2 py-0.5 rounded text-xs bg-gray-800 text-gray-400">free</span>
+                      </td>
+                      <td className="px-4 py-2 text-grey-70">{v.watchMinutes.toFixed(1)} min</td>
+                      <td className="px-4 py-2 text-grey-60">₹0.00</td>
+                    </tr>
                   ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        
-        {/* Pagination */}
-        <div className="px-6 py-3 flex items-center justify-between border-t border-gray-800">
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              className="p-1 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            <button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-              className="p-1 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
-            <span className="text-sm text-gray-400">
-              Page {table.getState().pagination.pageIndex + 1} of{' '}
-              {table.getPageCount()}
-            </span>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <select
-            value={table.getState().pagination.pageSize}
-            onChange={e => {
-              table.setPageSize(Number(e.target.value));
-            }}
-            className="bg-gray-800 text-white border border-gray-700 rounded-lg px-2 py-1 text-sm"
-          >
-            {[10, 20, 30, 40, 50].map(pageSize => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
-        </div>
+        )}
       </div>
 
-      {/* Payout Request Dialog */}
-      {showPayoutDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-dark-8 rounded-lg p-6 max-w-md w-full">
-            <div className="flex justify-between items-center mb-6">
+      {/* Request History */}
+      <div className="bg-dark-10 rounded-lg border border-dark-20">
+        <div className="px-4 py-3 border-b border-dark-20 flex items-center justify-between">
+          <h3 className="text-white font-semibold text-sm">My Payout Requests</h3>
+          <span className="text-grey-70 text-xs">{myRequests?.total ?? 0} total</span>
+        </div>
+        <div className="overflow-x-auto">
+          {loadingRequests ? (
+            <div className="p-6 space-y-2">
+              {[1, 2].map((i) => <div key={i} className="h-8 bg-dark-20 rounded animate-pulse" />)}
+            </div>
+          ) : !myRequests?.requests?.length ? (
+            <div className="text-center py-8 text-grey-70 text-sm">No requests yet.</div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-800">
+                  {['Requested', 'Period', 'Watch Time', 'Amount', 'Method', 'Status', 'Note'].map((h) => (
+                    <th key={h} className="px-4 py-2 text-left text-xs text-grey-70 uppercase">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {myRequests.requests.map((r: any) => (
+                  <tr key={r._id} className="border-b border-gray-800/50 hover:bg-gray-800/20">
+                    <td className="px-4 py-3 text-grey-70 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-grey-70 text-xs">
+                      {new Date(r.periodStart).toLocaleDateString()} – {new Date(r.periodEnd).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 text-grey-70">{r.totalWatchMinutes.toFixed(1)} min</td>
+                    <td className="px-4 py-3 text-white font-semibold">₹{r.totalAmount.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-grey-70 capitalize">{r.paymentMethod}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-0.5 rounded text-xs ${STATUS_COLORS[r.status]}`}>
+                        {r.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-grey-60 text-xs max-w-[160px] truncate">{r.adminNote || '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+        {/* Pagination */}
+        {(myRequests?.totalPages ?? 1) > 1 && (
+          <div className="px-4 py-3 flex justify-end gap-2 border-t border-dark-20">
+            <button onClick={() => setMyRequestsPage((p) => Math.max(1, p - 1))} disabled={myRequestsPage === 1}
+              className="px-3 py-1 text-sm text-grey-70 hover:text-white disabled:opacity-40 bg-dark-15 rounded">← Prev</button>
+            <button onClick={() => setMyRequestsPage((p) => Math.min(myRequests?.totalPages, p + 1))} disabled={myRequestsPage >= myRequests?.totalPages}
+              className="px-3 py-1 text-sm text-grey-70 hover:text-white disabled:opacity-40 bg-dark-15 rounded">Next →</button>
+          </div>
+        )}
+      </div>
+
+      {/* Request Payout Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-8 rounded-xl p-6 max-w-md w-full border border-dark-20">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-white">Request Payout</h2>
-              <button
-                onClick={() => {
-                  setShowPayoutDialog(false);
-                  resetPayoutForm();
-                }}
-                className="text-grey-70 hover:text-white"
-              >
-                <XMarkIcon className="h-6 w-6" />
-              </button>
+              <button onClick={() => setShowModal(false)} className="text-grey-70 hover:text-white">✕</button>
             </div>
 
-            <div className="space-y-4">
+            <div className="bg-dark-10 rounded-lg p-3 mb-4 border border-dark-20 flex justify-between">
               <div>
-                <label className="block text-grey-70 mb-2">Payout Method</label>
-                <select
-                  name="method"
-                  value={payoutData.method}
-                  onChange={handleInputChange}
-                  className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
-                >
-                  <option value="bank">Bank Transfer</option>
-                  <option value="upi">UPI</option>
-                </select>
+                <p className="text-xs text-grey-70">You will receive</p>
+                <p className="text-2xl font-bold text-green-400">{fmt(e?.totalAmount)}</p>
               </div>
-
-              <div>
-                <label className="block text-grey-70 mb-2">Amount</label>
-                <div className="relative">
-                  <span className="absolute left-3 top-2 text-grey-70">$</span>
-                  <input
-                    type="number"
-                    name="amount"
-                    value={payoutData.amount}
-                    onChange={handleInputChange}
-                    placeholder="0.00"
-                    className="w-full bg-dark-10 text-white pl-8 pr-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
-                    min="0"
-                    step="0.01"
-                  />
-                </div>
-                <p className="text-grey-70 text-sm mt-1">Available balance: ${availableBalance.toFixed(2)}</p>
-              </div>
-
-              {payoutData.method === 'bank' ? (
-                <>
-                  <div>
-                    <label className="block text-grey-70 mb-2">Account Holder Name</label>
-                    <input
-                      type="text"
-                      name="accountName"
-                      value={payoutData.accountName}
-                      onChange={handleInputChange}
-                      className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
-                      placeholder="Enter account holder name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-grey-70 mb-2">Account Number</label>
-                    <input
-                      type="text"
-                      name="accountNumber"
-                      value={payoutData.accountNumber}
-                      onChange={handleInputChange}
-                      className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
-                      placeholder="Enter account number"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-grey-70 mb-2">Bank Name</label>
-                    <input
-                      type="text"
-                      name="bankName"
-                      value={payoutData.bankName}
-                      onChange={handleInputChange}
-                      className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
-                      placeholder="Enter bank name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-grey-70 mb-2">SWIFT/BIC Code</label>
-                    <input
-                      type="text"
-                      name="swiftCode"
-                      value={payoutData.swiftCode}
-                      onChange={handleInputChange}
-                      className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
-                      placeholder="Enter SWIFT/BIC code"
-                    />
-                  </div>
-                </>
-              ) : (
-                <div>
-                  <label className="block text-grey-70 mb-2">UPI ID</label>
-                  <input
-                    type="text"
-                    name="upiId"
-                    value={payoutData.upiId}
-                    onChange={handleInputChange}
-                    className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
-                    placeholder="Enter UPI ID (e.g., username@upi)"
-                  />
-                  <p className="text-grey-70 text-sm mt-1">Enter your UPI ID in the format: username@upi</p>
-                </div>
-              )}
-
-              {error && (
-                <p className="text-red-500 text-sm">{error}</p>
-              )}
-
-              <div className="flex justify-end space-x-3 mt-6">
-                <button
-                  onClick={() => {
-                    setShowPayoutDialog(false);
-                    resetPayoutForm();
-                  }}
-                  className="px-4 py-2 text-grey-70 hover:text-white"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handlePayoutSubmit}
-                  className="bg-red-45 text-white px-6 py-2 rounded-lg hover:bg-red-60"
-                >
-                  Submit Request
-                </button>
+              <div className="text-right">
+                <p className="text-xs text-grey-70">Watch time</p>
+                <p className="text-white font-semibold">{e?.totalWatchMinutes?.toFixed(1)} min</p>
               </div>
             </div>
+
+            <Formik
+              initialValues={{ paymentMethod: 'bank', paymentDetails: '' }}
+              validationSchema={payoutSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ values, errors, touched, isSubmitting }) => (
+                <Form className="space-y-4">
+                  <div>
+                    <label className="text-grey-70 text-sm mb-1 block">Payment Method</label>
+                    <Field as="select" name="paymentMethod"
+                      className="w-full bg-dark-10 text-white px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45">
+                      <option value="bank">Bank Transfer</option>
+                      <option value="upi">UPI</option>
+                    </Field>
+                  </div>
+                  <div>
+                    <label className="text-grey-70 text-sm mb-1 block">
+                      {values.paymentMethod === 'upi' ? 'UPI ID' : 'Account Details (Bank, A/C No, IFSC)'}
+                    </label>
+                    <Field as="textarea" name="paymentDetails" rows={3}
+                      placeholder={values.paymentMethod === 'upi' ? 'username@upi' : 'Bank name, Account number, IFSC code...'}
+                      className="w-full bg-dark-10 text-white px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                    {errors.paymentDetails && touched.paymentDetails && (
+                      <p className="text-red-400 text-xs mt-1">{errors.paymentDetails}</p>
+                    )}
+                  </div>
+                  <div className="flex space-x-3 pt-1">
+                    <button type="button" onClick={() => setShowModal(false)}
+                      className="flex-1 bg-dark-15 text-grey-70 px-4 py-2 rounded-lg text-sm hover:text-white">Cancel</button>
+                    <button type="submit" disabled={isSubmitting}
+                      className="flex-1 bg-red-45 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-60 disabled:opacity-60">
+                      {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       )}
     </div>
   );
-} 
+}

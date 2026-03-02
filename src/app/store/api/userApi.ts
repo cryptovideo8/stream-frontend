@@ -67,7 +67,9 @@ export interface PaginatedUserResponse {
   total: number;
   page: number;
   limit: number;
+  totalPages: number;
 }
+
 
 
 
@@ -123,7 +125,7 @@ export const userApi = baseApi.injectEndpoints({
     }),
 
   }),
-  
+
 });
 
 export const {

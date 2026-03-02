@@ -8,6 +8,51 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      boxShadow: {
+        'glow-red': '0 0 20px rgba(227,0,0,0.35), 0 0 40px rgba(227,0,0,0.15)',
+        'glow-sm': '0 0 12px rgba(227,0,0,0.2)',
+        'card': '0 4px 24px rgba(0,0,0,0.4)',
+        'header': '0 1px 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.5)',
+      },
+      backgroundImage: {
+        'gradient-red': 'linear-gradient(135deg, #E30000 0%, #FF3333 100%)',
+        'gradient-dark': 'linear-gradient(180deg, #1A1A1A 0%, #0F0F0F 100%)',
+        'gradient-card': 'linear-gradient(135deg, #1F1F1F 0%, #1A1A1A 100%)',
+        'gradient-hero': 'linear-gradient(to right, rgba(15,15,15,0.98), rgba(15,15,15,0.3))',
+      },
+      animation: {
+        'shimmer': 'shimmer 2s infinite linear',
+        'fade-in': 'fadeIn 0.25s ease-out',
+        'slide-up': 'slideUp 0.3s ease-out',
+        'scale-in': 'scaleIn 0.2s ease-out',
+        'glow-pulse': 'glowPulse 2s ease-in-out infinite',
+        'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+      },
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '-700px 0' },
+          '100%': { backgroundPosition: '700px 0' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        glowPulse: {
+          '0%, 100%': { boxShadow: '0 0 8px rgba(227,0,0,0.4)' },
+          '50%': { boxShadow: '0 0 20px rgba(227,0,0,0.7)' },
+        },
+      },
       colors: {
         // Absolute Colors
         white: '#FFFFFF',

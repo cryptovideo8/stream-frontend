@@ -1,31 +1,47 @@
-"use client";
+'use client';
 
-import { useRef, useState, useEffect } from "react";
-import { HandThumbUpIcon, HandThumbDownIcon, HeartIcon, ChatBubbleLeftIcon, ShareIcon, DocumentTextIcon, FlagIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useToggleLikeMutation, useGetLikesQuery, useAddViewMutation, useGetCommentsQuery, useCreateCommentMutation, useToggleLikeDislikeMutation, useGetDislikesQuery } from "../store/api/interactionApi";
-import { toast } from "react-hot-toast";
-import { log } from "node:console";
+import { useRef, useState, useEffect } from 'react';
+import {
+  HandThumbUpIcon,
+  HandThumbDownIcon,
+  ChatBubbleLeftIcon,
+  ShareIcon,
+  ChevronDownIcon,
+  XMarkIcon,
+  LinkIcon,
+} from '@heroicons/react/24/outline';
+import {
+  useToggleLikeDislikeMutation,
+  useGetLikesQuery,
+  useGetDislikesQuery,
+  useAddViewMutation,
+  useGetCommentsQuery,
+  useCreateCommentMutation,
+} from '../store/api/interactionApi';
+import { toast } from 'react-hot-toast';
 
 interface VideoPlayerProps {
   data: any;
 }
 
-// console.log("vvvvideo data", data);
+function formatCount(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+  return String(n);
+}
 
 export default function VideoPlayer({ data }: VideoPlayerProps) {
-
-  console.log("vvvvideo data", data);
   const videoRef = useRef<HTMLIFrameElement>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const [localLikesCount, setLocalLikesCount] = useState(0);
   const [localDislikesCount, setLocalDislikesCount] = useState(0);
-  const [showCommentModal, setShowCommentModal] = useState(false);
-  const [commentText, setCommentText] = useState("");
+  const [showComments, setShowComments] = useState(false);
+  const [commentText, setCommentText] = useState('');
   const [localCommentsCount, setLocalCommentsCount] = useState(0);
-  const [showCommentsList, setShowCommentsList] = useState(false);
+  const [sharePopup, setSharePopup] = useState(false);
+  const [descExpanded, setDescExpanded] = useState(false);
 
-  // Interaction API hooks
   const [toggleLikeDislike] = useToggleLikeDislikeMutation();
   const { data: likesData, refetch: refetchLikes } = useGetLikesQuery(data?._id);
   const { data: dislikesData, refetch: refetchDislikes } = useGetDislikesQuery(data?._id);
@@ -33,7 +49,6 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
   const { data: commentsData, refetch: refetchComments } = useGetCommentsQuery(data?._id);
   const [createComment] = useCreateCommentMutation();
 
-  // Initialize likes count from API data
   useEffect(() => {
     setLocalLikesCount(likesData?.count || 0);
     setIsLiked(likesData?.likedByCurrentUser || false);
@@ -44,244 +59,231 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
     setIsDisliked(dislikesData?.dislikedByCurrentUser || false);
   }, [dislikesData]);
 
-  // Initialize comments count
   useEffect(() => {
-    if (commentsData?.length !== undefined) {
-      setLocalCommentsCount(commentsData.length);
-    } else if (data?.stats?.comments !== undefined) {
-      setLocalCommentsCount(data.stats.comments);
-    }
+    if (commentsData?.length !== undefined) setLocalCommentsCount(commentsData.length);
+    else if (data?.stats?.comments !== undefined) setLocalCommentsCount(data.stats.comments);
   }, [commentsData?.length, data?.stats?.comments]);
 
-  // Handle comment submission
-  const handleCommentSubmit = async () => {
-    try {
-      if (!commentText.trim() || !data?._id) return;
-
-      setLocalCommentsCount(prev => prev + 1);
-
-      await createComment({
-        videoId: data._id,
-        text: commentText.trim()
-      }).unwrap();
-
-      // Refetch comments after posting
-      refetchComments();
-
-      setCommentText("");
-      setShowCommentModal(false);
-      toast.success('Comment posted successfully');
-    } catch (error) {
-      setLocalCommentsCount(prev => prev - 1);
-      toast.error('Failed to post comment');
-    }
-  };
-
-  // Handle like/dislike
   const handleLike = async () => {
     if (!data?._id) return;
     try {
       await toggleLikeDislike({ videoId: data._id, isLiked: true }).unwrap();
-      refetchLikes();
-      refetchDislikes();
-    } catch (error) {
-      toast.error("Failed to update like");
-    }
+      refetchLikes(); refetchDislikes();
+    } catch { toast.error('Failed to update like'); }
   };
 
   const handleDislike = async () => {
     if (!data?._id) return;
     try {
       await toggleLikeDislike({ videoId: data._id, isLiked: false }).unwrap();
-      refetchLikes();
-      refetchDislikes();
-    } catch (error) {
-      toast.error("Failed to update dislike");
-    }
+      refetchLikes(); refetchDislikes();
+    } catch { toast.error('Failed to update dislike'); }
   };
 
-  // Handle share
   const handleShare = async () => {
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: data?.title,
-          text: `Check out this video: ${data?.title}`,
-          url: window.location.href,
-        });
-      } else {
-        // Fallback for browsers that don't support Web Share API
-        navigator.clipboard.writeText(window.location.href);
-        toast.success('Link copied to clipboard!');
-      }
-    } catch (error) {
-      toast.error('Failed to share video');
-    }
+    setSharePopup(true);
   };
 
-  // Add view when video is loaded
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success('Link copied!');
+    setSharePopup(false);
+  };
+
   const handleVideoLoad = () => {
-    if (data?._id) {
-      addView(data._id);
+    if (data?._id) addView(data._id);
+  };
+
+  const handleCommentSubmit = async () => {
+    if (!commentText.trim() || !data?._id) return;
+    setLocalCommentsCount(p => p + 1);
+    try {
+      await createComment({ videoId: data._id, text: commentText.trim() }).unwrap();
+      refetchComments();
+      setCommentText('');
+      toast.success('Comment posted!');
+    } catch {
+      setLocalCommentsCount(p => p - 1);
+      toast.error('Failed to post comment');
     }
   };
 
   return (
     <div className="space-y-4">
-      {/* Video Container */}
-      <div className="relative bg-black rounded-lg overflow-hidden">
-        <div style={{ position: "relative", paddingTop: "56.25%" }}>
+      {/* ── Video Player ──────────────────────────────── */}
+      <div className="relative bg-black rounded-xl overflow-hidden shadow-2xl">
+        <div style={{ position: 'relative', paddingTop: '56.25%' }}>
           <iframe
             ref={videoRef}
-            // src={'https://iframe.mediadelivery.net/embed/427082/2c6d2fdb-2784-4df6-956f-cf07147773a4?token=63a0cf1af459e7e4bfb2d5eacdea3500c036340aa2d5d3f81eb05baf6625a8e4&expires=1747560667&autoplay=false'}
-
-            // src = 'https://iframe.mediadelivery.net/embed/427082/2c6d2fdb-2784-4df6-956f-cf07147773a4?token=a41add2a805c68de81155642c928d8d26f83da9046a5f8a042ceab2f0ee0e451&expires=1747563875&autoplay=false'
-            src = {data?.src}
+            src={data?.src}
             loading="lazy"
-            style={{ border: "0", position: "absolute", top: "0", height: "100%", width: "100%" }}
+            style={{ border: '0', position: 'absolute', top: '0', height: '100%', width: '100%' }}
             allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
-            allowFullScreen={true}
+            allowFullScreen
             onLoad={handleVideoLoad}
           />
         </div>
       </div>
 
-      {/* Video Interaction Buttons */}
-      <div className="flex flex-wrap items-center gap-4">
-        {/* Like/Dislike */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleLike}
-            className={`flex items-center gap-2 ${isLiked ? 'bg-red-500' : 'bg-[#1a1f25] hover:bg-[#252b33]'} px-4 py-2 rounded-l-full`}
-          >
-            <HandThumbUpIcon className="w-6 h-6" />
-            <span>{localLikesCount}</span>
-          </button>
-          <button
-            onClick={handleDislike}
-            className={`flex items-center gap-2 ${isDisliked ? 'bg-blue-500' : 'bg-[#1a1f25] hover:bg-[#252b33]'} px-4 py-2 rounded-r-full`}
-          >
-            <HandThumbDownIcon className="w-6 h-6" />
-            <span>{localDislikesCount}</span>
-          </button>
-        </div>
+      {/* ── Video Info ────────────────────────────────── */}
+      <div className="space-y-3">
+        {/* Title */}
+        <h1 className="text-lg sm:text-xl font-bold text-white leading-snug">
+          {data?.title || 'Untitled Video'}
+        </h1>
 
-        {/* Favorite */}
-        {/* <button className="flex items-center gap-2 bg-[#1a1f25] hover:bg-[#252b33] px-4 py-2 rounded-full">
-          <HeartIcon className="w-6 h-6" />
-          <span className="text-[15px]">Favorite</span>
-        </button> */}
+        {/* Interaction Row */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-dark-20/30">
+          {/* Left: stats */}
+          <div className="flex items-center gap-2 text-sm text-grey-60">
+            <span>{(data?.stats?.views || 0).toLocaleString()} views</span>
+            {data?.createdAt && (
+              <>
+                <span>•</span>
+                <span>{new Date(data.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              </>
+            )}
+          </div>
 
-        {/* Comments */}
-        <button
-          onClick={() => setShowCommentModal(true)}
-          className="flex items-center gap-2 bg-[#1a1f25] hover:bg-[#252b33] px-4 py-2 rounded-full"
-        >
-          <ChatBubbleLeftIcon className="w-6 h-6" />
-          <span className="text-[15px]">{localCommentsCount}</span>
-        </button>
-
-        {/* Show Comments Button */}
-        <button
-          onClick={() => setShowCommentsList(true)}
-          className="flex items-center gap-2 bg-[#1a1f25] hover:bg-[#252b33] px-4 py-2 rounded-full"
-        >
-          Show Comments
-        </button>
-
-        {/* Share */}
-        <button
-          onClick={handleShare}
-          className="flex items-center gap-2 bg-[#1a1f25] hover:bg-[#252b33] px-4 py-2 rounded-full"
-        >
-          <ShareIcon className="w-6 h-6" />
-          <span className="text-[15px]">Share</span>
-        </button>
-
-        <div className="h-6 w-px bg-gray-700 mx-2" />
-
-        {/* About */}
-        {/* <button className="flex items-center gap-2 bg-[#1a1f25] hover:bg-[#252b33] px-4 py-2 rounded-full">
-          <DocumentTextIcon className="w-6 h-6" />
-          <span className="text-[15px]">About</span>
-        </button> */}
-
-        {/* Flag */}
-        {/* <button className="flex items-center gap-2 bg-[#1a1f25] hover:bg-[#252b33] px-4 py-2 rounded-full">
-          <FlagIcon className="w-6 h-6" />
-        </button> */}
-        {data?.title}
-      </div>
-
-      {/* Comment Modal */}
-      {showCommentModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1a1f25] rounded-lg p-6 w-full max-w-lg mx-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold text-white">Comments</h3>
+          {/* Right: action buttons */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Like / Dislike pill */}
+            <div className="flex items-center rounded-full overflow-hidden border border-dark-25" style={{ background: '#1a1a1a' }}>
               <button
-                onClick={() => setShowCommentModal(false)}
-                className="text-gray-400 hover:text-white"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
-
-            {/* Comment Input */}
-            <div className="mb-4">
-              <textarea
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                placeholder="Add a comment..."
-                className="w-full bg-[#252b33] text-white rounded-lg p-3 min-h-[100px] resize-none focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-
-
-
-            {/* Post Button */}
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={handleCommentSubmit}
-                disabled={!commentText.trim()}
-                className={`px-4 py-2 rounded-lg ${commentText.trim()
-                    ? 'bg-red-500 hover:bg-red-600 text-white'
-                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                onClick={handleLike}
+                className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-200 ${isLiked ? 'text-red-45 bg-red-45/10' : 'text-grey-70 hover:text-white hover:bg-white/5'
                   }`}
               >
-                Post Comment
+                <HandThumbUpIcon className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
+                <span>{formatCount(localLikesCount)}</span>
               </button>
+              <div className="w-px h-6 bg-dark-25" />
+              <button
+                onClick={handleDislike}
+                className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-200 ${isDisliked ? 'text-blue-400 bg-blue-400/10' : 'text-grey-70 hover:text-white hover:bg-white/5'
+                  }`}
+              >
+                <HandThumbDownIcon className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
+                <span>{formatCount(localDislikesCount)}</span>
+              </button>
+            </div>
+
+            {/* Comments */}
+            <button
+              onClick={() => setShowComments(!showComments)}
+              className={`btn-icon ${showComments ? 'btn-icon-active' : ''}`}
+            >
+              <ChatBubbleLeftIcon className="w-4 h-4" />
+              <span>{formatCount(localCommentsCount)}</span>
+            </button>
+
+            {/* Share */}
+            <div className="relative">
+              <button onClick={handleShare} className="btn-icon">
+                <ShareIcon className="w-4 h-4" />
+                <span>Share</span>
+              </button>
+              {sharePopup && (
+                <div
+                  className="absolute right-0 mt-2 rounded-xl p-4 w-72 z-50 animate-scale-in"
+                  style={{ background: 'rgba(20,20,20,0.95)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-semibold text-white">Share video</span>
+                    <button onClick={() => setSharePopup(false)} className="text-grey-60 hover:text-white">
+                      <XMarkIcon className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 rounded-lg mb-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <span className="text-xs text-grey-60 flex-1 truncate">{typeof window !== 'undefined' ? window.location.href : ''}</span>
+                    <button onClick={copyLink} className="text-xs text-red-45 hover:text-red-55 font-medium flex items-center gap-1">
+                      <LinkIcon className="w-3.5 h-3.5" /> Copy
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      )}
 
-      {/* Show Comments Modal */}
-      {showCommentsList && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1a1f25] rounded-lg p-6 w-full max-w-lg mx-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold text-white">All Comments</h3>
+        {/* Description */}
+        {data?.description && (
+          <div className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <p className={`text-sm text-grey-70 leading-relaxed ${!descExpanded ? 'line-clamp-3' : ''}`}>
+              {data.description}
+            </p>
+            {data.description.length > 200 && (
               <button
-                onClick={() => setShowCommentsList(false)}
-                className="text-gray-400 hover:text-white"
+                onClick={() => setDescExpanded(!descExpanded)}
+                className="text-xs text-grey-60 hover:text-white mt-2 flex items-center gap-1 transition-colors"
               >
-                <XMarkIcon className="w-6 h-6" />
+                {descExpanded ? 'Show less' : 'Show more'}
+                <ChevronDownIcon className={`w-3.5 h-3.5 transition-transform ${descExpanded ? 'rotate-180' : ''}`} />
               </button>
-            </div>
-            <div className="space-y-4 max-h-[300px] overflow-y-auto">
-              {commentsData?.length ? commentsData.map((comment) => (
-                <div key={comment._id} className="bg-[#252b33] rounded-lg p-3">
-                  <div className="flex justify-between items-start mb-2">
-                    {/* <span className="text-white font-medium">{comment.userId || 'Anonymous'}</span> */}
-                    <span className="text-gray-400 text-sm">
-                      {comment.timestamp ? new Date(comment.timestamp).toLocaleDateString('en-US') : ''}
-                    </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ── Comments Section (Inline) ─────────────────── */}
+      {showComments && (
+        <div className="rounded-xl overflow-hidden animate-slide-up" style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-3" style={{ background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <h3 className="text-sm font-semibold text-white">Comments ({localCommentsCount})</h3>
+            <button onClick={() => setShowComments(false)} className="text-grey-60 hover:text-white transition-colors">
+              <XMarkIcon className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Comment Input */}
+          <div className="p-4" style={{ background: 'rgba(15,15,15,0.8)' }}>
+            <textarea
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Add a comment..."
+              rows={2}
+              className="w-full bg-dark-12 text-white text-sm rounded-xl p-3 resize-none border border-dark-25 focus:outline-none focus:border-red-45/60 placeholder-grey-60 transition-all"
+            />
+            {commentText.trim() && (
+              <div className="flex justify-end mt-2 gap-2">
+                <button onClick={() => setCommentText('')} className="btn-secondary text-sm px-3 py-1.5">Cancel</button>
+                <button onClick={handleCommentSubmit} className="px-4 py-1.5 bg-red-45 hover:bg-red-55 text-white text-sm font-medium rounded-lg transition-all">
+                  Post
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Comments List */}
+          <div className="divide-y max-h-[400px] overflow-y-auto" style={{ borderColor: 'rgba(255,255,255,0.05)', background: 'rgba(15,15,15,0.5)' }}>
+            {!commentsData?.length ? (
+              <div className="px-4 py-8 text-center">
+                <ChatBubbleLeftIcon className="w-8 h-8 text-grey-60 mx-auto mb-2" />
+                <p className="text-sm text-grey-60">No comments yet. Be the first!</p>
+              </div>
+            ) : (
+              commentsData.map((comment: any) => (
+                <div key={comment._id} className="px-4 py-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-7 h-7 rounded-full bg-dark-20 flex items-center justify-center flex-shrink-0 text-xs font-bold text-grey-70">
+                      {comment.userId?.charAt(0)?.toUpperCase() || 'A'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-medium text-white">{comment.userId || 'Anonymous'}</span>
+                        {comment.timestamp && (
+                          <span className="text-[11px] text-grey-60">
+                            {new Date(comment.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-grey-70 leading-relaxed">{comment.text}</p>
+                    </div>
                   </div>
-                  <p className="text-gray-300">{comment.text}</p>
                 </div>
-              )) : <p className="text-gray-400">No comments yet.</p>}
-            </div>
+              ))
+            )}
           </div>
         </div>
       )}

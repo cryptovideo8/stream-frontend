@@ -43,11 +43,14 @@ export default function WatchPage() {
 
   console.log("mainGridVideos", gridVideos);
   console.log("sidebarVideos", sidebarVideos);
-  
+
   if (isLoading) return <div className="p-6 text-primary">Loading video...</div>;
   if (isError) {
-    // Check if the error is unauthorized
-    if ('status' in (error as FetchBaseQueryError) && (error as FetchBaseQueryError).status === 401) {
+    // Check if the error is unauthorized (401) or forbidden/payment required (403)
+    const isAuthError = 'status' in (error as FetchBaseQueryError) &&
+      ((error as FetchBaseQueryError).status === 401 || (error as FetchBaseQueryError).status === 403);
+
+    if (isAuthError) {
       return (
         <div className="px-2 sm:px-4 md:px-6 py-6">
           <div>
@@ -62,7 +65,7 @@ export default function WatchPage() {
                       {!isAuthenticated ? (
                         <>
                           <p className="text-white mb-6">Please sign in to access this premium content</p>
-                          <button 
+                          <button
                             onClick={() => router.push('/login')}
                             className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
                           >
@@ -71,8 +74,8 @@ export default function WatchPage() {
                         </>
                       ) : (
                         <>
-                          <p className="text-white mb-6">Please subscribe to watch this premium content</p>
-                          <button 
+                          <p className="text-white mb-6">Please subscribe to a plan to watch this premium content</p>
+                          <button
                             onClick={() => router.push('/subscriptions')}
                             className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
                           >
@@ -205,14 +208,14 @@ export default function WatchPage() {
     }
     return <div className="p-6 text-red-500">Failed to load video details.</div>;
   }
-  
+
   return (
     <div className="px-2 sm:px-4 md:px-6 py-6">
       <div>
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main Content */}
           <div className="flex-1 min-w-0">
-            <VideoPlayer data={videoData}/>
+            <VideoPlayer data={videoData} />
 
             {/* Related Videos Grid */}
             <div
