@@ -143,9 +143,24 @@ export default function LoginPage() {
         </form>
 
         {/* Creator Callout */}
-        <div className="mt-6 p-4 rounded-2xl bg-gradient-to-r from-red-45/10 to-transparent border border-red-45/20 text-center animate-fade-in group hover:border-red-45/40 transition-all cursor-pointer" onClick={() => router.push('/signup')}>
-           <p className="text-xs font-bold text-red-45 uppercase tracking-widest mb-1">Want to share your content?</p>
-           <h3 className="text-white font-bold text-sm">Join as a <span className="text-red-45">Creator</span> and start uploading videos today!</h3>
+        <div 
+          className="mt-6 p-5 rounded-2xl bg-gradient-to-br from-red-45/20 via-red-45/5 to-transparent border border-red-45/30 text-center animate-fade-in group hover:border-red-45/60 transition-all cursor-pointer shadow-lg hover:shadow-red-45/5" 
+          onClick={() => router.push('/signup?role=creator')}
+        >
+           <div className="flex justify-center mb-3">
+             <div className="w-10 h-10 rounded-full bg-red-45/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+               <svg className="w-5 h-5 text-red-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+               </svg>
+             </div>
+           </div>
+           <p className="text-[10px] font-black text-red-45 uppercase tracking-[0.2em] mb-1">Upload & Earn</p>
+           <h3 className="text-white font-bold text-base mb-1">Become a <span className="text-red-45 italic">Creator</span></h3>
+           <p className="text-grey-70 text-xs">Share your videos with our community and start building your audience today!</p>
+           
+           <div className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-red-45 group-hover:gap-3 transition-all">
+             Register Now <span className="text-lg">→</span>
+           </div>
         </div>
       </div>
     </div>

@@ -133,6 +133,7 @@ export default function SelectWithSearch({
             '& input': {
                 outline: 'none !important',
                 boxShadow: 'none !important',
+                border: 'none !important',
             }
         }),
         placeholder: (base: any) => ({
