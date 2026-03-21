@@ -31,11 +31,40 @@ interface GetRelatedVideosParams {
 /** GET /video/related/:id — matches by Mongo _id or Bunny videoId */
 export interface GetRelatedVideosResponse {
   success?: boolean;
-  videos: any[];
+  videos: Record<string, unknown>[];
   relatedCount?: number;
   page?: number;
   totalPages?: number;
   total?: number;
+}
+
+/** GET /video/:id — watch page payload */
+export interface VideoDetail {
+  _id: string;
+  title?: string;
+  description?: string;
+  src?: string;
+  createdAt?: string;
+  creatorId?: {
+    _id: string;
+    username?: string;
+    name?: string;
+    profileImage?: string;
+    email?: string;
+  };
+  stats?: {
+    views?: number;
+    comments?: number;
+    likes?: number;
+    disLikes?: number;
+    watchTime?: number;
+  };
+  monetization?: {
+    type?: string;
+    price?: number;
+    currency?: string;
+  };
+  duration?: number;
 }
 interface GetLikedVideosParams {
   page?: number;
@@ -107,8 +136,9 @@ export const videoApi = baseApi.injectEndpoints({
       }),
     }),
 
-    getVideoById: builder.query<any, string>({
+    getVideoById: builder.query<VideoDetail, string>({
       query: (id) => `/video/${id}`,
+      providesTags: (result, error, id) => [{ type: 'Video' as const, id }],
     }),
 
     getRelatedVideos: builder.query<GetRelatedVideosResponse, GetRelatedVideosParams>({
@@ -132,7 +162,7 @@ export const videoApi = baseApi.injectEndpoints({
 
 
 
-    updateVideo: builder.mutation<any, { id: string; data: FormData | Record<string, any> }>({
+    updateVideo: builder.mutation<unknown, { id: string; data: FormData | Record<string, unknown> }>({
       query: ({ id, data }) => ({
         url: `/video/${id}`,
         method: 'PUT',

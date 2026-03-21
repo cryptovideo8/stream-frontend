@@ -21,7 +21,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   api,
   extraOptions
 ) => {
-  let result = await baseQuery(args, api, extraOptions);
+  const result = await baseQuery(args, api, extraOptions);
 
   // 401 = authentication failure (bad/missing/expired token) → clear session.
   // 403 = forbidden (wrong role, etc.) → do not log the user out; backend uses 403 for that.
@@ -40,5 +40,14 @@ export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}), // We'll add endpoints in separate files
-  tagTypes: ['Plans', 'Promos', 'MySubscription', 'SubscriptionHistory', 'AdminSubscriptions', 'AdminSubscriptionStats'], // Add tag types for cache invalidation
+  tagTypes: [
+    'Plans',
+    'Promos',
+    'MySubscription',
+    'SubscriptionHistory',
+    'AdminSubscriptions',
+    'AdminSubscriptionStats',
+    'Video',
+    'VideoInteraction',
+  ],
 }) 

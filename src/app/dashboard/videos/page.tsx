@@ -75,6 +75,7 @@ export default function VideoManagement() {
   const [isSocketConnected, setIsSocketConnected] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [activatingId, setActivatingId] = useState<string | null>(null);
 
   useEffect(() => {
     refetch();
@@ -260,6 +261,29 @@ export default function VideoManagement() {
     }
   };
 
+  const handleActivateVideo = async (row: any) => {
+    const mongoId = row._id || row.id;
+    if (!mongoId) {
+      toast.error('Video id missing');
+      return;
+    }
+    if (!confirm('Activate this video?')) return;
+
+    try {
+      setActivatingId(String(mongoId));
+      await updateVideo({
+        id: mongoId,
+        data: { isActive: true },
+      }).unwrap();
+      toast.success('Video activated successfully');
+      refetch();
+    } catch (err: any) {
+      toast.error(err?.data?.message || 'Failed to activate video');
+    } finally {
+      setActivatingId(null);
+    }
+  };
+
   const handleEditVideo = (video: any) => {
     setEditingVideo(video);
     setVideoData({
@@ -382,6 +406,23 @@ export default function VideoManagement() {
             >
               <PencilIcon className="h-4 w-4" />
             </button>
+            {row.isActive === false && (
+              <button
+                onClick={() => handleActivateVideo(row)}
+                disabled={activatingId === String(row._id || row.id)}
+                className={`p-1.5 rounded-lg hover:bg-gray-800 ${activatingId === String(row._id || row.id) ? 'cursor-not-allowed text-green-400' : 'text-gray-400 hover:text-green-500'}`}
+                title="Activate"
+              >
+                {activatingId === String(row._id || row.id) ? (
+                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                ) : (
+                  <CheckCircleIcon className="h-4 w-4" />
+                )}
+              </button>
+            )}
             <button
               onClick={() => handleDeleteVideo(row)}
               disabled={isDeleting}

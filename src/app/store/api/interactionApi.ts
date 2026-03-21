@@ -1,9 +1,17 @@
 import { baseApi } from './baseApi';
 
+/** Populated user from getComments */
+export interface CommentAuthor {
+  _id: string;
+  username?: string;
+  name?: string;
+  profileImage?: string;
+}
+
 export interface Comment {
   _id: string;
   videoId: string;
-  userId?: string;
+  userId?: string | CommentAuthor;
   text: string;
   timestamp: Date;
   ip: string;
@@ -12,10 +20,11 @@ export interface Comment {
 }
 
 export interface Reply {
-  fromUser: string;
+  fromUser: string | CommentAuthor;
   like: number;
   reply: string;
   ipAddress: string;
+  createdAt?: string | Date;
 }
 
 export interface View {
@@ -43,7 +52,7 @@ export const interactionApi = baseApi.injectEndpoints({
         url: `/interaction/videos/${videoId}/comments`,
         method: 'GET'
       }),
-      // providesTags: ['Comment']
+      providesTags: (result, error, videoId) => [{ type: 'VideoInteraction' as const, id: videoId }],
     }),
 
     createComment: builder.mutation<Comment, { videoId: string; text: string }>({
@@ -52,16 +61,19 @@ export const interactionApi = baseApi.injectEndpoints({
         method: 'POST',
         body: { videoId, text }
       }),
-      // invalidatesTags: ['Comment']
+      invalidatesTags: (result, error, { videoId }) => [
+        { type: 'VideoInteraction', id: videoId },
+        { type: 'Video', id: videoId },
+      ],
     }),
 
-    addReply: builder.mutation<Comment, { commentId: string; reply: string }>({
+    addReply: builder.mutation<Comment, { commentId: string; reply: string; videoId: string }>({
       query: ({ commentId, reply }) => ({
         url: `/interaction/comments/${commentId}/replies`,
         method: 'POST',
         body: { reply }
       }),
-      // invalidatesTags: ['Comment']
+      invalidatesTags: (result, error, { videoId }) => [{ type: 'VideoInteraction', id: videoId }],
     }),
 
     // View endpoints
@@ -70,7 +82,7 @@ export const interactionApi = baseApi.injectEndpoints({
         url: `/interaction/videos/${videoId}/views`,
         method: 'POST'
       }),
-      // invalidatesTags: ['View']
+      invalidatesTags: (result, error, videoId) => [{ type: 'Video' as const, id: videoId }],
     }),
 
     getViews: builder.query<{ count: number }, string>({
@@ -95,7 +107,7 @@ export const interactionApi = baseApi.injectEndpoints({
         url: `/interaction/videos/${videoId}/likes`,
         method: 'GET'
       }),
-      // providesTags: ['Like']
+      providesTags: (result, error, videoId) => [{ type: 'VideoInteraction' as const, id: videoId }],
     }),
 
     // Toggle like or dislike
@@ -108,7 +120,7 @@ export const interactionApi = baseApi.injectEndpoints({
         method: 'POST',
         body: { isLiked }
       }),
-      // invalidatesTags: ['Like']
+      invalidatesTags: (result, error, { videoId }) => [{ type: 'VideoInteraction', id: videoId }],
     }),
 
     // Get likes
@@ -132,7 +144,23 @@ export const interactionApi = baseApi.injectEndpoints({
         url: `/interaction/dislikes/${videoId}`,
         method: 'GET'
       }),
-      // providesTags: ['Dislike']
+      providesTags: (result, error, videoId) => [{ type: 'VideoInteraction' as const, id: videoId }],
+    }),
+
+    // Report endpoints
+    reportVideo: builder.mutation<
+      { message: string; reportId: string },
+      { videoId: string; reason: string; details?: string }
+    >({
+      query: ({ videoId, reason, details }) => ({
+        url: `/reports/videos/${videoId}`,
+        method: 'POST',
+        body: { reason, details: details || '' }
+      }),
+      invalidatesTags: (result, error, { videoId }) => [
+        { type: 'Video' as const, id: videoId },
+        { type: 'VideoInteraction' as const, id: videoId },
+      ],
     }),
   })
 });
@@ -146,5 +174,6 @@ export const {
   useToggleLikeMutation,
   useGetLikesQuery,
   useToggleLikeDislikeMutation,
-  useGetDislikesQuery
+  useGetDislikesQuery,
+  useReportVideoMutation
 } = interactionApi;

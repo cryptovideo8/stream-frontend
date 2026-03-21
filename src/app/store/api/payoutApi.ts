@@ -35,14 +35,25 @@ export const payoutApi = baseApi.injectEndpoints({
 
         adminGetAllPayoutRequests: builder.query<
             any,
-            { status?: string; creatorId?: string; from?: string; to?: string; page?: number; limit?: number }
+            {
+                status?: string;
+                creatorId?: string;
+                creatorEmail?: string;
+                from?: string;
+                to?: string;
+                minAmount?: string;
+                page?: number;
+                limit?: number;
+            }
         >({
-            query: ({ status, creatorId, from, to, page = 1, limit = 20 } = {}) => {
+            query: ({ status, creatorId, creatorEmail, from, to, minAmount, page = 1, limit = 20 } = {}) => {
                 const params = new URLSearchParams();
                 if (status) params.set('status', status);
                 if (creatorId) params.set('creatorId', creatorId);
+                if (creatorEmail) params.set('creatorEmail', creatorEmail);
                 if (from) params.set('from', from);
                 if (to) params.set('to', to);
+                if (minAmount !== undefined && minAmount !== '') params.set('minAmount', String(minAmount));
                 params.set('page', String(page));
                 params.set('limit', String(limit));
                 return `/payout/admin/requests?${params.toString()}`;
@@ -72,6 +83,24 @@ export const payoutApi = baseApi.injectEndpoints({
                 body: { adminNote },
             }),
         }),
+
+        /** Paid/rent watch-time heartbeat (authenticated viewer) */
+        trackWatchTime: builder.mutation<
+            {
+                message: string;
+                credited: number;
+                totalUniqueSeconds?: number;
+                maxCompletedSessionSeconds?: number;
+                currentSessionSeconds?: number;
+            },
+            { videoId: string; seconds: number; deviceFingerprint: string }
+        >({
+            query: ({ videoId, seconds, deviceFingerprint }) => ({
+                url: `/payout/video/${videoId}/watchtime`,
+                method: 'POST',
+                body: { seconds, deviceFingerprint },
+            }),
+        }),
     }),
 });
 
@@ -86,4 +115,5 @@ export const {
     useAdminGetPayoutRequestDetailQuery,
     useAdminSettlePayoutRequestMutation,
     useAdminRejectPayoutRequestMutation,
+    useTrackWatchTimeMutation,
 } = payoutApi;

@@ -26,6 +26,7 @@ import {
     useGetPayoutRateQuery,
     useUpdatePayoutRateMutation,
 } from '../../../store/api/payoutApi';
+import { API_BASE_URL } from '../../../config/env';
 import { useAppSelector } from '../../../store/hooks';
 import { selectCurrentUser } from '../../../store/slices/authSlice';
 
@@ -54,6 +55,8 @@ export default function AdminPayoutsPage() {
     const [statusFilter, setStatusFilter] = useState('pending');
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
+    const [creatorEmailFilter, setCreatorEmailFilter] = useState('');
+    const [minAmountFilter, setMinAmountFilter] = useState('');
     const [page, setPage] = useState(1);
 
     // Modal state
@@ -64,9 +67,12 @@ export default function AdminPayoutsPage() {
         status: statusFilter || undefined,
         from: fromDate || undefined,
         to: toDate || undefined,
+        creatorEmail: creatorEmailFilter.trim() || undefined,
+        minAmount: minAmountFilter.trim() || undefined,
         page,
         limit: 15,
     });
+    const [exportLoading, setExportLoading] = useState(false);
     const { data: stats } = useAdminGetPayoutStatsQuery();
     const { data: rate, refetch: refetchRate } = useGetPayoutRateQuery();
     const [settle] = useAdminSettlePayoutRequestMutation();
@@ -80,7 +86,46 @@ export default function AdminPayoutsPage() {
             toast.success('Payout settled!');
             refetch();
         } catch (err: any) {
-            toast.error(err?.data?.message || 'Failed to settle');
+            const msg =
+                err?.data?.message ||
+                (err?.status === 409
+                    ? 'Watch data no longer matches this request. Review in Detail.'
+                    : 'Failed to settle');
+            toast.error(msg);
+        }
+    };
+
+    const handleExportCsv = async () => {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        if (!token) {
+            toast.error('Not authenticated');
+            return;
+        }
+        setExportLoading(true);
+        try {
+            const qs = new URLSearchParams();
+            if (statusFilter) qs.set('status', statusFilter);
+            if (fromDate) qs.set('from', fromDate);
+            if (toDate) qs.set('to', toDate);
+            if (creatorEmailFilter.trim()) qs.set('creatorEmail', creatorEmailFilter.trim());
+            if (minAmountFilter.trim()) qs.set('minAmount', minAmountFilter.trim());
+            const res = await fetch(`${API_BASE_URL}/payout/admin/export?${qs.toString()}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) throw new Error('export failed');
+            const csv = await res.text();
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `payout-requests-${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast.success('Export downloaded');
+        } catch {
+            toast.error('Export failed');
+        } finally {
+            setExportLoading(false);
         }
     };
 
@@ -202,6 +247,18 @@ export default function AdminPayoutsPage() {
                             </select>
                         </div>
                         <div>
+                            <label className="text-xs text-grey-70 mb-1 block">Creator email</label>
+                            <input type="text" value={creatorEmailFilter} placeholder="exact match"
+                                onChange={(e) => { setCreatorEmailFilter(e.target.value); setPage(1); }}
+                                className="bg-dark-15 text-white px-3 py-2 rounded text-sm border border-dark-20 w-48 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                        </div>
+                        <div>
+                            <label className="text-xs text-grey-70 mb-1 block">Min amount (₹)</label>
+                            <input type="number" min={0} step={0.01} value={minAmountFilter} placeholder="0"
+                                onChange={(e) => { setMinAmountFilter(e.target.value); setPage(1); }}
+                                className="bg-dark-15 text-white px-3 py-2 rounded text-sm border border-dark-20 w-28 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                        </div>
+                        <div>
                             <label className="text-xs text-grey-70 mb-1 block">From</label>
                             <input type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setPage(1); }}
                                 className="bg-dark-15 text-white px-3 py-2 rounded text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
@@ -211,8 +268,19 @@ export default function AdminPayoutsPage() {
                             <input type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setPage(1); }}
                                 className="bg-dark-15 text-white px-3 py-2 rounded text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
                         </div>
-                        {(statusFilter || fromDate || toDate) && (
-                            <button onClick={() => { setStatusFilter('pending'); setFromDate(''); setToDate(''); setPage(1); }}
+                        <button type="button" onClick={handleExportCsv} disabled={exportLoading}
+                            className="text-sm border border-dark-20 px-3 py-2 rounded hover:border-green-500 text-green-400 disabled:opacity-50">
+                            {exportLoading ? 'Exporting…' : 'Export CSV'}
+                        </button>
+                        {(statusFilter || fromDate || toDate || creatorEmailFilter || minAmountFilter) && (
+                            <button onClick={() => {
+                                setStatusFilter('');
+                                setFromDate('');
+                                setToDate('');
+                                setCreatorEmailFilter('');
+                                setMinAmountFilter('');
+                                setPage(1);
+                            }}
                                 className="text-grey-70 hover:text-white text-sm flex items-center space-x-1 border border-dark-20 px-3 py-2 rounded hover:border-red-45">
                                 <XMarkIcon className="h-4 w-4" /><span>Clear</span>
                             </button>
