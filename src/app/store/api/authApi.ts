@@ -26,6 +26,7 @@ interface SignupRequest {
   email: string;
   password: string;
   otp: string;
+  role?: string;
 }
 
 interface RequestResetPasswordRequest {
@@ -65,10 +66,10 @@ export const authApi = baseApi.injectEndpoints({
 
     // ✅ Signup
     signUp: builder.mutation<void, SignupRequest>({
-      query: ({ name, email, password, otp }) => ({
+      query: (body) => ({
         url: '/auth/signup',
         method: 'POST',
-        body: { name, email, password, otp },
+        body,
       }),
     }),
 

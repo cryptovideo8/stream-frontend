@@ -109,16 +109,18 @@ export default function SiteFooter() {
             </ul>
           </div>
 
-          {/* Support + Newsletter */}
           <div>
             <h3 className="text-white text-xs font-semibold uppercase tracking-widest mb-4">Support</h3>
             <ul className="space-y-2.5 mb-6">
               <li>
-                <Link href="/contact" className="text-grey-60 hover:text-white text-sm transition-colors duration-200">Contact Us</Link>
+                <Link href="/support" className="text-grey-60 hover:text-white text-sm transition-colors duration-200">Support Center</Link>
               </li>
               <li>
-                <a href="mailto:support@nightking.com" className="text-grey-60 hover:text-white text-sm transition-colors duration-200">
-                  support@nightking.com
+                <Link href="/support" className="text-grey-60 hover:text-white text-sm transition-colors duration-200">Create a Ticket</Link>
+              </li>
+              <li>
+                <a href="mailto:support@nightking.tv" className="text-grey-60 hover:text-white text-sm transition-colors duration-200">
+                  support@nightking.tv
                 </a>
               </li>
             </ul>

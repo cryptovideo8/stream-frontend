@@ -140,6 +140,12 @@ export default function LoginPage() {
             </Link>
           </p>
         </form>
+
+        {/* Creator Callout */}
+        <div className="mt-6 p-4 rounded-2xl bg-gradient-to-r from-red-45/10 to-transparent border border-red-45/20 text-center animate-fade-in group hover:border-red-45/40 transition-all cursor-pointer" onClick={() => router.push('/signup')}>
+           <p className="text-xs font-bold text-red-45 uppercase tracking-widest mb-1">Want to share your content?</p>
+           <h3 className="text-white font-bold text-sm">Join as a <span className="text-red-45">Creator</span> and start uploading videos today!</h3>
+        </div>
       </div>
     </div>
   );

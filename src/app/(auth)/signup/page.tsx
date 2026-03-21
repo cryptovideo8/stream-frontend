@@ -16,6 +16,7 @@ export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
+  const [role, setRole] = useState<'viewer' | 'creator'>('viewer');
   const [showPassword, setShowPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
@@ -49,7 +50,7 @@ export default function SignUpPage() {
     }
 
     try {
-      await signUp({ name, email, password, otp }).unwrap();
+      await signUp({ name, email, password, otp, role }).unwrap();
       toast.success('Signup successful');
       router.push('/login');
     } catch (err: any) {
@@ -76,6 +77,38 @@ export default function SignUpPage() {
           }}
           className="bg-dark-10 rounded-2xl p-8 shadow-xl"
         >
+          {/* Role Selection */}
+          {!otpSent && (
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-grey-70 mb-3">
+                I am signing up as a:
+              </label>
+              <div className="grid grid-cols-2 gap-3 p-1 bg-dark-15 rounded-xl border border-dark-25">
+                <button
+                  type="button"
+                  onClick={() => setRole('viewer')}
+                  className={`py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                    role === 'viewer'
+                      ? 'bg-red-45 text-white shadow-lg shadow-red-500/10'
+                      : 'text-grey-70 hover:text-primary'
+                  }`}
+                >
+                  Viewer
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('creator')}
+                  className={`py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                    role === 'creator'
+                      ? 'bg-red-45 text-white shadow-lg shadow-red-500/10'
+                      : 'text-grey-70 hover:text-primary'
+                  }`}
+                >
+                  Creator
+                </button>
+              </div>
+            </div>
+          )}
           {/* Name */}
           <div className="mb-6">
             <label htmlFor="name" className="block text-sm font-medium text-grey-70 mb-2">

@@ -52,5 +52,7 @@ export const baseApi = createApi({
     'UpiAccounts',
     'AdminAudits',
     'MyAudits',
+    'MyTickets',
+    'AdminTickets',
   ],
 }) 
