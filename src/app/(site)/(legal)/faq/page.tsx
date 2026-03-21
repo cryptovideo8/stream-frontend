@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function FAQPage() {
   return (
     <div className="min-h-screen bg-dark-6 py-12 px-4">
@@ -59,7 +61,7 @@ export default function FAQPage() {
               <div>
                 <h3 className="text-xl text-primary mb-2">Having technical issues?</h3>
                 <p className="text-grey-70">
-                  Please visit our <a href="/contact" className="text-red-45 hover:text-red-55">contact support page</a> for immediate assistance.
+                  Please visit our <Link href="/support" className="text-red-45 hover:text-red-55">support page</Link> for immediate assistance.
                 </p>
               </div>
             </div>
@@ -67,7 +69,7 @@ export default function FAQPage() {
 
           <div className="pt-8 border-t border-dark-20">
             <p className="text-grey-70">
-              Still have questions? <a href="/contact" className="text-red-45 hover:text-red-55">Contact our support team</a>
+              Still have questions? <Link href="/support" className="text-red-45 hover:text-red-55">Contact our support team</Link>
             </p>
           </div>
         </div>

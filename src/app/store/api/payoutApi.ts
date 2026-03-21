@@ -1,40 +1,98 @@
 import { baseApi } from './baseApi';
 
+export interface EarningsResponse {
+  totalEarned: number;
+  pendingPayouts: number;
+  availableToRequest: number;
+  currency: string;
+}
+
+export interface PayoutRequest {
+  _id: string;
+  creatorId: { _id: string; name: string; email: string };
+  totalAmount: number;
+  currency: string;
+  paymentMethod: string;
+  paymentDetails: string;
+  status: 'pending' | 'settled' | 'rejected';
+  adminNote?: string;
+  requestedAt: string;
+  settledAt?: string;
+  periodStart: string;
+  periodEnd: string;
+  totalWatchMinutes: number;
+  ratePerMinute: number;
+  videoBreakdown?: Array<{
+    videoId: string;
+    title: string;
+    watchMinutes: number;
+  }>;
+  createdAt: string;
+}
+
+export interface PayoutRate {
+  ratePerMinute: number;
+  currency: string;
+  updatedAt: string;
+}
+
+export interface PayoutStats {
+  counts: {
+    pending: number;
+    settled: number;
+    rejected: number;
+  };
+  amounts: {
+    pending: number;
+    settled: number;
+    rejected: number;
+  };
+  monthlyVolume: Array<{
+    _id: string; // month
+    amount: number;
+    count: number;
+  }>;
+  topCreators: Array<{
+    creator: { _id: string; name: string; email: string };
+    totalEarned: number;
+  }>;
+}
+
 export const payoutApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
 
         // ─── Creator ──────────────────────────────────────────────────────────────
 
         /** Preview: how much the logged-in creator can earn right now */
-        getEarnings: builder.query<any, void>({
+        getEarnings: builder.query<EarningsResponse, void>({
             query: () => '/payout/earnings',
         }),
 
         /** Submit a payout request */
-        requestPayout: builder.mutation<any, { paymentMethod: string; paymentDetails: string }>({
+        requestPayout: builder.mutation<{ message: string; request: PayoutRequest }, { paymentMethod: string; paymentDetails: string }>({
             query: (body) => ({ url: '/payout/request', method: 'POST', body }),
         }),
 
         /** List the logged-in creator's own payout requests */
-        getMyPayoutRequests: builder.query<any, { page?: number; limit?: number }>({
+        getMyPayoutRequests: builder.query<{ requests: PayoutRequest[]; total: number; page: number; totalPages: number }, { page?: number; limit?: number }>({
             query: ({ page = 1, limit = 10 } = {}) =>
                 `/payout/my-requests?page=${page}&limit=${limit}`,
         }),
 
         // ─── Payout Rate ──────────────────────────────────────────────────────────
 
-        getPayoutRate: builder.query<any, void>({
+        getPayoutRate: builder.query<PayoutRate, void>({
             query: () => '/payout/rate',
         }),
 
-        updatePayoutRate: builder.mutation<any, { ratePerMinute: number; currency?: string }>({
+        updatePayoutRate: builder.mutation<{ message: string; rate: PayoutRate }, { ratePerMinute: number; currency?: string }>({
             query: (body) => ({ url: '/payout/rate', method: 'PUT', body }),
         }),
 
         // ─── Super Admin ──────────────────────────────────────────────────────────
 
         adminGetAllPayoutRequests: builder.query<
-            any,
+            { requests: PayoutRequest[]; total: number; page: number; totalPages: number },
             {
                 status?: string;
                 creatorId?: string;
@@ -60,15 +118,15 @@ export const payoutApi = baseApi.injectEndpoints({
             },
         }),
 
-        adminGetPayoutStats: builder.query<any, void>({
+        adminGetPayoutStats: builder.query<PayoutStats, void>({
             query: () => '/payout/admin/stats',
         }),
 
-        adminGetPayoutRequestDetail: builder.query<any, string>({
+        adminGetPayoutRequestDetail: builder.query<PayoutRequest, string>({
             query: (id) => `/payout/admin/requests/${id}`,
         }),
 
-        adminSettlePayoutRequest: builder.mutation<any, { id: string; adminNote?: string }>({
+        adminSettlePayoutRequest: builder.mutation<{ message: string }, { id: string; adminNote?: string }>({
             query: ({ id, adminNote }) => ({
                 url: `/payout/admin/requests/${id}/settle`,
                 method: 'PUT',
@@ -76,7 +134,7 @@ export const payoutApi = baseApi.injectEndpoints({
             }),
         }),
 
-        adminRejectPayoutRequest: builder.mutation<any, { id: string; adminNote: string }>({
+        adminRejectPayoutRequest: builder.mutation<{ message: string }, { id: string; adminNote: string }>({
             query: ({ id, adminNote }) => ({
                 url: `/payout/admin/requests/${id}/reject`,
                 method: 'PUT',

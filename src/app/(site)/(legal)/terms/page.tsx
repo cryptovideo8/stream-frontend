@@ -25,7 +25,7 @@ export default function TermsPage() {
               <li>Use the materials for any commercial purpose</li>
               <li>Attempt to decompile or reverse engineer any software contained on the website</li>
               <li>Remove any copyright or other proprietary notations from the materials</li>
-              <li>Transfer the materials to another person or "mirror" the materials on any other server</li>
+              <li>Transfer the materials to another person or &quot;mirror&quot; the materials on any other server</li>
             </ul>
           </section>
 
@@ -91,7 +91,7 @@ export default function TermsPage() {
 
           <div className="pt-8 border-t border-dark-20">
             <p className="text-grey-70">
-              Last updated: {new Date().toLocaleDateString()}
+              Last updated: May 20, 2024
             </p>
           </div>
         </div>

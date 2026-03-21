@@ -105,7 +105,7 @@ export default function PrivacyPage() {
 
           <div className="pt-8 border-t border-dark-20">
             <p className="text-grey-70">
-              Last updated: {new Date().toLocaleDateString()}
+              Last updated: May 20, 2024
             </p>
           </div>
         </div>

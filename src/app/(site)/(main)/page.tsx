@@ -1,5 +1,5 @@
 'use client';
-import { useSearchVideosQuery } from '../../store/api/videoApi';
+import { useSearchVideosQuery, VideoDetail } from '../../store/api/videoApi';
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
@@ -57,11 +57,11 @@ function VideoCardSkeleton() {
 }
 
 interface VideoCardProps {
-  video: any;
+  video: VideoDetail;
 }
 
 function VideoCard({ video }: VideoCardProps) {
-  const isPremium = ['rent', 'paid'].includes(video.monetization?.type);
+  const isPremium = ['rent', 'paid'].includes(video.monetization?.type || '');
   const href = video.type === 'thirdparty' ? video.filePath : `/watch/${video._id}`;
   const isExternal = video.type === 'thirdparty';
 
@@ -278,7 +278,7 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
           {isLoading
             ? [...Array(12)].map((_, i) => <VideoCardSkeleton key={i} />)
-            : data?.videos?.map((video: any) => <VideoCard key={video._id} video={video} />)
+            : data?.videos?.map((video) => <VideoCard key={video._id} video={video} />)
           }
         </div>
 

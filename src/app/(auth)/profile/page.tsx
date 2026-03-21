@@ -43,7 +43,7 @@ export default function ProfilePage() {
     }
   }, [userDetails]);
 
-  const handleChange = (field: string, value: any) => {
+  const handleChange = (field: string, value: string | boolean) => {
     if (field.startsWith('preferences.')) {
       const key = field.split('.')[1];
       setFormData(prev => ({
@@ -61,10 +61,9 @@ export default function ProfilePage() {
   const handleSubmit = async () => {
     try {
       await updateUser({ id: userId!, ... formData }).unwrap();
-      console.log("Yser Updated Successfull");
-      
       toast.success('Profile updated successfully');
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
       toast.error(error?.data?.message || 'Update failed');
     }
   };

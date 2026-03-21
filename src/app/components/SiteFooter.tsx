@@ -144,8 +144,8 @@ export default function SiteFooter() {
 
         {/* Bottom bar */}
         <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-          <p className="text-grey-60 text-xs" suppressHydrationWarning>
-            © {new Date().getFullYear()} NightKing. All rights reserved.
+          <p className="text-grey-60 text-xs">
+            © 2024 NightKing. All rights reserved.
           </p>
           <p className="text-grey-60 text-xs">v1.0.0</p>
         </div>

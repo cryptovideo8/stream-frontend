@@ -78,8 +78,9 @@ export default function AdminPlansTab() {
                 toast.success('Plan created');
             }
             setIsModalOpen(false);
-        } catch (err: any) {
-            toast.error(err?.data?.message || 'Operation failed');
+        } catch (err: unknown) {
+            const error = err as { data?: { message?: string } };
+            toast.error(error?.data?.message || 'Operation failed');
         }
     };
 
@@ -88,8 +89,9 @@ export default function AdminPlansTab() {
         try {
             await deletePlan(plan._id).unwrap();
             toast.success('Plan deleted');
-        } catch (err: any) {
-            toast.error(err?.data?.message || 'Deletion failed');
+        } catch (err: unknown) {
+            const error = err as { data?: { message?: string } };
+            toast.error(error?.data?.message || 'Deletion failed');
         }
     };
 
@@ -97,8 +99,9 @@ export default function AdminPlansTab() {
         try {
             await togglePlan(plan._id).unwrap();
             toast.success(`Plan ${plan.isActive ? 'deactivated' : 'activated'}`);
-        } catch (err: any) {
-            toast.error(err?.data?.message || 'Toggle failed');
+        } catch (err: unknown) {
+            const error = err as { data?: { message?: string } };
+            toast.error(error?.data?.message || 'Toggle failed');
         }
     };
 

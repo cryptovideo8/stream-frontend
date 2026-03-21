@@ -22,8 +22,9 @@ export default function ForgotPasswordPage() {
       await requestReset({ email }).unwrap();
       toast.success('OTP sent to your email');
       setStep(2);
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to send OTP');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error?.data?.message || 'Failed to send OTP');
     }
   };
 
@@ -33,8 +34,9 @@ export default function ForgotPasswordPage() {
       await verifyReset({ email, otp, newPassword }).unwrap();
       toast.success('Password reset successfully');
       router.push('/login');
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to reset password');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error?.data?.message || 'Failed to reset password');
     }
   };
 

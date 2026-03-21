@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 
 export default function DashboardFooter() {
   return (
@@ -8,15 +9,15 @@ export default function DashboardFooter() {
           © {new Date().getFullYear()} RahulVibs. All rights reserved.
         </div>
         <div className="flex items-center space-x-4">
-          <a href="/terms" className="text-sm text-grey-70 hover:text-primary transition-colors">
+          <Link href="/terms" className="text-sm text-grey-70 hover:text-primary transition-colors">
             Terms
-          </a>
-          <a href="/privacy" className="text-sm text-grey-70 hover:text-primary transition-colors">
+          </Link>
+          <Link href="/privacy" className="text-sm text-grey-70 hover:text-primary transition-colors">
             Privacy
-          </a>
-          <a href="/contact" className="text-sm text-grey-70 hover:text-primary transition-colors">
-            Contact
-          </a>
+          </Link>
+          <Link href="/support" className="text-sm text-grey-70 hover:text-primary transition-colors">
+            Support
+          </Link>
         </div>
       </div>
     </footer>

@@ -6,7 +6,9 @@ import {
     useCreatePromoMutation,
     useUpdatePromoMutation,
     useTogglePromoMutation,
-    useAdminGetPlansQuery
+    useAdminGetPlansQuery,
+    Promo,
+    Plan
 } from '../../../../store/api/subscriptionApi';
 import toast from 'react-hot-toast';
 import { PlusIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
@@ -20,11 +22,11 @@ export default function AdminPromosTab() {
     const [togglePromo] = useTogglePromoMutation();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingPromo, setEditingPromo] = useState<any | null>(null);
+    const [editingPromo, setEditingPromo] = useState<Promo | null>(null);
 
     const [formData, setFormData] = useState({
         code: '',
-        discountType: 'percent',
+        discountType: 'percent' as 'percent' | 'flat',
         discountValue: '',
         applicablePlans: [] as string[],
         validFrom: '',
@@ -32,14 +34,14 @@ export default function AdminPromosTab() {
         maxUses: '0',
     });
 
-    const handleOpenModal = (promo?: any) => {
+    const handleOpenModal = (promo?: Promo) => {
         if (promo) {
             setEditingPromo(promo);
             setFormData({
                 code: promo.code,
                 discountType: promo.discountType,
                 discountValue: promo.discountValue.toString(),
-                applicablePlans: promo.applicablePlans.map((p: any) => typeof p === 'string' ? p : p._id),
+                applicablePlans: promo.applicablePlans.map((p: string | Plan) => typeof p === 'string' ? p : p._id),
                 validFrom: new Date(promo.validFrom).toISOString().split('T')[0],
                 validUntil: promo.validUntil ? new Date(promo.validUntil).toISOString().split('T')[0] : '',
                 maxUses: promo.maxUses.toString(),
@@ -73,17 +75,19 @@ export default function AdminPromosTab() {
                 toast.success('Promo created');
             }
             setIsModalOpen(false);
-        } catch (err: any) {
-            toast.error(err?.data?.message || 'Operation failed');
+        } catch (err: unknown) {
+            const error = err as { data?: { message?: string } };
+            toast.error(error?.data?.message || 'Operation failed');
         }
     };
 
-    const handleToggle = async (promo: any) => {
+    const handleToggle = async (promo: Promo) => {
         try {
             await togglePromo(promo._id).unwrap();
             toast.success(`Promo ${promo.isActive ? 'deactivated' : 'activated'}`);
-        } catch (err: any) {
-            toast.error(err?.data?.message || 'Toggle failed');
+        } catch (err: unknown) {
+            const error = err as { data?: { message?: string } };
+            toast.error(error?.data?.message || 'Toggle failed');
         }
     };
 
@@ -115,7 +119,7 @@ export default function AdminPromosTab() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-dark-25">
-                        {promos.map((promo: any) => (
+                        {promos.map((promo: Promo) => (
                             <tr key={promo._id} className="hover:bg-dark-12 transition-colors">
                                 <td className="px-6 py-4 font-bold text-white uppercase tracking-wider">{promo.code}</td>
                                 <td className="px-6 py-4">
@@ -160,7 +164,7 @@ export default function AdminPromosTab() {
 
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                    <div className="bg-dark-10 border border-dark-25 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                    <div className="bg-dark-10 border border-dark-25 rounded-2xl w-full max-lg max-h-[90vh] overflow-y-auto">
                         <div className="p-6 border-b border-dark-25 flex justify-between items-center">
                             <h3 className="text-xl font-bold text-white">{editingPromo ? 'Edit Promo Code' : 'Create Promo Code'}</h3>
                             <button onClick={() => setIsModalOpen(false)} className="text-grey-50 hover:text-white">&times;</button>
@@ -174,7 +178,7 @@ export default function AdminPromosTab() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-grey-70 mb-1">Discount Type</label>
-                                    <select value={formData.discountType} onChange={(e) => setFormData({ ...formData, discountType: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white">
+                                    <select value={formData.discountType} onChange={(e) => setFormData({ ...formData, discountType: e.target.value as 'percent' | 'flat' })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white">
                                         <option value="percent">Percentage (%)</option>
                                         <option value="flat">Flat Amount</option>
                                     </select>
@@ -196,7 +200,7 @@ export default function AdminPromosTab() {
                                     setFormData({ ...formData, applicablePlans: options.filter(o => o.selected).map(o => o.value).filter(v => v !== 'all') });
                                 }} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white h-24">
                                     <option value="all">All Plans</option>
-                                    {plansData.map((plan: any) => (
+                                    {plansData.map((plan: Plan) => (
                                         <option key={plan._id} value={plan._id}>{plan.name} ({plan.currency} {plan.price})</option>
                                     ))}
                                 </select>

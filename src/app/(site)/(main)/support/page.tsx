@@ -12,7 +12,6 @@ import {
   ChatBubbleBottomCenterTextIcon, 
   TicketIcon, 
   ClockIcon, 
-  CheckCircleIcon,
   ShieldCheckIcon,
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
@@ -37,8 +36,9 @@ export default function SupportPage() {
       await createTicket(formData).unwrap();
       toast.success('Support ticket submitted successfully!');
       setFormData({ subject: '', message: '', priority: 'medium' });
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to submit ticket');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error?.data?.message || 'Failed to submit ticket');
     }
   };
 
@@ -61,7 +61,7 @@ export default function SupportPage() {
         <div className="text-center mb-16 animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">How can we <span className="text-red-45">help?</span></h1>
           <p className="text-grey-60 text-lg max-w-2xl mx-auto">
-            Our support team is available 24/7. Submit a ticket and we'll get back to you within 24 hours.
+            Our support team is available 24/7. Submit a ticket and we&apos;ll get back to you within 24 hours.
           </p>
         </div>
 
@@ -84,7 +84,7 @@ export default function SupportPage() {
                       <input 
                         type="text" 
                         value={formData.subject}
-                        onChange={(val) => setFormData({...formData, subject: val.target.value})}
+                        onChange={(e) => setFormData({...formData, subject: e.target.value})}
                         placeholder="e.g., Billing issue, Feature request..."
                         className="w-full bg-dark-15 border border-dark-25 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-red-45 transition-all text-sm font-medium"
                       />
@@ -114,7 +114,7 @@ export default function SupportPage() {
                     <textarea 
                       rows={6}
                       value={formData.message}
-                      onChange={(val) => setFormData({...formData, message: val.target.value})}
+                      onChange={(e) => setFormData({...formData, message: e.target.value})}
                       placeholder="Please provide as much detail as possible..."
                       className="w-full bg-dark-15 border border-dark-25 rounded-2xl p-4 text-white focus:outline-none focus:border-red-45 transition-all text-sm font-medium resize-none"
                     />

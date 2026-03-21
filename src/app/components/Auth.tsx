@@ -1,18 +1,16 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   LockClosedIcon,
   EnvelopeIcon,
   UserIcon,
   EyeIcon,
   EyeSlashIcon,
-  CheckCircleIcon,
-  XCircleIcon,
   ShieldCheckIcon,
   VideoCameraIcon,
-  ArrowRightIcon
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { 
   useLoginMutation, 
   useSendOtpMutation, 
@@ -123,8 +121,9 @@ export default function Auth() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name as keyof ValidationErrors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
+    const fieldName = name as keyof ValidationErrors;
+    if (errors[fieldName]) {
+      setErrors(prev => ({ ...prev, [fieldName]: undefined }));
     }
   };
 
@@ -318,7 +317,7 @@ export default function Auth() {
                   disabled={isLoading}
                   className="text-xs text-grey-60 hover:text-red-45 transition-colors underline decoration-dotted underline-offset-4"
                 >
-                  Didn't receive code? Resend
+                  Didn&apos;t receive code? Resend
                 </button>
               </div>
             </div>
@@ -326,9 +325,9 @@ export default function Auth() {
 
           {isLogin && (
             <div className="text-right">
-              <a href="/forgot-password" className="text-xs text-grey-60 hover:text-red-45 transition-colors">
+              <Link href="/forgot-password" data-testid="forgot-password-link" className="text-xs text-grey-60 hover:text-red-45 transition-colors">
                 Forgot password?
-              </a>
+              </Link>
             </div>
           )}
 
@@ -361,4 +360,4 @@ export default function Auth() {
       </div>
     </div>
   );
-}
+}

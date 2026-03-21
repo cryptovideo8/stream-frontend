@@ -4,7 +4,8 @@ import { useState } from 'react';
 import {
     useAdminGetSubscriptionsQuery,
     useAdminGrantSubscriptionMutation,
-    useAdminGetPlansQuery
+    useAdminGetPlansQuery,
+    Plan
 } from '../../../../store/api/subscriptionApi';
 import toast from 'react-hot-toast';
 import SelectWithSearch from '../../../../components/ui/SelectWithSearch';
@@ -31,8 +32,9 @@ export default function AdminSubscribersTab() {
             toast.success('Subscription granted successfully');
             setIsModalOpen(false);
             refetch();
-        } catch (err: any) {
-            toast.error(err?.data?.message || 'Failed to grant subscription');
+        } catch (err: unknown) {
+            const error = err as { data?: { message?: string } };
+            toast.error(error?.data?.message || 'Failed to grant subscription');
         }
     };
 
@@ -76,15 +78,15 @@ export default function AdminSubscribersTab() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-dark-25">
-                        {subscriptions.map((sub: any) => (
+                        {subscriptions.map((sub) => (
                             <tr key={sub._id} className="hover:bg-dark-12 transition-colors">
                                 <td className="px-6 py-4">
-                                    <div className="font-medium text-white">{sub.userId?.name || 'Unknown'}</div>
-                                    <div className="text-xs text-grey-60">{sub.userId?.email || sub.userId}</div>
+                                    <div className="font-medium text-white">{typeof sub.userId === 'object' ? sub.userId?.name : 'User'}</div>
+                                    <div className="text-xs text-grey-60">{typeof sub.userId === 'object' ? sub.userId?.email : sub.userId}</div>
                                 </td>
                                 <td className="px-6 py-4">
                                     <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-red-45/10 text-red-55 border border-red-45/20">
-                                        {sub.planId?.name || 'Unknown Plan'}
+                                        {typeof sub.planId === 'object' ? sub.planId?.name : 'Plan'}
                                     </span>
                                 </td>
                                 <td className="px-6 py-4">
@@ -98,7 +100,7 @@ export default function AdminSubscribersTab() {
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="text-white font-medium">
-                                        {sub.planId?.currency || '$'} {sub.finalAmountPaid}
+                                        {typeof sub.planId === 'object' ? sub.planId?.currency : 'INR'} {sub.finalAmountPaid}
                                     </div>
                                     <div className="text-[10px] text-grey-60 uppercase mt-0.5">
                                         {sub.paymentDetails?.paymentMethod} • {sub.paymentDetails?.transactionId?.slice(-6) || 'N/A'}
@@ -151,7 +153,7 @@ export default function AdminSubscribersTab() {
                                 <SelectWithSearch
                                     endpoint="/user/search"
                                     value={grantForm.userId ? { value: grantForm.userId, label: grantForm.userId } : null}
-                                    onChange={(selected: any) => setGrantForm({ ...grantForm, userId: selected?.value || '' })}
+                                    onChange={(selected: { value: string; label: string } | null) => setGrantForm({ ...grantForm, userId: selected?.value || '' })}
                                     placeholder="Search by name or email..."
                                     className="text-black"
                                 />
@@ -162,7 +164,7 @@ export default function AdminSubscribersTab() {
                                 <label className="block text-sm font-medium text-grey-70 mb-1">Select Plan</label>
                                 <select required value={grantForm.planId} onChange={(e) => setGrantForm({ ...grantForm, planId: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white">
                                     <option value="" disabled>Select a plan...</option>
-                                    {plansData.filter((p: any) => p.isActive).map((plan: any) => (
+                                    {plansData.filter((p: Plan) => p.isActive).map((plan: Plan) => (
                                         <option key={plan._id} value={plan._id}>{plan.name} ({plan.validityDays} days)</option>
                                     ))}
                                 </select>

@@ -16,7 +16,7 @@ const STATUS_TABS = ['all', 'pending', 'approved', 'rejected'] as const;
 
 export default function AdminPaymentAuditsTab() {
   const [filterStatus, setFilterStatus] = useState<typeof STATUS_TABS[number]>('all');
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<{ value: string; label: string } | null>(null);
   const [upiId, setUpiId] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -50,7 +50,8 @@ export default function AdminPaymentAuditsTab() {
     try {
       await approveAudit(id).unwrap();
       toast.success('Payment approved and subscription activated.');
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
       toast.error(error?.data?.message || 'Failed to approve payment.');
     }
   };
@@ -62,7 +63,8 @@ export default function AdminPaymentAuditsTab() {
     try {
       await rejectAudit({ id, remarks }).unwrap();
       toast.success('Payment audit rejected.');
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
       toast.error(error?.data?.message || 'Failed to reject payment.');
     }
   };
@@ -114,7 +116,7 @@ export default function AdminPaymentAuditsTab() {
               endpoint="/user/search"
               placeholder="Search Name / Email"
               value={selectedUser}
-              onChange={(val: any) => setSelectedUser(val)}
+              onChange={(val: { value: string; label: string } | null) => setSelectedUser(val)}
               isClearable
             />
           </div>

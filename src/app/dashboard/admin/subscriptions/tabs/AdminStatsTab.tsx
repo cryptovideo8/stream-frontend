@@ -65,7 +65,7 @@ export default function AdminStatsTab() {
                     <h3 className="text-lg font-bold text-white mb-4">Active Subs by Plan</h3>
                     {stats.planBreakdown.length > 0 ? (
                         <div className="space-y-4">
-                            {stats.planBreakdown.map((item: any) => (
+                            {stats.planBreakdown.map((item: { _id: string; name: string; count: number }) => (
                                 <div key={item._id} className="flex items-center justify-between">
                                     <span className="text-grey-70 font-medium">{item.name}</span>
                                     <div className="flex items-center gap-3">
@@ -90,7 +90,7 @@ export default function AdminStatsTab() {
                     <h3 className="text-lg font-bold text-white mb-4">Top Promo Campaigns</h3>
                     {stats.promoBreakdown.length > 0 ? (
                         <div className="space-y-4">
-                            {stats.promoBreakdown.map((item: any) => (
+                            {stats.promoBreakdown.map((item: { _id: string; code: string; discountType: string; discountValue: number; uses: number }) => (
                                 <div key={item._id} className="flex items-center justify-between">
                                     <div>
                                         <span className="text-grey-70 font-bold uppercase">{item.code}</span>

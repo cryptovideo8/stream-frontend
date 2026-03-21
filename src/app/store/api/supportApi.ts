@@ -2,7 +2,7 @@ import { baseApi } from './baseApi';
 
 export interface SupportTicket {
   _id: string;
-  userId: any;
+  userId: string;
   subject: string;
   message: string;
   status: 'open' | 'in-progress' | 'resolved' | 'closed';
@@ -24,15 +24,15 @@ export const supportApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['MyTickets' as any],
+      invalidatesTags: ['MyTickets'],
     }),
     getMyTickets: builder.query<SupportTicket[], void>({
       query: () => '/support/my-tickets',
-      providesTags: ['MyTickets' as any],
+      providesTags: ['MyTickets'],
     }),
     getAllTickets: builder.query<SupportTicket[], void>({
       query: () => '/support/all',
-      providesTags: ['AdminTickets' as any],
+      providesTags: ['AdminTickets'],
     }),
   }),
 });

@@ -13,7 +13,8 @@ import {
   useSubscribeToPlanMutation,
   useGetMySubscriptionQuery,
   useCancelSubscriptionMutation,
-  Plan
+  Plan,
+  PromoValidationResponse
 } from '../../../store/api/subscriptionApi';
 import { useGetActiveUpiQuery, useSubmitAuditMutation, useGetMyAuditsQuery } from '../../../store/api/paymentApi';
 import { QRCodeSVG } from 'qrcode.react';
@@ -38,7 +39,7 @@ export default function SubscriptionsPage() {
   // Local State
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [promoCode, setPromoCode] = useState('');
-  const [promoResult, setPromoResult] = useState<any>(null);
+  const [promoResult, setPromoResult] = useState<PromoValidationResponse | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('upi'); // Changed default to UPI for manual MVP
   const [transactionId, setTransactionId] = useState('');
@@ -64,9 +65,10 @@ export default function SubscriptionsPage() {
       const res = await validatePromo({ code: promoCode, planId: selectedPlan._id }).unwrap();
       setPromoResult(res);
       toast.success('Promo code applied!');
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
       setPromoResult(null);
-      toast.error(err?.data?.message || 'Invalid promo code');
+      toast.error(error?.data?.message || 'Invalid promo code');
     }
   };
 
@@ -100,8 +102,9 @@ export default function SubscriptionsPage() {
         setSelectedPlan(null);
         setTransactionId('');
         return;
-      } catch (err: any) {
-        toast.error(err?.data?.message || 'Failed to submit UTR');
+      } catch (err: unknown) {
+        const error = err as { data?: { message?: string } };
+        toast.error(error?.data?.message || 'Failed to submit UTR');
         return;
       }
     }
@@ -139,8 +142,9 @@ export default function SubscriptionsPage() {
       setShowCheckout(false);
       setSelectedPlan(null);
       handleClearPromo();
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to activate subscription');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error?.data?.message || 'Failed to activate subscription');
     }
   };
 
@@ -155,8 +159,9 @@ export default function SubscriptionsPage() {
         localStorage.setItem('user', JSON.stringify(updatedUser));
         dispatch(setCredentials({ user: updatedUser, token: localStorage.getItem('token') || '' }));
       }
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to cancel subscription');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error?.data?.message || 'Failed to cancel subscription');
     }
   };
 
@@ -199,7 +204,7 @@ export default function SubscriptionsPage() {
               Your Current Plan
             </h1>
             <p className="text-lg text-grey-60 max-w-2xl mx-auto">
-              You are currently subscribed to <strong className="text-white">{activeSubscription.planId?.name}</strong>.
+              You are currently subscribed to <strong className="text-white">{typeof activeSubscription.planId === 'object' ? activeSubscription.planId.name : 'your plan'}</strong>.
             </p>
           </>
         ) : (
@@ -219,7 +224,7 @@ export default function SubscriptionsPage() {
         <div className="max-w-3xl mx-auto bg-dark-12 border border-dark-25 rounded-2xl p-8 mb-16 animate-fade-in-up flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h2 className="text-3xl font-bold text-white">{activeSubscription.planId?.name}</h2>
+              <h2 className="text-3xl font-bold text-white">{typeof activeSubscription.planId === 'object' ? activeSubscription.planId.name : 'Current Plan'}</h2>
               <span className="px-3 py-1 bg-green-500/20 text-green-45 text-xs font-semibold rounded-full border border-green-500/30">
                 ACTIVE
               </span>
@@ -228,7 +233,7 @@ export default function SubscriptionsPage() {
               Valid until: {new Date(activeSubscription.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
             <p className="text-white font-medium">
-              {activeSubscription.planId?.currency} {activeSubscription.finalAmountPaid} <span className="text-sm font-normal text-grey-60">paid via {activeSubscription.paymentDetails.paymentMethod}</span>
+              {typeof activeSubscription.planId === 'object' ? activeSubscription.planId.currency : 'INR'} {activeSubscription.finalAmountPaid} <span className="text-sm font-normal text-grey-60">paid via {activeSubscription.paymentDetails.paymentMethod}</span>
             </p>
           </div>
           <button

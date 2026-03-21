@@ -11,7 +11,7 @@ interface DeleteVideoResponse {
   message: string;
 }
 interface GetVideosResponse {
-  videos: any[];
+  videos: VideoDetail[];
   page: number;
   totalPages: number;
   total: number;
@@ -41,30 +41,32 @@ export interface GetRelatedVideosResponse {
 /** GET /video/:id — watch page payload */
 export interface VideoDetail {
   _id: string;
-  title?: string;
+  title: string;
   description?: string;
-  src?: string;
-  createdAt?: string;
-  creatorId?: {
-    _id: string;
-    username?: string;
-    name?: string;
-    profileImage?: string;
-    email?: string;
-  };
-  stats?: {
-    views?: number;
-    comments?: number;
-    likes?: number;
-    disLikes?: number;
-    watchTime?: number;
-  };
-  monetization?: {
-    type?: string;
+  thumbnailPath?: string;
+  previewPath?: string;
+  filePath: string;
+  type: 'local' | 'thirdparty';
+  duration?: number;
+  category?: string;
+  tags?: string[];
+  monetization: {
+    type: 'free' | 'rent' | 'paid';
     price?: number;
     currency?: string;
   };
-  duration?: number;
+  stats: {
+    views: number;
+    likes: number;
+    dislikes: number;
+  };
+  channel?: {
+    _id: string;
+    name: string;
+    avatar?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
 }
 interface GetLikedVideosParams {
   page?: number;

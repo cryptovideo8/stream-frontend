@@ -25,6 +25,7 @@ import {
     useAdminRejectPayoutRequestMutation,
     useGetPayoutRateQuery,
     useUpdatePayoutRateMutation,
+    PayoutRequest,
 } from '../../../store/api/payoutApi';
 import { API_BASE_URL } from '../../../config/env';
 import { useAppSelector } from '../../../store/hooks';
@@ -60,8 +61,8 @@ export default function AdminPayoutsPage() {
     const [page, setPage] = useState(1);
 
     // Modal state
-    const [detailModal, setDetailModal] = useState<any | null>(null);
-    const [rejectModal, setRejectModal] = useState<any | null>(null);
+    const [detailModal, setDetailModal] = useState<PayoutRequest | null>(null);
+    const [rejectModal, setRejectModal] = useState<PayoutRequest | null>(null);
 
     const { data: requests, isLoading, refetch } = useAdminGetAllPayoutRequestsQuery({
         status: statusFilter || undefined,
@@ -79,16 +80,17 @@ export default function AdminPayoutsPage() {
     const [reject] = useAdminRejectPayoutRequestMutation();
     const [updateRate] = useUpdatePayoutRateMutation();
 
-    const handleSettle = async (r: any) => {
+    const handleSettle = async (r: PayoutRequest) => {
         if (!confirm(`Settle payout of ₹${r.totalAmount.toFixed(2)} for ${r.creatorId?.name}?`)) return;
         try {
             await settle({ id: r._id }).unwrap();
             toast.success('Payout settled!');
             refetch();
-        } catch (err: any) {
+        } catch (err: unknown) {
+            const error = err as { data?: { message?: string }; status?: number };
             const msg =
-                err?.data?.message ||
-                (err?.status === 409
+                error?.data?.message ||
+                (error?.status === 409
                     ? 'Watch data no longer matches this request. Review in Detail.'
                     : 'Failed to settle');
             toast.error(msg);
@@ -129,22 +131,24 @@ export default function AdminPayoutsPage() {
         }
     };
 
-    const handleReject = async (values: any, { setSubmitting, resetForm }: any) => {
+    const handleReject = async (values: { adminNote: string }, { setSubmitting, resetForm }: { setSubmitting: (s: boolean) => void; resetForm: () => void }) => {
+        if (!rejectModal) return;
         try {
             await reject({ id: rejectModal._id, adminNote: values.adminNote }).unwrap();
             toast.success('Payout rejected');
             setRejectModal(null);
             resetForm();
             refetch();
-        } catch (err: any) {
-            toast.error(err?.data?.message || 'Failed to reject');
+        } catch (err: unknown) {
+            const error = err as { data?: { message?: string } };
+            toast.error(error?.data?.message || 'Failed to reject');
         } finally {
             setSubmitting(false);
         }
     };
 
     const monthlyChart = useMemo(() => {
-        return (stats?.monthlyVolume ?? []).map((m: any) => ({
+        return (stats?.monthlyVolume ?? []).map((m: { _id: string; amount: number; count: number }) => ({
             month: m._id,
             amount: m.amount,
             count: m.count,
@@ -152,16 +156,16 @@ export default function AdminPayoutsPage() {
     }, [stats]);
 
     const topCreatorsChart = useMemo(() => {
-        return (stats?.topCreators ?? []).map((c: any) => ({
+        return (stats?.topCreators ?? []).map((c: { creator: { name: string }; totalEarned: number }) => ({
             name: c.creator?.name ?? 'Unknown',
             earned: c.totalEarned,
         }));
     }, [stats]);
 
     const tabs = [
-        { id: 'requests', label: 'Payout Requests', icon: <CurrencyDollarIcon className="h-4 w-4" /> },
-        { id: 'insights', label: 'Insights', icon: <ChartBarIcon className="h-4 w-4" /> },
-        { id: 'rate', label: 'Payout Rate', icon: <Cog6ToothIcon className="h-4 w-4" /> },
+        { id: 'requests' as const, label: 'Payout Requests', icon: <CurrencyDollarIcon className="h-4 w-4" /> },
+        { id: 'insights' as const, label: 'Insights', icon: <ChartBarIcon className="h-4 w-4" /> },
+        { id: 'rate' as const, label: 'Payout Rate', icon: <Cog6ToothIcon className="h-4 w-4" /> },
     ];
 
     // ── Guard: show loading until mounted, then block non-superadmins ──────────
@@ -391,7 +395,7 @@ export default function AdminPayoutsPage() {
                                         <XAxis dataKey="month" tick={{ fill: '#888', fontSize: 10 }} />
                                         <YAxis tick={{ fill: '#888', fontSize: 10 }} />
                                         <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', borderColor: '#333', borderRadius: '8px' }}
-                                            formatter={(v: any) => [`₹${v.toFixed(2)}`, 'Amount']} />
+                                            formatter={(v: number) => [`₹${v.toFixed(2)}`, 'Amount']} />
                                         <Bar dataKey="amount" fill="#22c55e" radius={[3, 3, 0, 0]} />
                                     </BarChart>
                                 </ResponsiveContainer>
@@ -410,7 +414,7 @@ export default function AdminPayoutsPage() {
                                         <XAxis type="number" tick={{ fill: '#888', fontSize: 10 }} />
                                         <YAxis dataKey="name" type="category" tick={{ fill: '#888', fontSize: 10 }} width={90} />
                                         <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', borderColor: '#333', borderRadius: '8px' }}
-                                            formatter={(v: any) => [`₹${v.toFixed(2)}`, 'Earned']} />
+                                            formatter={(v: number) => [`₹${v.toFixed(2)}`, 'Earned']} />
                                         <Bar dataKey="earned" fill="#e53e3e" radius={[0, 3, 3, 0]} />
                                     </BarChart>
                                 </ResponsiveContainer>
@@ -457,8 +461,9 @@ export default function AdminPayoutsPage() {
                                     await updateRate(values).unwrap();
                                     toast.success('Payout rate updated!');
                                     refetchRate();
-                                } catch (err: any) {
-                                    toast.error(err?.data?.message || 'Failed to update rate');
+                                } catch (err: unknown) {
+                                    const error = err as { data?: { message?: string } };
+                                    toast.error(error?.data?.message || 'Failed to update rate');
                                 } finally {
                                     setSubmitting(false);
                                 }
@@ -532,7 +537,7 @@ export default function AdminPayoutsPage() {
                             <div>
                                 <p className="text-grey-70 text-xs mb-2">Video Breakdown (paid/rent only)</p>
                                 <div className="space-y-1">
-                                    {detailModal.videoBreakdown?.map((v: any) => (
+                                    {detailModal.videoBreakdown?.map((v: { videoId: string; title: string; watchMinutes: number }) => (
                                         <div key={String(v.videoId)} className="flex justify-between bg-dark-10 rounded px-3 py-2">
                                             <span className="text-white text-xs">{v.title}</span>
                                             <span className="text-grey-70 text-xs">{v.watchMinutes.toFixed(1)} min</span>

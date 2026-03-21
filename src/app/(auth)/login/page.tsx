@@ -39,7 +39,8 @@ export default function LoginPage() {
       dispatch(setCredentials({ user: res.user, token: res.token }));
       toast.success('Login successful');
       router.push('/subscriptions'); // or dashboard
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
       toast.error(error?.data?.message || 'Login failed');
     } finally {
       setLoading(false);

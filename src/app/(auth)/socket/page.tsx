@@ -1,15 +1,12 @@
 'use client';
-import { useEffect, useState } from "react";
-import { getSocket } from "../../utils/socket";
-
-const SOCKET_ID = "1234"; // hardcoded for testing
+import { useState } from "react";
 
 export default function SocketTestPage() {
-  const [socketId, setSocketId] = useState<string | null>(null);
-  const [connected, setConnected] = useState(false);
-  const [progress, setProgress] = useState<string | null>(null);
-  const [completeMessage, setCompleteMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [socketId] = useState<string | null>(null);
+  const [connected] = useState(false);
+  const [progress] = useState<string | null>(null);
+  const [completeMessage] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
   // useEffect(() => {
   //   const socket = getSocket();

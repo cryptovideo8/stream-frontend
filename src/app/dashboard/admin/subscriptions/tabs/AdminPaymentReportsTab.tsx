@@ -10,7 +10,7 @@ import { format, subDays, isSameDay, startOfDay, endOfDay, eachDayOfInterval } f
 import SelectWithSearch from '../../../../components/ui/SelectWithSearch';
 
 export default function AdminPaymentReportsTab() {
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<{ value: string; label: string } | null>(null);
   const [upiId, setUpiId] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -39,7 +39,7 @@ export default function AdminPaymentReportsTab() {
     let approvedCount = 0;
     let rejectedCount = 0;
 
-    audits.forEach((a: any) => {
+    audits.forEach((a) => {
       if (a.status === 'approved') {
         totalRevenue += a.amount;
         approvedCount++;
@@ -74,12 +74,12 @@ export default function AdminPaymentReportsTab() {
     }
     
     return days.map(day => {
-      const dayAudits = audits.filter((a: any) => a.createdAt && isSameDay(new Date(a.createdAt), day));
+      const dayAudits = audits.filter((a) => a.createdAt && isSameDay(new Date(a.createdAt), day));
       
       let approvedAmount = 0;
       let pendingAmount = 0;
       
-      dayAudits.forEach((a: any) => {
+      dayAudits.forEach((a) => {
         if (a.status === 'approved') approvedAmount += a.amount;
         if (a.status === 'pending') pendingAmount += a.amount;
       });
@@ -128,7 +128,7 @@ export default function AdminPaymentReportsTab() {
               endpoint="/user/search"
               placeholder="Search Name / Email"
               value={selectedUser}
-              onChange={(val: any) => setSelectedUser(val)}
+              onChange={(val: { value: string; label: string } | null) => setSelectedUser(val)}
               isClearable
             />
           </div>

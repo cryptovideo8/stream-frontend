@@ -38,8 +38,9 @@ export default function SignUpPage() {
       await sendOtp({ email }).unwrap();
       toast.success('OTP sent successfully');
       setOtpSent(true);
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to send OTP');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error?.data?.message || 'Failed to send OTP');
     }
   };
 
@@ -53,8 +54,9 @@ export default function SignUpPage() {
       await signUp({ name, email, password, otp, role }).unwrap();
       toast.success('Signup successful');
       router.push('/login');
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Signup failed');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error?.data?.message || 'Signup failed');
     }
   };
 

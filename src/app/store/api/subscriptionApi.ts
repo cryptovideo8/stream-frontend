@@ -37,10 +37,24 @@ export interface SubscribeRequest {
   autoRenew?: boolean;
 }
 
+export interface Promo {
+  _id: string;
+  code: string;
+  discountType: 'percent' | 'flat';
+  discountValue: number;
+  applicablePlans: string[] | Plan[];
+  validFrom: string;
+  validUntil?: string;
+  maxUses: number;
+  usedCount: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface Subscription {
   _id: string;
-  userId: any;
-  planId: any;
+  userId: string | { _id: string; name: string; email: string };
+  planId: string | Plan;
   startDate: string;
   endDate: string;
   status: 'active' | 'expired' | 'cancelled';
@@ -119,19 +133,19 @@ export const subscriptionApi = baseApi.injectEndpoints({
     }),
 
     // ─── Super Admin: Promos ────────────────────────────────────────────────
-    adminGetPromos: builder.query<{ promos: any[]; total: number; page: number; totalPages: number }, { page?: number; limit?: number; active?: boolean }>({
+    adminGetPromos: builder.query<{ promos: Promo[]; total: number; page: number; totalPages: number }, { page?: number; limit?: number; active?: boolean }>({
       query: (params) => ({ url: '/subscription/admin/promo', params }),
       providesTags: ['Promos'],
     }),
-    createPromo: builder.mutation<{ message: string; promo: any }, any>({
+    createPromo: builder.mutation<{ message: string; promo: Promo }, Partial<Promo>>({
       query: (body) => ({ url: '/subscription/admin/promo', method: 'POST', body }),
       invalidatesTags: ['Promos'],
     }),
-    updatePromo: builder.mutation<{ message: string; promo: any }, { id: string; data: any }>({
+    updatePromo: builder.mutation<{ message: string; promo: Promo }, { id: string; data: Partial<Promo> }>({
       query: ({ id, data }) => ({ url: `/subscription/admin/promo/${id}`, method: 'PUT', body: data }),
       invalidatesTags: ['Promos'],
     }),
-    togglePromo: builder.mutation<{ message: string; promo: any }, string>({
+    togglePromo: builder.mutation<{ message: string; promo: Promo }, string>({
       query: (id) => ({ url: `/subscription/admin/promo/${id}/toggle`, method: 'PATCH' }),
       invalidatesTags: ['Promos'],
     }),

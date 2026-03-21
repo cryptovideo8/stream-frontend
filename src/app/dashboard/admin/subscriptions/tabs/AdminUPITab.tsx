@@ -12,7 +12,7 @@ import { format } from 'date-fns';
 import { CheckIcon, XMarkIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export default function AdminUPITab() {
-  const { data: upis = [], isLoading, refetch } = useGetAllUpisQuery();
+  const { data: upis = [], isLoading } = useGetAllUpisQuery();
   const [createUpi, { isLoading: isCreating }] = useCreateUpiMutation();
   const [toggleUpi] = useToggleUpiMutation();
   const [deleteUpi] = useDeleteUpiMutation();
@@ -26,7 +26,8 @@ export default function AdminUPITab() {
       await createUpi({ upiId: newUpiId.trim() }).unwrap();
       toast.success('UPI ID added successfully!');
       setNewUpiId('');
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
       toast.error(error?.data?.message || 'Failed to add UPI ID');
     }
   };
@@ -35,7 +36,7 @@ export default function AdminUPITab() {
     try {
       await toggleUpi(id).unwrap();
       toast.success(`UPI marked as ${!currentStatus ? 'Active' : 'Inactive'}`);
-    } catch (error) {
+    } catch (err: unknown) {
       toast.error('Failed to toggle UPI status');
     }
   };
@@ -45,7 +46,7 @@ export default function AdminUPITab() {
     try {
       await deleteUpi(id).unwrap();
       toast.success('UPI ID deleted');
-    } catch (error) {
+    } catch (err: unknown) {
       toast.error('Failed to delete UPI ID');
     }
   };

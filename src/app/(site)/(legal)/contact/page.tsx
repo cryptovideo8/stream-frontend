@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-dark-6 py-12 px-4">
@@ -10,7 +12,7 @@ export default function ContactPage() {
             <section>
               <h2 className="text-2xl font-semibold text-primary mb-4">Get in Touch</h2>
               <p className="text-grey-70 mb-6">
-                We're here to help! Send us a message and we'll respond as soon as possible.
+                We&apos;re here to help! Send us a message and we&apos;ll respond as soon as possible.
               </p>
               
               <div className="space-y-4">
@@ -35,9 +37,9 @@ export default function ContactPage() {
               <h2 className="text-2xl font-semibold text-primary mb-4">FAQ</h2>
               <p className="text-grey-70">
                 Before contacting support, you might find your answer in our{' '}
-                <a href="/faq" className="text-red-45 hover:text-red-55">
+                <Link href="/faq" className="text-red-45 hover:text-red-55">
                   FAQ section
-                </a>
+                </Link>
                 .
               </p>
             </section>

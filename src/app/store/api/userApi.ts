@@ -99,7 +99,7 @@ export const userApi = baseApi.injectEndpoints({
       }),
     }),
 
-    updateUser: builder.mutation<any, UpdateUserRequest>({
+    updateUser: builder.mutation<{ message: string; user: User }, UpdateUserRequest>({
       query: ({ id, ...body }) => ({
         url: `/user/${id}`,
         method: 'PUT',
