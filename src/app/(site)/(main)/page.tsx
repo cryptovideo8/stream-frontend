@@ -289,6 +289,13 @@ export default function Home() {
               <p className="text-grey-70 mb-4 px-4 max-w-md mx-auto">
                 Failed to load videos. This can happen if the backend server is unreachable or CORS is blocking the request.
               </p>
+              {error && (
+                <div className="bg-black/40 p-3 rounded mb-4 max-w-sm mx-auto overflow-auto">
+                  <p className="text-[10px] font-mono text-grey-60 text-left">
+                    DEBUG: {JSON.stringify(error)}
+                  </p>
+                </div>
+              )}
               <button 
                 onClick={() => window.location.reload()}
                 className="px-6 py-2 bg-red-45 hover:bg-red-55 text-white rounded-lg transition-all"
