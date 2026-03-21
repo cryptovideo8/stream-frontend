@@ -11,15 +11,14 @@ export const getSocket = () => {
     console.log('Initializing socket connection to:', SOCKET_URL);
 
     socket = io(SOCKET_URL, {
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'],
       autoConnect: true,
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
       timeout: 10000,
-      forceNew: true,
-      withCredentials: true,
-      path: '/socket.io/',
+      withCredentials: false,
+      path: '/socket.io',
     });
 
     socket.on('connect', () => {

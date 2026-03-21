@@ -194,7 +194,14 @@ export default function SubscriptionsPage() {
       )}
 
       {/* --- Plans Grid --- */}
-      {!activeSubscription && (
+      {!activeSubscription && plans.length === 0 && (
+        <div className="max-w-2xl mx-auto text-center py-16 px-4 rounded-2xl border border-dark-25 bg-dark-10">
+          <p className="text-grey-60 mb-2">No subscription plans are available yet.</p>
+          <p className="text-sm text-grey-50">Ask a super admin to add plans in Dashboard → Subscription plans.</p>
+        </div>
+      )}
+
+      {!activeSubscription && plans.length > 0 && (
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
           {plans.map((plan, idx) => (
             <div

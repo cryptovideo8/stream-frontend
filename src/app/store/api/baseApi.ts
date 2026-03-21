@@ -23,6 +23,8 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 ) => {
   let result = await baseQuery(args, api, extraOptions);
 
+  // 401 = authentication failure (bad/missing/expired token) → clear session.
+  // 403 = forbidden (wrong role, etc.) → do not log the user out; backend uses 403 for that.
   if (result.error && result.error.status === 401) {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('token');

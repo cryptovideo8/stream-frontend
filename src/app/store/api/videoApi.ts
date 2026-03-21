@@ -27,6 +27,16 @@ interface GetRelatedVideosParams {
   videoId: string;
   limit?: number;
 }
+
+/** GET /video/related/:id — matches by Mongo _id or Bunny videoId */
+export interface GetRelatedVideosResponse {
+  success?: boolean;
+  videos: any[];
+  relatedCount?: number;
+  page?: number;
+  totalPages?: number;
+  total?: number;
+}
 interface GetLikedVideosParams {
   page?: number;
   limit?: number;
@@ -101,8 +111,8 @@ export const videoApi = baseApi.injectEndpoints({
       query: (id) => `/video/${id}`,
     }),
 
-    getRelatedVideos: builder.query<GetVideosResponse, GetRelatedVideosParams>({
-      query: ({ videoId, limit = 20 }) => ({
+    getRelatedVideos: builder.query<GetRelatedVideosResponse, GetRelatedVideosParams>({
+      query: ({ videoId, limit = 24 }) => ({
         url: `/video/related/${videoId}`,
         method: 'GET',
         params: { limit },

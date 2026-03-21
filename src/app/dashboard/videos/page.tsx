@@ -82,11 +82,25 @@ export default function VideoManagement() {
 
   useEffect(() => {
     let socket: any = null;
+
+    const onUploadProgress = (data: any) => {
+      setUploadProgress(parseFloat(data.percentage));
+    };
+    const onUploadComplete = () => {
+      toast.success('Upload completed successfully!');
+      setCurrentStep('completed' as any);
+      refetch();
+    };
+    const onUploadError = (data: any) => {
+      toast.error(data.error || 'Upload failed');
+      setCurrentStep('error' as any);
+    };
+
     const initializeSocket = async () => {
       try {
         socket = getSocket();
         if (!socket.connected) {
-          await new Promise((resolve) => {
+          await new Promise<void>((resolve) => {
             socket.once('connect', resolve);
             socket.connect();
           });
@@ -94,33 +108,24 @@ export default function VideoManagement() {
         setSocketId(socket.id);
         setIsSocketConnected(true);
 
-        socket.on('upload-progress', (data: any) => {
-          setUploadProgress(parseFloat(data.percentage));
-        });
-        socket.on('upload-complete', () => {
-          toast.success('Upload completed successfully!');
-          setCurrentStep('completed' as any);
-          refetch();
-        });
-        socket.on('upload-error', (data: any) => {
-          toast.error(data.error || 'Upload failed');
-          setCurrentStep('error' as any);
-        });
-      } catch (error) {
+        socket.on('upload-progress', onUploadProgress);
+        socket.on('upload-complete', onUploadComplete);
+        socket.on('upload-error', onUploadError);
+      } catch {
         setIsSocketConnected(false);
         setSocketId(null);
       }
     };
     initializeSocket();
+
     return () => {
       if (socket) {
-        socket.off('upload-progress');
-        socket.off('upload-complete');
-        socket.off('upload-error');
-        socket.disconnect();
+        socket.off('upload-progress', onUploadProgress);
+        socket.off('upload-complete', onUploadComplete);
+        socket.off('upload-error', onUploadError);
       }
     };
-  }, []);
+  }, [refetch]);
 
   const [videoData, setVideoData] = useState({
     videoType: 'internal',

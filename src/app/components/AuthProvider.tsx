@@ -4,6 +4,22 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setCredentials, logout } from '../store/slices/authSlice';
 
+/** Decode JWT payload (no verification) for rehydrating minimal user when `user` is missing from storage. */
+function decodeJwtPayload(token: string): { id?: string; role?: string } | null {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    let b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const pad = b64.length % 4;
+    if (pad) b64 += '='.repeat(4 - pad);
+    const json = atob(b64);
+    const payload = JSON.parse(json) as { id?: string; role?: string };
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
     const dispatch = useDispatch();
 
@@ -48,10 +64,46 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                 localStorage.removeItem('user');
                 dispatch(logout());
             }
-        } else {
-            // Ensure Redux is cleared if localStorage is missing
-            dispatch(logout());
+            return;
         }
+
+        if (token && !userStr) {
+            const payload = decodeJwtPayload(token);
+            if (payload?.id) {
+                dispatch(
+                    setCredentials({
+                        token,
+                        user: {
+                            id: String(payload.id),
+                            role: payload.role,
+                            name: 'User',
+                            email: '',
+                        },
+                    })
+                );
+                localStorage.setItem(
+                    'user',
+                    JSON.stringify({
+                        id: String(payload.id),
+                        role: payload.role,
+                        name: 'User',
+                        email: '',
+                    })
+                );
+            } else {
+                localStorage.removeItem('token');
+                dispatch(logout());
+            }
+            return;
+        }
+
+        if (!token && userStr) {
+            localStorage.removeItem('user');
+            dispatch(logout());
+            return;
+        }
+
+        dispatch(logout());
     }, [dispatch]);
 
     return <>{children}</>;

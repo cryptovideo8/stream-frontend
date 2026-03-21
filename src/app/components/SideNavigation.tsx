@@ -13,6 +13,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ShieldCheckIcon,
+  RectangleStackIcon,
 } from '@heroicons/react/24/outline';
 import { useAppSelector } from '../store/hooks';
 import { selectCurrentUser } from '../store/slices/authSlice';
@@ -64,7 +65,11 @@ export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }
     ...(isSuperAdmin
       ? [
         { text: 'Admin Payouts', icon: ShieldCheckIcon, path: '/dashboard/admin/payouts' },
-        { text: 'Admin Subs', icon: CurrencyDollarIcon, path: '/dashboard/admin/subscriptions' },
+        {
+          text: 'Subscription plans',
+          icon: RectangleStackIcon,
+          path: '/dashboard/admin/subscriptions?tab=plans',
+        },
       ]
       : []),
   ];
@@ -87,7 +92,8 @@ export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }
       <nav className="flex-1 px-2 py-3">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.path;
+          const pathBase = item.path.split('?')[0];
+          const isActive = pathname === pathBase;
           return (
             <Link
               key={item.text}

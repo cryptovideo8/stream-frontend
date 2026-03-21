@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useAppSelector } from '../../../store/hooks';
 import { selectCurrentUser } from '../../../store/slices/authSlice';
 import { useRouter } from 'next/navigation';
@@ -12,7 +13,6 @@ import {
     ChartBarIcon
 } from '@heroicons/react/24/outline';
 
-// Components we will create next
 import AdminPlansTab from './tabs/AdminPlansTab';
 import AdminPromosTab from './tabs/AdminPromosTab';
 import AdminSubscribersTab from './tabs/AdminSubscribersTab';
@@ -22,32 +22,76 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-export default function AdminSubscriptionsPage() {
+const TAB_KEYS = ['plans', 'promos', 'subscribers', 'stats'] as const;
+
+function AdminSubscriptionsContent() {
     const user = useAppSelector(selectCurrentUser);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const [tabIndex, setTabIndex] = useState(0);
+    const [mounted, setMounted] = useState(false);
 
-    // Basic guard
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        const t = searchParams.get('tab');
+        if (t === 'promos') setTabIndex(1);
+        else if (t === 'subscribers') setTabIndex(2);
+        else if (t === 'stats') setTabIndex(3);
+        else setTabIndex(0);
+    }, [searchParams]);
+
+    const onTabChange = (index: number) => {
+        setTabIndex(index);
+        const key = TAB_KEYS[index] ?? 'plans';
+        const url = `/dashboard/admin/subscriptions?tab=${key}`;
+        router.replace(url, { scroll: false });
+    };
+
+    useEffect(() => {
+        if (!mounted) return;
+        if (!user || user.role !== 'superadmin') {
+            router.replace('/dashboard');
+        }
+    }, [mounted, user, router]);
+
+    if (!mounted) {
+        return (
+            <div className="min-h-[40vh] flex items-center justify-center bg-dark-6 text-grey-60">
+                Loading…
+            </div>
+        );
+    }
+
     if (!user || user.role !== 'superadmin') {
-        if (typeof window !== 'undefined') router.push('/dashboard');
-        return null;
+        return (
+            <div className="min-h-[40vh] flex items-center justify-center bg-dark-6 text-grey-60">
+                Redirecting…
+            </div>
+        );
     }
 
     const tabs = [
-        { name: 'Plans', icon: CurrencyDollarIcon },
-        { name: 'Promo Codes', icon: TagIcon },
-        { name: 'Subscribers', icon: UsersIcon },
-        { name: 'Statistics', icon: ChartBarIcon },
+        { name: 'Plans', icon: CurrencyDollarIcon, key: 'plans' },
+        { name: 'Promo Codes', icon: TagIcon, key: 'promos' },
+        { name: 'Subscribers', icon: UsersIcon, key: 'subscribers' },
+        { name: 'Statistics', icon: ChartBarIcon, key: 'stats' },
     ];
 
     return (
         <div className="min-h-screen bg-dark-6 p-4 sm:p-6 lg:p-8">
             <div className="max-w-7xl mx-auto">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-white mb-2">Subscription Management</h1>
-                    <p className="text-grey-60">Manage plans, promo codes, and subscriber access.</p>
+                    <h1 className="text-3xl font-bold text-white mb-2">Subscription management</h1>
+                    <p className="text-grey-60">
+                        Super admin: manage streaming subscription plans, promos, and subscribers. Public catalogue is at{' '}
+                        <a href="/subscriptions" className="text-red-45 hover:underline">/subscriptions</a>.
+                    </p>
                 </div>
 
-                <Tab.Group>
+                <Tab.Group selectedIndex={tabIndex} onChange={onTabChange}>
                     <Tab.List className="flex space-x-2 rounded-xl bg-dark-10 p-1 mb-8 overflow-x-auto">
                         {tabs.map((tab) => (
                             <Tab
@@ -85,5 +129,19 @@ export default function AdminSubscriptionsPage() {
                 </Tab.Group>
             </div>
         </div>
+    );
+}
+
+export default function AdminSubscriptionsPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="min-h-[40vh] flex items-center justify-center bg-dark-6 text-grey-60">
+                    Loading subscription admin…
+                </div>
+            }
+        >
+            <AdminSubscriptionsContent />
+        </Suspense>
     );
 }

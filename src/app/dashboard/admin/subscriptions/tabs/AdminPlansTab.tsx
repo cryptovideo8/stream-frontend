@@ -107,7 +107,10 @@ export default function AdminPlansTab() {
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-white">Subscription Plans</h2>
+                <div>
+                    <h2 className="text-xl font-bold text-white">Subscription plans (master)</h2>
+                    <p className="text-sm text-grey-50 mt-1">These plans power the public pricing page at /subscriptions</p>
+                </div>
                 <button
                     onClick={() => handleOpenModal()}
                     className="flex items-center gap-2 px-4 py-2 bg-red-45 hover:bg-red-55 text-white text-sm font-medium rounded-lg transition-colors"
@@ -211,6 +214,30 @@ export default function AdminPlansTab() {
                             <div>
                                 <label className="block text-sm font-medium text-grey-70 mb-1">Features (One per line)</label>
                                 <textarea rows={4} value={formData.features} onChange={(e) => setFormData({ ...formData, features: e.target.value })} placeholder="4K Ultra HD Streaming&#10;Watch on 4 Devices&#10;Ad-Free Experience" className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white whitespace-pre-wrap" />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-grey-70 mb-1">Sort order</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        value={formData.sortOrder}
+                                        onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value, 10) || 0 })}
+                                        className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white"
+                                    />
+                                    <p className="text-xs text-grey-50 mt-1">Lower shows first on /subscriptions</p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-grey-70 mb-1">Max simultaneous screens</label>
+                                    <input
+                                        type="number"
+                                        min={1}
+                                        value={formData.maxScreens}
+                                        onChange={(e) => setFormData({ ...formData, maxScreens: parseInt(e.target.value, 10) || 1 })}
+                                        className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white"
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex gap-6">
