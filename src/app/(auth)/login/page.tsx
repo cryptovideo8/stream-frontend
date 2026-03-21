@@ -39,9 +39,11 @@ export default function LoginPage() {
       dispatch(setCredentials({ user: res.user, token: res.token }));
       toast.success('Login successful');
       router.push('/subscriptions'); // or dashboard
-    } catch (err: unknown) {
-      const error = err as { data?: { message?: string } };
-      toast.error(error?.data?.message || 'Login failed');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      // RTK Query errors often look like { status, data: { message } } OR { error }
+      const message = err?.data?.message || err?.error || 'Login failed. Please try again.';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

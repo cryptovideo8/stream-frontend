@@ -177,7 +177,7 @@ export default function Home() {
     router.push(`/?${params.toString()}`);
   };
 
-  const { data, isLoading } = useSearchVideosQuery({
+  const { data, isLoading, isError, error } = useSearchVideosQuery({
     page,
     limit: 20,
     search: search || undefined,
@@ -276,10 +276,41 @@ export default function Home() {
 
         {/* ── Video Grid ─────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-          {isLoading
-            ? [...Array(12)].map((_, i) => <VideoCardSkeleton key={i} />)
-            : data?.videos?.map((video) => <VideoCard key={video._id} video={video} />)
-          }
+          {isLoading ? (
+            [...Array(12)].map((_, i) => <VideoCardSkeleton key={i} />)
+          ) : isError ? (
+            <div className="col-span-full py-20 text-center bg-red-45/10 rounded-2xl border border-red-45/30">
+              <div className="flex justify-center mb-4">
+                <svg className="h-12 w-12 text-red-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Connection Issue</h3>
+              <p className="text-grey-70 mb-4 px-4 max-w-md mx-auto">
+                Failed to load videos. This can happen if the backend server is unreachable or CORS is blocking the request.
+              </p>
+              <button 
+                onClick={() => window.location.reload()}
+                className="px-6 py-2 bg-red-45 hover:bg-red-55 text-white rounded-lg transition-all"
+              >
+                Retry
+              </button>
+            </div>
+          ) : data?.videos && data.videos.length > 0 ? (
+            data.videos.map((video) => <VideoCard key={video._id} video={video} />)
+          ) : (
+            <div className="col-span-full py-20 text-center bg-dark-10 rounded-2xl border border-dark-25">
+              <div className="flex justify-center mb-4">
+                <ClockIcon className="h-12 w-12 text-grey-60" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                No Videos Available
+              </h3>
+              <p className="text-grey-70">
+                Please check back later or try a different category.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* ── Pagination ─────────────────────────────────── */}

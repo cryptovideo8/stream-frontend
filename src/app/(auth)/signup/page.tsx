@@ -46,9 +46,10 @@ function SignUpForm() {
       await sendOtp({ email }).unwrap();
       toast.success('OTP sent successfully');
       setOtpSent(true);
-    } catch (err: unknown) {
-      const error = err as { data?: { message?: string } };
-      toast.error(error?.data?.message || 'Failed to send OTP');
+    } catch (err: any) {
+      console.error('Send OTP error:', err);
+      const message = err?.data?.message || err?.error || 'Failed to send OTP. Please try again.';
+      toast.error(message);
     }
   };
 
@@ -62,9 +63,10 @@ function SignUpForm() {
       await signUp({ name, email, password, otp, role }).unwrap();
       toast.success('Signup successful');
       router.push('/login');
-    } catch (err: unknown) {
-      const error = err as { data?: { message?: string } };
-      toast.error(error?.data?.message || 'Signup failed');
+    } catch (err: any) {
+      console.error('Signup error:', err);
+      const message = err?.data?.message || err?.error || 'Signup failed. Please try again.';
+      toast.error(message);
     }
   };
 
