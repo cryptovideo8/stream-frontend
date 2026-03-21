@@ -270,12 +270,9 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
 
       {/* Navigation Bar */}
       {!hideNavMenu && (
-        <nav
-          className="border-t overflow-x-auto"
-          style={{ borderColor: 'rgba(255,255,255,0.05)' }}
-        >
-          <div className="max-w-screen-xl mx-auto px-4">
-            <ul className="flex items-center gap-1 text-sm whitespace-nowrap h-10">
+        <nav className="header-subnav" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+          <div className="header-subnav-inner">
+            <ul className="header-subnav-list">
 
               {/* Videos Dropdown */}
               <li className="relative" ref={videosRef}>

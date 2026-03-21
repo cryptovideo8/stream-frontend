@@ -53,13 +53,10 @@ function RelatedVideosShelves({
     <div className="space-y-10">
       {related.length > 0 && (
         <section aria-labelledby="related-heading">
-          <div className="mb-4 flex items-center justify-between gap-2">
-            <h2 id="related-heading" className="text-lg font-bold tracking-tight text-white sm:text-xl">
-              Related to this video
-            </h2>
-            <span className="text-xs text-grey-50">Same category, tags, or creator</span>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <h2 id="related-heading" className="mb-4 text-lg font-bold tracking-tight text-white sm:text-xl">
+            Related to this video
+          </h2>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {related.map((v) => (
               <WatchVideoCard key={v._id} video={v} variant="grid" />
             ))}
@@ -69,14 +66,11 @@ function RelatedVideosShelves({
 
       {related.length > 0 && discover.length > 0 && (
         <section aria-labelledby="discover-heading">
-          <div className="mb-4 flex items-center justify-between gap-2">
-            <h2 id="discover-heading" className="text-lg font-bold tracking-tight text-white sm:text-xl">
-              More to explore
-            </h2>
-            <span className="text-xs text-grey-50">Popular picks when a close match isn&apos;t available</span>
-          </div>
+          <h2 id="discover-heading" className="mb-4 text-lg font-bold tracking-tight text-white sm:text-xl">
+            More to explore
+          </h2>
           <div className="relative">
-            <div className="flex gap-4 overflow-x-auto pb-4 pt-1 [scrollbar-width:thin] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-dark-25 snap-x snap-mandatory">
+            <div className="flex gap-3 overflow-x-auto pb-4 pt-1 [scrollbar-width:thin] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-dark-25 snap-x snap-mandatory sm:gap-4 [-webkit-overflow-scrolling:touch]">
               {discover.map((v) => (
                 <WatchVideoCard key={v._id} video={v} variant="rail" />
               ))}
@@ -104,11 +98,9 @@ function RelatedVideosShelves({
 
 function SidebarQueue({
   videos,
-  relatedCount,
   isLoading,
 }: {
   videos: WatchListVideo[];
-  relatedCount: number;
   isLoading: boolean;
 }) {
   if (isLoading) {
@@ -127,12 +119,9 @@ function SidebarQueue({
     );
   }
 
-  const related = videos.slice(0, relatedCount);
-  const discover = videos.slice(relatedCount);
-
   return (
     <aside className="lg:w-[min(100%,380px)] xl:w-[400px]">
-      <div className="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-white/[0.06] bg-dark-10/90 p-3 shadow-xl backdrop-blur-md lg:p-4">
+      <div className="sticky top-20 max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-2xl border border-white/[0.06] bg-dark-10/90 p-3 shadow-xl backdrop-blur-md sm:top-24 sm:max-h-[calc(100dvh-6rem)] lg:p-4">
         <div className="mb-3 flex items-center justify-between border-b border-white/[0.06] pb-3">
           <h2 className="text-sm font-bold uppercase tracking-wider text-grey-50">Up next</h2>
           <Link
@@ -146,29 +135,10 @@ function SidebarQueue({
         {videos.length === 0 ? (
           <p className="py-6 text-center text-sm text-grey-60">No other videos to show.</p>
         ) : (
-          <div className="space-y-6">
-            {related.length > 0 && (
-              <div>
-                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-grey-50">Related</p>
-                <div className="flex flex-col gap-1">
-                  {related.map((v) => (
-                    <WatchVideoCard key={v._id} video={v} variant="sidebar" />
-                  ))}
-                </div>
-              </div>
-            )}
-            {discover.length > 0 && (
-              <div>
-                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-grey-50">
-                  {related.length > 0 ? 'More to explore' : 'Recommended'}
-                </p>
-                <div className="flex flex-col gap-1">
-                  {discover.map((v) => (
-                    <WatchVideoCard key={v._id} video={v} variant="sidebar" />
-                  ))}
-                </div>
-              </div>
-            )}
+          <div className="flex flex-col gap-1">
+            {videos.map((v) => (
+              <WatchVideoCard key={v._id} video={v} variant="sidebar" />
+            ))}
           </div>
         )}
       </div>
@@ -222,10 +192,10 @@ export default function WatchPage() {
 
     if (isAuthError) {
       return (
-        <div className="px-2 py-6 sm:px-4 md:px-6">
-          <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row">
-            <div className="min-w-0 flex-1">
-              <div className="relative overflow-hidden rounded-2xl bg-black ring-1 ring-white/[0.08]">
+        <div className="px-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 sm:px-4 sm:py-6 md:px-6">
+          <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:gap-8 lg:flex-row">
+            <div className="min-w-0 flex-1 px-3 sm:px-0">
+              <div className="relative overflow-hidden rounded-none bg-black ring-0 sm:rounded-2xl sm:ring-1 sm:ring-white/[0.08]">
                 <div className="relative pt-[56.25%]">
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/90 to-black/70 px-4 text-center">
                     <h2 className="mb-3 text-2xl font-bold text-white">Premium content</h2>
@@ -266,7 +236,7 @@ export default function WatchPage() {
             </div>
 
             {isLargeScreen && (
-              <SidebarQueue videos={listVideos} relatedCount={relatedCount} isLoading={isLoadingRelated} />
+              <SidebarQueue videos={listVideos} isLoading={isLoadingRelated} />
             )}
           </div>
         </div>
@@ -284,35 +254,25 @@ export default function WatchPage() {
   }
 
   return (
-    <div className="px-2 py-6 sm:px-4 md:px-6">
+    <div className="px-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 sm:px-4 sm:pt-6 md:px-6">
       <div className="mx-auto max-w-[1920px]">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-8">
+        <div className="flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-start lg:gap-8">
           <div className="min-w-0 flex-1">
-            <VideoPlayer data={videoData} />
+            <div className="sm:rounded-2xl sm:overflow-hidden sm:ring-1 sm:ring-white/[0.06]">
+              <VideoPlayer data={videoData} />
+            </div>
 
-            <div className="mt-8">
+            <div className="mt-6 px-3 sm:mt-8 sm:px-0">
               <RelatedVideosShelves
                 videos={listVideos}
                 relatedCount={relatedCount}
                 isLoading={isLoadingRelated}
               />
             </div>
-
-            {/* Mobile / tablet: extra horizontal rail for quick jumps (same data as sidebar, condensed) */}
-            {!isLargeScreen && listVideos.length > 0 && (
-              <section className="mt-10 border-t border-white/[0.06] pt-8" aria-label="Up next">
-                <h2 className="mb-4 text-base font-bold text-white">Up next</h2>
-                <div className="-mx-2 flex gap-3 overflow-x-auto px-2 pb-2 snap-x">
-                  {listVideos.slice(0, 12).map((v) => (
-                    <WatchVideoCard key={v._id} video={v} variant="rail" />
-                  ))}
-                </div>
-              </section>
-            )}
           </div>
 
           {isLargeScreen && (
-            <SidebarQueue videos={listVideos} relatedCount={relatedCount} isLoading={isLoadingRelated} />
+            <SidebarQueue videos={listVideos} isLoading={isLoadingRelated} />
           )}
         </div>
       </div>

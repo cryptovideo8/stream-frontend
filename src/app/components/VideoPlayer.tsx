@@ -109,9 +109,9 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-3 sm:px-0">
       {/* ── Video Player ──────────────────────────────── */}
-      <div className="relative bg-black rounded-xl overflow-hidden shadow-2xl">
+      <div className="relative -mx-3 bg-black overflow-hidden shadow-none sm:mx-0 sm:rounded-xl sm:shadow-2xl">
         <div style={{ position: 'relative', paddingTop: '56.25%' }}>
           <iframe
             ref={videoRef}
@@ -132,10 +132,10 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
           {data?.title || 'Untitled Video'}
         </h1>
 
-        {/* Interaction Row */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-dark-20/30">
+        {/* Interaction Row — actions stay one row on mobile (scroll if needed) */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 pb-3 border-b border-dark-20/30">
           {/* Left: stats */}
-          <div className="flex items-center gap-2 text-sm text-grey-60">
+          <div className="flex shrink-0 items-center gap-2 text-sm text-grey-60">
             <span>{(data?.stats?.views || 0).toLocaleString()} views</span>
             {data?.createdAt && (
               <>
@@ -145,13 +145,16 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
             )}
           </div>
 
-          {/* Right: action buttons */}
-          <div className="flex items-center gap-2 flex-wrap">
+          {/* Right: action buttons — nowrap + horizontal scroll on very narrow screens */}
+          <div className="watch-actions-row flex min-w-0 w-full flex-nowrap items-center gap-1.5 overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch] [scrollbar-width:thin] sm:w-auto sm:gap-2 sm:overflow-visible sm:[scrollbar-width:auto]">
             {/* Like / Dislike pill */}
-            <div className="flex items-center rounded-full overflow-hidden border border-dark-25" style={{ background: '#1a1a1a' }}>
+            <div
+              className="flex shrink-0 items-center rounded-full overflow-hidden border border-dark-25"
+              style={{ background: '#1a1a1a' }}
+            >
               <button
                 onClick={handleLike}
-                className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-200 ${isLiked ? 'text-red-45 bg-red-45/10' : 'text-grey-70 hover:text-white hover:bg-white/5'
+                className={`flex items-center gap-1 px-2 py-2 text-sm font-medium transition-all duration-200 sm:gap-1.5 sm:px-4 ${isLiked ? 'text-red-45 bg-red-45/10' : 'text-grey-70 hover:text-white hover:bg-white/5'
                   }`}
               >
                 <HandThumbUpIcon className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
@@ -160,7 +163,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
               <div className="w-px h-6 bg-dark-25" />
               <button
                 onClick={handleDislike}
-                className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-200 ${isDisliked ? 'text-blue-400 bg-blue-400/10' : 'text-grey-70 hover:text-white hover:bg-white/5'
+                className={`flex items-center gap-1 px-2 py-2 text-sm font-medium transition-all duration-200 sm:gap-1.5 sm:px-4 ${isDisliked ? 'text-blue-400 bg-blue-400/10' : 'text-grey-70 hover:text-white hover:bg-white/5'
                   }`}
               >
                 <HandThumbDownIcon className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
@@ -170,16 +173,17 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
 
             {/* Comments */}
             <button
+              type="button"
               onClick={() => setShowComments(!showComments)}
-              className={`btn-icon ${showComments ? 'btn-icon-active' : ''}`}
+              className={`btn-icon shrink-0 px-2.5 sm:px-4 ${showComments ? 'btn-icon-active' : ''}`}
             >
               <ChatBubbleLeftIcon className="w-4 h-4" />
               <span>{formatCount(localCommentsCount)}</span>
             </button>
 
             {/* Share */}
-            <div className="relative">
-              <button onClick={handleShare} className="btn-icon">
+            <div className="relative shrink-0">
+              <button type="button" onClick={handleShare} className="btn-icon px-2.5 sm:px-4">
                 <ShareIcon className="w-4 h-4" />
                 <span>Share</span>
               </button>

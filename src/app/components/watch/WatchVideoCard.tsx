@@ -106,7 +106,7 @@ export default function WatchVideoCard({
     return (
       <Link
         href={href}
-        className="group w-[260px] shrink-0 snap-start sm:w-[280px]"
+        className="group w-[min(78vw,280px)] shrink-0 snap-start sm:w-[260px] md:w-[280px]"
       >
         {thumb}
         <div className="mt-2">{meta}</div>

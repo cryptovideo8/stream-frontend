@@ -127,6 +127,21 @@
     @apply absolute bottom-0 left-3 right-3 h-0.5 bg-red-45 rounded-full;
   }
 
+  /* Stable classes for SSR/client — avoids hydration mismatch from long arbitrary Tailwind strings */
+  .header-subnav {
+    @apply border-t overflow-x-auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .header-subnav-inner {
+    @apply max-w-screen-xl mx-auto px-2 sm:px-4;
+  }
+
+  .header-subnav-list {
+    @apply flex min-h-[44px] items-center gap-0.5 text-sm whitespace-nowrap sm:gap-1 sm:h-10 sm:min-h-0;
+  }
+
   /* ─── Stats Cards ────────────────────────────────── */
   .stats-card {
     @apply bg-dark-10 p-4 sm:p-6 rounded-2xl
