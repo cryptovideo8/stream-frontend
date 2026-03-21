@@ -15,6 +15,8 @@ import {
   useCancelSubscriptionMutation,
   Plan
 } from '../../../store/api/subscriptionApi';
+import { useGetActiveUpiQuery, useSubmitAuditMutation, useGetMyAuditsQuery } from '../../../store/api/paymentApi';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function SubscriptionsPage() {
   const router = useRouter();
@@ -31,13 +33,18 @@ export default function SubscriptionsPage() {
   const [subscribe, { isLoading: subscribing }] = useSubscribeToPlanMutation();
   const [cancelSub, { isLoading: cancelling }] = useCancelSubscriptionMutation();
 
+  const { data: myAudits = [] } = useGetMyAuditsQuery(undefined, { skip: !isAuthenticated });
+
   // Local State
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [promoCode, setPromoCode] = useState('');
   const [promoResult, setPromoResult] = useState<any>(null);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentMethod, setPaymentMethod] = useState('upi'); // Changed default to UPI for manual MVP
   const [transactionId, setTransactionId] = useState('');
+
+  const { data: activeUpi, isLoading: loadingActiveUpi } = useGetActiveUpiQuery(undefined, { skip: !showCheckout });
+  const [submitAudit, { isLoading: submittingAudit }] = useSubmitAuditMutation();
 
   const activeSubscription = mySubData?.active ? mySubData.subscription : null;
 
@@ -76,7 +83,30 @@ export default function SubscriptionsPage() {
     }
     if (!selectedPlan) return;
 
-    // For MVP if method is 'card', mock a transaction ID if empty
+    // For UPI manual audit
+    if (paymentMethod === 'upi') {
+      if (!transactionId || transactionId.length < 10) {
+        toast.error('Please enter a valid 12-digit UTR number');
+        return;
+      }
+      try {
+        await submitAudit({
+          planId: selectedPlan._id,
+          upiIdUsed: activeUpi?.upiId || 'Unknown',
+          utrNumber: transactionId,
+        }).unwrap();
+        toast.success('UTR Submitted! Pending admin approval.');
+        setShowCheckout(false);
+        setSelectedPlan(null);
+        setTransactionId('');
+        return;
+      } catch (err: any) {
+        toast.error(err?.data?.message || 'Failed to submit UTR');
+        return;
+      }
+    }
+
+    // Existing Card / Auto / Mock logic if not UPI
     const finalTxnId = (paymentMethod === 'card' && !transactionId)
       ? `TXN-MOCK-${Date.now()}`
       : transactionId;
@@ -141,8 +171,26 @@ export default function SubscriptionsPage() {
     setShowCheckout(true);
   };
 
+  const pendingAudits = myAudits.filter(a => a.status === 'pending');
+
   return (
     <div className="min-h-[calc(100vh-56px)] bg-dark-6 text-white pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+      {pendingAudits.length > 0 && !activeSubscription && (
+        <div className="max-w-7xl mx-auto mb-8 animate-fade-in-down">
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-yellow-500/5">
+            <div className="flex items-center gap-3 text-yellow-500">
+              <svg className="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p className="font-semibold text-sm">Payment Pending Verification</p>
+                <p className="text-xs text-yellow-600/80">You have {pendingAudits.length} manual payment(s) currently being reviewed by administrators.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* --- Page Header --- */}
       <div className="max-w-7xl mx-auto text-center mb-16 px-4 animate-fade-in-up">
         {activeSubscription ? (
@@ -262,9 +310,9 @@ export default function SubscriptionsPage() {
           />
 
           {/* Modal Content */}
-          <div className="relative bg-dark-10 border border-dark-25 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-slide-up">
+          <div className="relative bg-dark-10 border border-dark-25 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-slide-up max-h-[90vh] flex flex-col">
             {/* Header */}
-            <div className="px-6 py-5 border-b border-dark-25 flex items-center justify-between bg-dark-12">
+            <div className="px-6 py-5 border-b border-dark-25 flex items-center justify-between bg-dark-12 shrink-0">
               <h3 className="text-xl font-bold text-white">Complete Checkout</h3>
               <button
                 onClick={() => setShowCheckout(false)}
@@ -274,7 +322,7 @@ export default function SubscriptionsPage() {
               </button>
             </div>
 
-            <div className="p-6">
+            <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
               {/* Plan Summary */}
               <div className="mb-6 bg-dark-15 border border-dark-25 rounded-2xl p-4">
                 <div className="flex justify-between items-center mb-1">
@@ -336,8 +384,52 @@ export default function SubscriptionsPage() {
                 </select>
               </div>
 
-              {/* Transaction ID for Manual Methods */}
-              {(paymentMethod === 'upi' || paymentMethod === 'bank_transfer') && (
+              {/* UPI Custom Checkout Flow */}
+              {paymentMethod === 'upi' && (
+                <div className="mb-6 animate-fade-in-up">
+                  {loadingActiveUpi ? (
+                    <div className="h-48 bg-dark-15 border border-dark-25 rounded-xl flex items-center justify-center text-grey-60 text-sm">
+                      Loading Payment Gateway...
+                    </div>
+                  ) : activeUpi ? (
+                    <div className="bg-dark-15 border border-dark-25 rounded-xl p-4 sm:p-6 text-center shadow-inner">
+                      <p className="text-sm font-medium text-white mb-3">Pay with any UPI App</p>
+                      <div className="bg-white p-2 rounded-lg inline-block mb-3 shadow-md">
+                        <QRCodeSVG 
+                          value={`upi://pay?pa=${activeUpi.upiId}&pn=StreamingApp&am=${promoResult?.finalPrice ?? selectedPlan.price}&cu=INR`}
+                          size={160}
+                          level="H"
+                        />
+                      </div>
+                      <p className="text-sm text-grey-70 flex flex-col items-center justify-center gap-1 mb-2">
+                        <span>Or pay to UPI ID:</span>
+                        <span className="font-mono text-white text-sm sm:text-base bg-dark-20 px-3 py-1 rounded select-all break-all">{activeUpi.upiId}</span>
+                      </p>
+                      
+                      <div className="text-left mt-6">
+                        <label className="block text-sm font-medium text-grey-70 mb-2">Enter 12-Digit UTR Number</label>
+                        <input
+                          type="text"
+                          className="w-full bg-dark-20 border border-dark-35 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-45 transition-colors font-mono tracking-widest text-center"
+                          placeholder="e.g. 301982746192"
+                          maxLength={12}
+                          value={transactionId}
+                          onChange={(e) => setTransactionId(e.target.value.replace(/\D/g, ''))}
+                        />
+                        <p className="text-[11px] text-grey-50 mt-2 text-center">
+                          After successful payment, enter the Reference / UTR number above to activate your plan.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="h-24 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl flex items-center justify-center text-sm">
+                      No Active UPI accounts found. Contact Support.
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {paymentMethod === 'card' && (
                 <div className="mb-6 animate-fade-in-up">
                   <label className="block text-sm font-medium text-grey-70 mb-2">Transaction ID / UTR</label>
                   <input
@@ -347,20 +439,16 @@ export default function SubscriptionsPage() {
                     value={transactionId}
                     onChange={(e) => setTransactionId(e.target.value)}
                   />
-                  <p className="text-xs text-grey-50 mt-2">
-                    Please transfer the exact amount and enter the reference number here to verify your payment.
-                  </p>
                 </div>
               )}
 
-              {/* Confirm Button */}
               <button
                 onClick={handleSubscribe}
-                disabled={subscribing}
+                disabled={subscribing || submittingAudit}
                 className="w-full py-4 bg-red-45 hover:bg-red-55 text-white font-bold rounded-xl transition-colors shadow-lg shadow-red-45/20 disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                {subscribing && <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
-                {subscribing ? 'Processing...' : `Pay ${selectedPlan.currency} ${promoResult?.finalPrice ?? selectedPlan.price}`}
+                {(subscribing || submittingAudit) && <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+                {(subscribing || submittingAudit) ? 'Processing...' : (paymentMethod === 'upi' ? `Submit UTR for ₹${promoResult?.finalPrice ?? selectedPlan.price}` : `Pay ${selectedPlan.currency} ${promoResult?.finalPrice ?? selectedPlan.price}`)}
               </button>
             </div>
           </div>

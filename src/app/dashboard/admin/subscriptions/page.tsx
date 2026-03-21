@@ -10,19 +10,25 @@ import {
     CurrencyDollarIcon,
     TagIcon,
     UsersIcon,
-    ChartBarIcon
+    ChartBarIcon,
+    QrCodeIcon,
+    DocumentMagnifyingGlassIcon,
+    ChartPieIcon
 } from '@heroicons/react/24/outline';
 
 import AdminPlansTab from './tabs/AdminPlansTab';
 import AdminPromosTab from './tabs/AdminPromosTab';
 import AdminSubscribersTab from './tabs/AdminSubscribersTab';
 import AdminStatsTab from './tabs/AdminStatsTab';
+import AdminUPITab from './tabs/AdminUPITab';
+import AdminPaymentAuditsTab from './tabs/AdminPaymentAuditsTab';
+import AdminPaymentReportsTab from './tabs/AdminPaymentReportsTab';
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-const TAB_KEYS = ['plans', 'promos', 'subscribers', 'stats'] as const;
+const TAB_KEYS = ['plans', 'promos', 'subscribers', 'stats', 'upi', 'audits', 'reports'] as const;
 
 function AdminSubscriptionsContent() {
     const user = useAppSelector(selectCurrentUser);
@@ -40,6 +46,9 @@ function AdminSubscriptionsContent() {
         if (t === 'promos') setTabIndex(1);
         else if (t === 'subscribers') setTabIndex(2);
         else if (t === 'stats') setTabIndex(3);
+        else if (t === 'upi') setTabIndex(4);
+        else if (t === 'audits') setTabIndex(5);
+        else if (t === 'reports') setTabIndex(6);
         else setTabIndex(0);
     }, [searchParams]);
 
@@ -78,6 +87,9 @@ function AdminSubscriptionsContent() {
         { name: 'Promo Codes', icon: TagIcon, key: 'promos' },
         { name: 'Subscribers', icon: UsersIcon, key: 'subscribers' },
         { name: 'Statistics', icon: ChartBarIcon, key: 'stats' },
+        { name: 'UPI Accounts', icon: QrCodeIcon, key: 'upi' },
+        { name: 'Payment Audits', icon: DocumentMagnifyingGlassIcon, key: 'audits' },
+        { name: 'Payment Reports', icon: ChartPieIcon, key: 'reports' }
     ];
 
     return (
@@ -124,6 +136,15 @@ function AdminSubscriptionsContent() {
                         </Tab.Panel>
                         <Tab.Panel className={classNames('rounded-xl bg-dark-10 p-6', 'ring-white/60 ring-offset-2 ring-offset-red-45 focus:outline-none focus:ring-2')}>
                             <AdminStatsTab />
+                        </Tab.Panel>
+                        <Tab.Panel className={classNames('rounded-xl bg-dark-10 p-6', 'ring-white/60 ring-offset-2 ring-offset-red-45 focus:outline-none focus:ring-2')}>
+                            <AdminUPITab />
+                        </Tab.Panel>
+                        <Tab.Panel className={classNames('rounded-xl bg-dark-10 p-6', 'ring-white/60 ring-offset-2 ring-offset-red-45 focus:outline-none focus:ring-2')}>
+                            <AdminPaymentAuditsTab />
+                        </Tab.Panel>
+                        <Tab.Panel className={classNames('rounded-xl bg-dark-10 p-6', 'ring-white/60 ring-offset-2 ring-offset-red-45 focus:outline-none focus:ring-2')}>
+                            <AdminPaymentReportsTab />
                         </Tab.Panel>
                     </Tab.Panels>
                 </Tab.Group>

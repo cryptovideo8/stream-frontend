@@ -49,5 +49,8 @@ export const baseApi = createApi({
     'AdminSubscriptionStats',
     'Video',
     'VideoInteraction',
+    'UpiAccounts',
+    'AdminAudits',
+    'MyAudits',
   ],
 }) 

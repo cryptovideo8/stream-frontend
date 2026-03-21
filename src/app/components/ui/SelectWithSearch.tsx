@@ -35,7 +35,13 @@ export default function SelectWithSearch({
 
     const loadOptions = async (inputValue: string) => {
         try {
-            const response = await fetch(`${API_BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}q=${inputValue}`);
+            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const response = await fetch(`${API_BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}q=${inputValue}`, {
+                headers: {
+                    ...(token && { 'Authorization': `Bearer ${token}` }),
+                    'Content-Type': 'application/json'
+                }
+            });
             const data = await response.json();
 
             if (transformResponse) {
@@ -65,36 +71,48 @@ export default function SelectWithSearch({
     };
 
     const customStyles = {
-        control: (base: any) => ({
+        control: (base: any, state: any) => ({
             ...base,
-            backgroundColor: '#111111',
-            borderColor: '#222222',
+            backgroundColor: '#333333', // dark-20
+            borderColor: state.isFocused ? '#E30000' : '#404040', // red-45 or dark-25
             color: 'white',
+            borderRadius: '0.75rem', // rounded-xl to match standard inputs
+            padding: '2px 6px',
+            minHeight: '44px',
+            boxShadow: 'none',
             '&:hover': {
-                borderColor: '#333333'
+                borderColor: state.isFocused ? '#E30000' : '#4C4C4C'
             }
         }),
         menu: (base: any) => ({
             ...base,
-            backgroundColor: '#111111',
-            border: '1px solid #222222'
+            backgroundColor: '#1F1F1F', // dark-12
+            border: '1px solid #404040', // dark-25
+            borderRadius: '0.75rem',
+            overflow: 'hidden',
+            zIndex: 9999
         }),
         option: (base: any, state: any) => ({
             ...base,
-            backgroundColor: state.isFocused ? '#222222' : '#111111',
-            color: 'white',
+            backgroundColor: state.isFocused ? '#333333' : 'transparent',
+            color: state.isSelected ? '#E30000' : 'white',
+            padding: '10px 15px',
+            cursor: 'pointer',
+            fontSize: '14px',
             '&:active': {
-                backgroundColor: '#333333'
+                backgroundColor: '#262626'
             }
         }),
         singleValue: (base: any) => ({
             ...base,
-            color: 'white'
+            color: 'white',
+            fontSize: '14px'
         }),
         multiValue: (base: any) => ({
             ...base,
-            backgroundColor: '#222222',
-            color: 'white'
+            backgroundColor: '#262626',
+            color: 'white',
+            borderRadius: '6px'
         }),
         multiValueLabel: (base: any) => ({
             ...base,
@@ -102,19 +120,32 @@ export default function SelectWithSearch({
         }),
         multiValueRemove: (base: any) => ({
             ...base,
-            color: 'white',
+            color: '#999999',
             '&:hover': {
-                backgroundColor: '#333333',
+                backgroundColor: '#E30000',
                 color: 'white'
             }
         }),
         input: (base: any) => ({
             ...base,
-            color: 'white'
+            color: 'white',
+            fontSize: '14px',
+            '& input': {
+                outline: 'none !important',
+                boxShadow: 'none !important',
+            }
         }),
         placeholder: (base: any) => ({
             ...base,
-            color: '#666666'
+            color: '#999999', // grey-60
+            fontSize: '14px'
+        }),
+        indicatorSeparator: () => ({
+            display: 'none'
+        }),
+        dropdownIndicator: (base: any) => ({
+            ...base,
+            color: '#666'
         })
     };
 
