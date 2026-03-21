@@ -37,7 +37,7 @@ const CategoriesPage = () => {
         {categoryData.map((category) => (
           <Link 
             key={category.id} 
-            href={`/${Math.floor(Math.random() * 1000000)}?category=${category.value}`}
+            href={`/?category=${encodeURIComponent(category.value)}`}
           >
             <Card className="hover:shadow-lg transition-shadow max-w-[280px]">
               <CardHeader className="p-4">

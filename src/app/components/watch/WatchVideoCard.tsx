@@ -13,14 +13,21 @@ export type WatchListVideo = {
   drmEnabled?: boolean;
   stats?: { views?: number };
   creatorId?: { name?: string; username?: string } | string;
+  monetization?: { type?: string; price?: number; currency?: string };
 };
+
+function formatCount(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+  return String(n);
+}
 
 function formatDuration(sec?: number) {
   if (sec == null || Number.isNaN(sec)) return '';
   const s = Math.floor(sec);
   const m = Math.floor(s / 60);
   const r = s % 60;
-  return `${m}:${r.toString().padStart(2, '0')}`;
+  return `${m.toString().padStart(2, '0')}:${r.toString().padStart(2, '0')}`;
 }
 
 function creatorLabel(v: WatchListVideo) {
@@ -41,17 +48,20 @@ export default function WatchVideoCard({
 }) {
   const href = `/watch/${video._id}`;
   const views = video.stats?.views ?? 0;
+  const isPremium = ['rent', 'paid'].includes(video.monetization?.type?.toLowerCase() || '');
 
   const thumb = (
     <div
-      className={`relative overflow-hidden rounded-xl bg-dark-15 ring-1 ring-white/[0.06] group-hover:ring-red-45/40 transition-all ${
-        variant === 'sidebar' ? 'w-36 shrink-0 aspect-video' : 'aspect-video w-full'
-      }`}
+      className={
+        variant === 'sidebar' 
+          ? 'relative overflow-hidden rounded-xl bg-dark-15 w-36 shrink-0 aspect-video ring-1 ring-white/[0.06] group-hover:ring-red-45/40 transition-all'
+          : 'video-card-thumb'
+      }
     >
       <img
         src={video.thumbnailPath || '/placeholder.jpg'}
         alt=""
-        className="h-full w-full object-cover"
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         loading="lazy"
       />
       {video.previewPath && (
@@ -62,11 +72,15 @@ export default function WatchVideoCard({
           loading="lazy"
         />
       )}
-      <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-        <PlayIcon className="h-10 w-10 text-white drop-shadow-lg" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      {isPremium && <span className="badge-premium">Premium</span>}
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div className="w-10 h-10 rounded-full bg-red-45/90 flex items-center justify-center shadow-lg">
+          <PlayIcon className="h-5 w-5 text-white ml-0.5" />
+        </div>
       </div>
       {formatDuration(video.duration) && (
-        <span className="absolute bottom-1.5 right-1.5 rounded bg-black/85 px-1.5 py-0.5 text-[11px] font-medium text-white tabular-nums">
+        <span className="badge-duration">
           {formatDuration(video.duration)}
         </span>
       )}
@@ -79,17 +93,16 @@ export default function WatchVideoCard({
   );
 
   const meta = (
-    <div className="min-w-0 flex-1">
-      <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-white group-hover:text-red-45 transition-colors">
+    <div className={variant === 'sidebar' ? "min-w-0 flex-1" : "p-2.5"}>
+      <h3 className="text-sm font-medium text-white line-clamp-2 leading-snug group-hover:text-red-45 transition-colors duration-200">
         {video.title}
       </h3>
-      <p className="mt-1 text-xs text-grey-60 line-clamp-1">{creatorLabel(video)}</p>
-      <p className="text-xs text-grey-50">
-        {views.toLocaleString()} views
-        {video.createdAt && (
-          <span className="text-grey-60"> · {new Date(video.createdAt).toLocaleDateString()}</span>
-        )}
-      </p>
+      <div className="flex items-center gap-1.5 mt-1.5 text-xs text-grey-60">
+        <span>{formatCount(views)} views</span>
+        <span>•</span>
+        <span>{video.createdAt ? new Date(video.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}</span>
+      </div>
+      <p className="text-xs text-grey-60 mt-0.5 hover:text-grey-70 transition-colors line-clamp-1">{creatorLabel(video)}</p>
     </div>
   );
 
@@ -106,18 +119,18 @@ export default function WatchVideoCard({
     return (
       <Link
         href={href}
-        className="group w-[min(78vw,280px)] shrink-0 snap-start sm:w-[260px] md:w-[280px]"
+        className="video-card block group w-[min(78vw,280px)] shrink-0 snap-start sm:w-[260px] md:w-[280px]"
       >
         {thumb}
-        <div className="mt-2">{meta}</div>
+        {meta}
       </Link>
     );
   }
 
   return (
-    <Link href={href} className="group block">
+    <Link href={href} className="video-card block group">
       {thumb}
-      <div className="mt-2">{meta}</div>
+      {meta}
     </Link>
   );
 }

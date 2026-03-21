@@ -26,7 +26,7 @@ function RelatedVideosShelves({
   if (isLoading) {
     return (
       <div className="space-y-8">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="animate-pulse">
               <div className="aspect-video rounded-xl bg-dark-10" />
@@ -56,7 +56,7 @@ function RelatedVideosShelves({
           <h2 id="related-heading" className="mb-4 text-lg font-bold tracking-tight text-white sm:text-xl">
             Related to this video
           </h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {related.map((v) => (
               <WatchVideoCard key={v._id} video={v} variant="grid" />
             ))}
@@ -85,7 +85,7 @@ function RelatedVideosShelves({
           <h2 id="rec-heading" className="mb-4 text-lg font-bold tracking-tight text-white sm:text-xl">
             Recommended for you
           </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {discover.map((v) => (
               <WatchVideoCard key={v._id} video={v} variant="grid" />
             ))}

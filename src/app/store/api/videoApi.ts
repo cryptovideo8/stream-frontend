@@ -11,7 +11,7 @@ interface DeleteVideoResponse {
   message: string;
 }
 interface GetVideosResponse {
-  videos: [];
+  videos: any[];
   page: number;
   totalPages: number;
   total: number;

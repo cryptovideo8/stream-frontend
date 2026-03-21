@@ -102,9 +102,6 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/categories', label: 'Categories' },
-    { href: '/stars', label: 'Stars' },
-    { href: '/creators', label: 'Creators' },
-    { href: '/channels', label: 'Channels' },
   ];
 
   return (
@@ -224,9 +221,6 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
                         <Link href="/" className="dropdown-item" onClick={() => setProfileDropDown(false)}>
                           <HomeIcon className="h-4 w-4" /> Home
                         </Link>
-                        <Link href="/profile" className="dropdown-item" onClick={() => setProfileDropDown(false)}>
-                          <Cog6ToothIcon className="h-4 w-4" /> Settings
-                        </Link>
                         {isAuthenticated && user?.role && user.role !== 'viewer' && (
                           <Link href="/dashboard" className="dropdown-item" onClick={() => setProfileDropDown(false)}>
                             <PresentationChartLineIcon className="h-4 w-4" /> Dashboard
@@ -298,12 +292,6 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
                     <Link href="/?sortBy=createdAt&sortOrder=desc" className="dropdown-item">
                       <ClockIcon className="h-4 w-4" /> Newest
                     </Link>
-                    <Link href="/videos/moments" className="dropdown-item">
-                      <VideoCameraIcon className="h-4 w-4" /> Moments
-                    </Link>
-                    <Link href="/videos/history" className="dropdown-item">
-                      <ClockIcon className="h-4 w-4" /> Watch History
-                    </Link>
                     <div className="my-1 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }} />
                     <Link href="/?category=Indian" className="dropdown-item">
                       <span className="text-sm">🇮🇳</span> Indian
@@ -312,17 +300,6 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
                     <Link href="/?category=Mature" className="dropdown-item">Mature</Link>
                   </div>
                 )}
-              </li>
-
-              {/* Live */}
-              <li>
-                <Link href="/live" className="nav-link">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-45 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-55" />
-                  </span>
-                  <span>Live</span>
-                </Link>
               </li>
 
               {/* Regular nav items */}
@@ -336,22 +313,6 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
                   </Link>
                 </li>
               ))}
-
-              <li>
-                <Link href="/photos" className="nav-link">
-                  <PhotoIcon className="h-4 w-4" /> Photos
-                </Link>
-              </li>
-              <li>
-                <Link href="/chat" className="nav-link">
-                  <ChatBubbleLeftIcon className="h-4 w-4" /> Chat
-                </Link>
-              </li>
-              <li>
-                <Link href="/dating" className="nav-link">
-                  <UserGroupIcon className="h-4 w-4" /> Dating
-                </Link>
-              </li>
 
               {/* Premium */}
               <li>

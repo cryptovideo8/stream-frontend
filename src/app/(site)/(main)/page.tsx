@@ -1,7 +1,7 @@
 'use client';
 import { useSearchVideosQuery } from '../../store/api/videoApi';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   FireIcon,
   ClockIcon,
@@ -14,6 +14,14 @@ function formatCount(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
   return String(n);
+}
+
+function formatDuration(sec?: number) {
+  if (sec == null || Number.isNaN(sec)) return '';
+  const s = Math.floor(sec);
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return `${m.toString().padStart(2, '0')}:${r.toString().padStart(2, '0')}`;
 }
 
 const CATEGORY_CHIPS = [
@@ -87,10 +95,10 @@ function VideoCard({ video }: VideoCardProps) {
         {/* Badges */}
         {isPremium && <span className="badge-premium">Premium</span>}
 
-        {/* Duration badge (placeholder — no duration field in current data) */}
-        {video.duration && (
-          <span className="badge-duration">{video.duration}</span>
-        )}
+        {/* Duration badge */}
+        {video.duration ? (
+          <span className="badge-duration">{formatDuration(video.duration)}</span>
+        ) : null}
 
         {/* Play icon on hover */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -122,16 +130,61 @@ function VideoCard({ video }: VideoCardProps) {
 
 export default function Home() {
   const [page, setPage] = useState(1);
-  const [activeChip, setActiveChip] = useState(0);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  
   const search = searchParams.get('search') || '';
+  const urlSortBy = searchParams.get('sortBy') || undefined;
+  const urlSortOrder = searchParams.get('sortOrder') as 'asc' | 'desc' | undefined;
+  const urlCategory = searchParams.get('category') || undefined;
+  const urlMonetization = searchParams.get('monetization') || undefined;
+
+  // Derive active chip from URL
+  let activeChip = 0;
+  for (let i = 0; i < CATEGORY_CHIPS.length; i++) {
+    const q = CATEGORY_CHIPS[i].query as Record<string, string>;
+    
+    // Default 'All'
+    if (i === 0) {
+      if (!urlSortBy && !urlCategory && !urlMonetization) {
+        activeChip = 0;
+        break;
+      }
+      continue;
+    }
+
+    const matchCategory = q.category === urlCategory;
+    const matchMonetization = q.monetization === urlMonetization;
+    const matchSortBy = q.sortBy === urlSortBy;
+    const matchSortOrder = q.sortOrder === urlSortOrder || (!q.sortOrder && !urlSortOrder);
+    
+    if (matchCategory && matchMonetization && matchSortBy && matchSortOrder) {
+      activeChip = i;
+      break;
+    }
+  }
+
+  const handleChipClick = (idx: number) => {
+    const q = CATEGORY_CHIPS[idx].query as Record<string, string>;
+    const params = new URLSearchParams();
+    
+    if (q.sortBy) params.set('sortBy', q.sortBy);
+    if (q.sortOrder) params.set('sortOrder', q.sortOrder);
+    if (q.category) params.set('category', q.category);
+    if (q.monetization) params.set('monetization', q.monetization);
+    if (search) params.set('search', search);
+
+    router.push(`/?${params.toString()}`);
+  };
 
   const { data, isLoading } = useSearchVideosQuery({
     page,
     limit: 20,
-    sortBy: 'views',
-    sortOrder: 'desc',
-    search,
+    search: search || undefined,
+    sortBy: urlSortBy || 'views', // Default sorting
+    sortOrder: urlSortOrder || 'desc',
+    category: urlCategory,
+    monetization: urlMonetization,
   });
 
   useEffect(() => {
@@ -193,7 +246,7 @@ export default function Home() {
               return (
                 <button
                   key={chip.label}
-                  onClick={() => setActiveChip(idx)}
+                  onClick={() => handleChipClick(idx)}
                   className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all duration-200 ${activeChip === idx
                       ? 'bg-red-45 text-white shadow-md shadow-red-45/30'
                       : 'bg-dark-12 text-grey-70 hover:bg-dark-15 hover:text-white border border-dark-25'
@@ -222,7 +275,7 @@ export default function Home() {
         </div>
 
         {/* ── Video Grid ─────────────────────────────────── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
           {isLoading
             ? [...Array(12)].map((_, i) => <VideoCardSkeleton key={i} />)
             : data?.videos?.map((video: any) => <VideoCard key={video._id} video={video} />)
