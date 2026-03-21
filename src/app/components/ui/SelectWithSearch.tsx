@@ -1,7 +1,10 @@
 'use client';
 
 import React from 'react';
-import AsyncSelect from 'react-select/async';
+import dynamic from 'next/dynamic';
+import { API_BASE_URL } from '../../config/env';
+
+const AsyncSelect = dynamic(() => import('react-select/async'), { ssr: false });
 
 interface Option {
     value: string;
@@ -32,7 +35,7 @@ export default function SelectWithSearch({
 
     const loadOptions = async (inputValue: string) => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}${endpoint}${endpoint.includes('?') ? '&' : '?'}q=${inputValue}`);
+            const response = await fetch(`${API_BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}q=${inputValue}`);
             const data = await response.json();
 
             if (transformResponse) {

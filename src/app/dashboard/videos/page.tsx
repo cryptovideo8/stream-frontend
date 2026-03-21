@@ -511,7 +511,11 @@ export default function VideoManagement() {
                 }}
                 placeholder="Select tags..."
                 className="text-black"
-                transformResponse={(data: any) => data.map((item: any) => ({ label: item.value, value: item.value }))}
+                transformResponse={(data: any) =>
+                  Array.isArray(data)
+                    ? data.map((item: any) => ({ label: item.value, value: item.value }))
+                    : []
+                }
               />
             </div>
             <div>
@@ -524,7 +528,11 @@ export default function VideoManagement() {
                 }}
                 placeholder="Search category..."
                 className="text-black"
-                transformResponse={(data: any) => data.map((item: any) => ({ label: item.value, value: item.value }))}
+                transformResponse={(data: any) =>
+                  Array.isArray(data)
+                    ? data.map((item: any) => ({ label: item.value, value: item.value }))
+                    : []
+                }
               />
             </div>
           </div>
@@ -757,7 +765,11 @@ export default function VideoManagement() {
             onChange={(selected: any) => setFilterUploader(selected?.value ?? '')}
             placeholder="Search Creator..."
             className="text-black"
-            transformResponse={(data: any) => data.users.map((u: any) => ({ label: u.name || u.email, value: u._id }))}
+            transformResponse={(data: any) =>
+              Array.isArray(data?.users)
+                ? data.users.map((u: any) => ({ label: u.name || u.email, value: u._id }))
+                : []
+            }
           />
         </div>
         {(search || filterCategory || filterType || filterMonetization || filterUploader) && (

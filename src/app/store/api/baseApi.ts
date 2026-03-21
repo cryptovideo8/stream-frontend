@@ -1,12 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { logout } from '../slices/authSlice'
-
-// Define your base API URL
-const BASE_URL = 'http://localhost:3000'
+import { API_BASE_URL } from '../../config/env'
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: BASE_URL,
+  baseUrl: API_BASE_URL,
   prepareHeaders: (headers) => {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
