@@ -9,6 +9,7 @@ import {
   StarIcon,
   TrophyIcon,
 } from '@heroicons/react/24/outline';
+import { API_BASE_URL, SOCKET_URL } from '../../config/env';
 
 function formatCount(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -290,9 +291,18 @@ export default function Home() {
                 Failed to load videos. This can happen if the backend server is unreachable or CORS is blocking the request.
               </p>
               {error && (
-                <div className="bg-black/40 p-3 rounded mb-4 max-w-sm mx-auto overflow-auto">
-                  <p className="text-[10px] font-mono text-grey-60 text-left">
+                <div className="bg-black/40 p-3 rounded mb-4 max-w-sm mx-auto overflow-auto text-left">
+                  <p className="text-[10px] font-mono text-grey-60 mb-1">
                     DEBUG: {JSON.stringify(error)}
+                  </p>
+                  <p className="text-[10px] font-mono text-red-45/70">
+                    API: {API_BASE_URL}
+                  </p>
+                  <p className="text-[10px] font-mono text-red-45/70">
+                    SOCKET: {SOCKET_URL}
+                  </p>
+                  <p className="text-[10px] font-mono text-grey-60 mt-1">
+                    AGENT: {typeof navigator !== 'undefined' ? navigator.userAgent.substring(0, 50) + '...' : 'N/A'}
                   </p>
                 </div>
               )}
