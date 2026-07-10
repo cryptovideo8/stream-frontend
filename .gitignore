@@ -22,6 +22,19 @@
 
 # misc
 .DS_Store
+**/.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.TemporaryItems
+.fseventsd
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+__MACOSX/
 *.pem
 
 # debug
