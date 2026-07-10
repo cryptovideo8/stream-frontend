@@ -61,9 +61,9 @@ export const interactionApi = baseApi.injectEndpoints({
         method: 'POST',
         body: { videoId, text }
       }),
+      // Do not invalidate Video — reminting Bunny src remounts the iframe mid-playback.
       invalidatesTags: (result, error, { videoId }) => [
         { type: 'VideoInteraction', id: videoId },
-        { type: 'Video', id: videoId },
       ],
     }),
 
@@ -82,7 +82,7 @@ export const interactionApi = baseApi.injectEndpoints({
         url: `/interaction/videos/${videoId}/views`,
         method: 'POST'
       }),
-      invalidatesTags: (result, error, videoId) => [{ type: 'Video' as const, id: videoId }],
+      // No Video invalidation — refetch would remint embed URL and remount the player.
     }),
 
     getViews: builder.query<{ count: number }, string>({
@@ -157,8 +157,8 @@ export const interactionApi = baseApi.injectEndpoints({
         method: 'POST',
         body: { reason, details: details || '' }
       }),
+      // Do not invalidate Video — reminting Bunny src remounts the iframe mid-playback.
       invalidatesTags: (result, error, { videoId }) => [
-        { type: 'Video' as const, id: videoId },
         { type: 'VideoInteraction' as const, id: videoId },
       ],
     }),

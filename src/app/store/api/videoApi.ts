@@ -45,6 +45,8 @@ export interface VideoDetail {
   description?: string;
   thumbnailPath?: string;
   previewPath?: string;
+  /** Signed Bunny embed URL from GET /video/:id */
+  src?: string;
   filePath: string;
   type: 'local' | 'thirdparty';
   duration?: number;

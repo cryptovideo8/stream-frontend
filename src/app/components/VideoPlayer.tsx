@@ -67,6 +67,7 @@ function commentInitial(userId: Comment['userId']): string {
 export default function VideoPlayer({ data }: VideoPlayerProps) {
   const videoRef = useRef<HTMLIFrameElement>(null);
   const viewRecordedRef = useRef(false);
+  const lockedSrcVideoIdRef = useRef<string | null>(null);
   const sharePopupRef = useRef<HTMLDivElement>(null);
   const reportPopupRef = useRef<HTMLDivElement>(null);
 
@@ -85,9 +86,29 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
   const [expandedReplies, setExpandedReplies] = useState<Record<string, boolean>>({});
   const [descExpanded, setDescExpanded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [embedSrc, setEmbedSrc] = useState<string | undefined>(undefined);
 
   const videoId = data?._id;
   const skipInteraction = !videoId;
+  const dataSrc = data?.src;
+
+  // Lock the first minted Bunny embed URL for this video so later refetches cannot remount the iframe.
+  useEffect(() => {
+    if (!videoId) {
+      lockedSrcVideoIdRef.current = null;
+      setEmbedSrc(undefined);
+      return;
+    }
+    if (lockedSrcVideoIdRef.current !== videoId) {
+      lockedSrcVideoIdRef.current = videoId;
+      viewRecordedRef.current = false;
+      setEmbedSrc(dataSrc);
+      return;
+    }
+    if (dataSrc && !embedSrc) {
+      setEmbedSrc(dataSrc);
+    }
+  }, [videoId, dataSrc, embedSrc]);
 
   usePayoutWatchHeartbeat(videoId, data?.monetization?.type, isPlaying);
   const creatorName =
@@ -251,8 +272,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
         <div style={{ position: 'relative', paddingTop: '56.25%' }}>
           <iframe
             ref={videoRef}
-            src={data?.src}
-            loading="lazy"
+            src={embedSrc}
             title={data?.title ? `Video: ${data.title}` : 'Video player'}
             style={{ border: '0', position: 'absolute', top: '0', height: '100%', width: '100%' }}
             allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
