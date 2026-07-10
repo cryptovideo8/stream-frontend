@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // Re-enable gradually; keep ignore until remaining type debt is cleared in CI
   typescript: {
     ignoreBuildErrors: true,
   },

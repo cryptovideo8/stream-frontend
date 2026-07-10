@@ -109,43 +109,9 @@ export default function SubscriptionsPage() {
       }
     }
 
-    // Existing Card / Auto / Mock logic if not UPI
-    const finalTxnId = (paymentMethod === 'card' && !transactionId)
-      ? `TXN-MOCK-${Date.now()}`
-      : transactionId;
-
-    if (!finalTxnId) {
-      toast.error('Please enter a Transaction ID for manual payment');
-      return;
-    }
-
-    const amountPaid = promoResult?.finalPrice ?? selectedPlan.price;
-
-    try {
-      const res = await subscribe({
-        planId: selectedPlan._id,
-        paymentMethod,
-        transactionId: finalTxnId,
-        amountPaid,
-        promoCode: promoResult?.code,
-      }).unwrap();
-
-      toast.success('Subscription activated successfully!');
-
-      // Update local storage auth sync
-      if (user) {
-        const updatedUser = { ...user, subscriptionId: res.subscription._id };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        dispatch(setCredentials({ user: updatedUser, token: localStorage.getItem('token') || '' }));
-      }
-
-      setShowCheckout(false);
-      setSelectedPlan(null);
-      handleClearPromo();
-    } catch (err: unknown) {
-      const error = err as { data?: { message?: string } };
-      toast.error(error?.data?.message || 'Failed to activate subscription');
-    }
+    // Existing card path disabled — UPI audit is the only payment method
+    toast.error('Only UPI payment with UTR verification is supported.');
+    return;
   };
 
   // Handle Cancel

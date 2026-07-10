@@ -7,8 +7,6 @@ import {
   RssIcon,
   HandThumbUpIcon,
   ClockIcon,
-  SparklesIcon,
-  TrophyIcon,
   MagnifyingGlassIcon,
   TagIcon,
   FireIcon,
@@ -46,8 +44,7 @@ export default function Sidebar() {
         {/* Library */}
         <p className="sidebar-section-title">Library</p>
         <SidebarLink href="/subscriptions" icon={RssIcon} label="Subscriptions" />
-        <SidebarLink href="/liked" icon={HandThumbUpIcon} label="Liked Videos" />
-        <SidebarLink href="/history" icon={ClockIcon} label="Watch History" />
+        <SidebarLink href="/categories" icon={TagIcon} label="Categories" />
 
         <div className="my-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }} />
 
@@ -56,9 +53,6 @@ export default function Sidebar() {
         <SidebarLink href="/?sortBy=views&sortOrder=desc" icon={FireIcon} label="Trending" />
         <SidebarLink href="/?sortBy=createdAt&sortOrder=desc" icon={ClockIcon} label="Newest Videos" />
         <SidebarLink href="/?sortBy=views&sortOrder=desc" icon={HandThumbUpIcon} label="Most Viewed" />
-        <SidebarLink href="/moments" icon={SparklesIcon} label="Moments" />
-        <SidebarLink href="/top-creators" icon={TrophyIcon} label="Top Creators" />
-        <SidebarLink href="/awards-2024" icon={TrophyIcon} label="Awards 2024" />
 
         <div className="my-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }} />
 

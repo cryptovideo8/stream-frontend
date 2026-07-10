@@ -9,7 +9,6 @@ import {
   StarIcon,
   TrophyIcon,
 } from '@heroicons/react/24/outline';
-import { API_BASE_URL, SOCKET_URL } from '../../config/env';
 
 function formatCount(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -288,24 +287,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold text-white mb-2">Connection Issue</h3>
               <p className="text-grey-70 mb-4 px-4 max-w-md mx-auto">
-                Failed to load videos. This can happen if the backend server is unreachable or CORS is blocking the request.
+                Failed to load videos. Please check your connection and try again.
               </p>
-              {error && (
-                <div className="bg-black/40 p-3 rounded mb-4 max-w-sm mx-auto overflow-auto text-left">
-                  <p className="text-[10px] font-mono text-grey-60 mb-1">
-                    DEBUG: {JSON.stringify(error)}
-                  </p>
-                  <p className="text-[10px] font-mono text-red-45/70">
-                    API: {API_BASE_URL}
-                  </p>
-                  <p className="text-[10px] font-mono text-red-45/70">
-                    SOCKET: {SOCKET_URL}
-                  </p>
-                  <p className="text-[10px] font-mono text-grey-60 mt-1">
-                    AGENT: {typeof navigator !== 'undefined' ? navigator.userAgent.substring(0, 50) + '...' : 'N/A'}
-                  </p>
-                </div>
-              )}
               <button 
                 onClick={() => window.location.reload()}
                 className="px-6 py-2 bg-red-45 hover:bg-red-55 text-white rounded-lg transition-all"

@@ -72,9 +72,8 @@ export default function SiteFooter() {
             <ul className="space-y-2.5">
               {[
                 { label: 'Browse Videos', href: '/' },
-                { label: 'Live Cams', href: '/live' },
                 { label: 'Categories', href: '/categories' },
-                { label: 'Creators', href: '/creators' },
+                { label: 'Subscriptions', href: '/subscriptions' },
                 // Only render Dashboard link on client (after mount) to avoid hydration mismatch
                 ...(mounted && isAuthenticated && user?.role && user.role !== 'viewer'
                   ? [{ label: 'Dashboard', href: '/dashboard' }]
@@ -145,7 +144,7 @@ export default function SiteFooter() {
         {/* Bottom bar */}
         <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
           <p className="text-grey-60 text-xs">
-            © 2024 NightKing. All rights reserved.
+            © {new Date().getFullYear()} NightKing. All rights reserved.
           </p>
           <p className="text-grey-60 text-xs">v1.0.0</p>
         </div>

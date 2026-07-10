@@ -20,6 +20,7 @@ function SignUpForm() {
   const [role, setRole] = useState<'viewer' | 'creator'>('viewer');
   const [showPassword, setShowPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [confirmAge, setConfirmAge] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
 
   useEffect(() => {
@@ -56,6 +57,10 @@ function SignUpForm() {
   const handleSignup = async () => {
     if (!acceptTerms) {
       toast.error('You must accept the terms and conditions');
+      return;
+    }
+    if (!confirmAge) {
+      toast.error('You must confirm you are 18 years of age or older');
       return;
     }
 
@@ -235,6 +240,19 @@ function SignUpForm() {
                   <Link href="/terms" className="text-red-45 hover:underline">Terms</Link>{' '}
                   and{' '}
                   <Link href="/privacy" className="text-red-45 hover:underline">Privacy Policy</Link>.
+                </label>
+              </div>
+              <div className="flex items-start mt-3">
+                <input
+                  type="checkbox"
+                  id="age"
+                  checked={confirmAge}
+                  onChange={(e) => setConfirmAge(e.target.checked)}
+                  className="w-4 h-4 mt-1 rounded border-dark-25 bg-dark-15 text-red-45 focus:ring-red-45"
+                  required
+                />
+                <label htmlFor="age" className="ml-2 text-xs text-grey-70 leading-relaxed">
+                  I confirm that I am 18 years of age or older and that adult content may be present on this platform.
                 </label>
               </div>
             </div>

@@ -47,20 +47,23 @@ export const authSlice = createSlice({
       state.user = user
       state.token = token
       state.isAuthenticated = true
-      // Sync with localStorage
       if (typeof window !== 'undefined') {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
+        // Cookies for Next.js middleware route guards (not httpOnly — API still uses Bearer)
+        document.cookie = `nk_token=${encodeURIComponent(token)}; path=/; SameSite=Lax; max-age=${7 * 24 * 60 * 60}`;
+        document.cookie = `nk_role=${encodeURIComponent(user?.role || '')}; path=/; SameSite=Lax; max-age=${7 * 24 * 60 * 60}`;
       }
     },
     logout: (state) => {
       state.user = null
       state.token = null
       state.isAuthenticated = false
-      // Sync with localStorage
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        document.cookie = 'nk_token=; path=/; max-age=0';
+        document.cookie = 'nk_role=; path=/; max-age=0';
       }
     },
     setSubscriptionId: (state, action: PayloadAction<string>) => {

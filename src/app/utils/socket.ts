@@ -7,9 +7,9 @@ import { SOCKET_URL } from '../config/env';
 let socket: any = null;
 
 export const getSocket = () => {
-  if (!socket) {
-    console.log('Initializing socket connection to:', SOCKET_URL);
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
+  if (!socket) {
     socket = io(SOCKET_URL, {
       transports: ['polling', 'websocket'],
       autoConnect: true,
@@ -19,6 +19,7 @@ export const getSocket = () => {
       timeout: 10000,
       withCredentials: false,
       path: '/socket.io',
+      auth: { token },
     });
 
     socket.on('connect', () => {
@@ -26,12 +27,22 @@ export const getSocket = () => {
     });
 
     socket.on('connect_error', (error: any) => {
-      console.error('Socket connection error:', error);
+      console.error('Socket connection error:', error?.message || error);
     });
 
     socket.on('disconnect', (reason: string) => {
       console.log('Socket disconnected:', reason);
     });
+  } else if (token) {
+    socket.auth = { token };
+    if (!socket.connected) socket.connect();
   }
   return socket;
+};
+
+export const resetSocket = () => {
+  if (socket) {
+    socket.disconnect();
+    socket = null;
+  }
 };

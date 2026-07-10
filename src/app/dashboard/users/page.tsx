@@ -26,6 +26,8 @@ import {
   useDeleteUserMutation,
 } from '../../store/api/userApi';
 import { useCancelSubscriptionMutation } from '../../store/api/subscriptionApi';
+import { useAppSelector } from '../../store/hooks';
+import { selectCurrentUser } from '../../store/slices/authSlice';
 
 interface User {
   _id: string;
@@ -42,7 +44,21 @@ interface User {
 
 const columnHelper = createColumnHelper<User>();
 
+const CREATE_ROLE_OPTIONS: Record<string, { value: string; label: string }[]> = {
+  admin: [
+    { value: 'viewer', label: 'Viewer' },
+    { value: 'creator', label: 'Creator' },
+  ],
+  superadmin: [
+    { value: 'viewer', label: 'Viewer' },
+    { value: 'creator', label: 'Creator' },
+    { value: 'admin', label: 'Admin' },
+    { value: 'superadmin', label: 'Super Admin' },
+  ],
+};
+
 export default function UserManagement() {
+  const currentUser = useAppSelector(selectCurrentUser);
   const [toggleUserActive] = useToggleUserActiveMutation();
   const [cancelSubscription] = useCancelSubscriptionMutation();
   const [deleteUser] = useDeleteUserMutation();
@@ -57,6 +73,11 @@ export default function UserManagement() {
   const [showUserDetails, setShowUserDetails] = useState(false);
   const [page, setPage] = useState(1);
   const limit = 10;
+
+  const creatableRoles = useMemo(
+    () => CREATE_ROLE_OPTIONS[currentUser?.role || ''] || CREATE_ROLE_OPTIONS.admin,
+    [currentUser?.role]
+  );
 
   const { data: stats } = useGetUserStatsQuery();
   const { data, isLoading, refetch: refetchUsers } = useGetPaginatedUsersQuery({ page, limit, search: searchTerm });
@@ -330,10 +351,9 @@ export default function UserManagement() {
                 <select value={createUserForm.role}
                   onChange={(e) => setCreateUserForm((prev) => ({ ...prev, role: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg bg-dark-10 text-white text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45">
-                  <option value="viewer">Viewer</option>
-                  <option value="creator">Creator</option>
-                  <option value="admin">Admin</option>
-                  <option value="superadmin">Super Admin</option>
+                  {creatableRoles.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
               </div>
             </div>
