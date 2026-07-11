@@ -18,8 +18,12 @@ export const metadata: Metadata = {
   description: `${BRAND.name} — ${BRAND.tagline} for high-quality exclusive content.`,
   metadataBase: new URL(BRAND.siteUrl),
   icons: {
-    icon: [{ url: BRAND.logoMark, type: "image/png" }],
-    apple: [{ url: BRAND.appleTouchIcon }],
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: BRAND.logoMark, type: "image/png", sizes: "1024x1024" },
+    ],
+    shortcut: BRAND.logoMark,
+    apple: [{ url: BRAND.appleTouchIcon, sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: `${BRAND.name} — ${BRAND.tagline}`,

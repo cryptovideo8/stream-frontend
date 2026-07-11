@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>xpeacock Platform User Guide</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 20mm; }
+  :root {
+    --bg: #0b0b0c;
+    --panel: #141416;
+    --text: #f2f2f3;
+    --muted: #a0a0a8;
+    --red: #e30000;
+    --border: rgba(255,255,255,0.08);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    font-size: 11pt;
+    line-height: 1.55;
+  }
+  .cover {
+    page-break-after: always;
+    min-height: 240mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24mm 10mm;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(227,0,0,0.28), transparent 55%),
+      linear-gradient(180deg, #121214 0%, #0b0b0c 100%);
+  }
+  .cover img.logo { width: 220px; height: auto; margin-bottom: 28px; }
+  .cover h1 {
+    font-size: 30pt;
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .cover .sub { color: var(--muted); font-size: 12pt; max-width: 420px; line-height: 1.5; }
+  .cover .meta {
+    margin-top: 40px;
+    color: var(--muted);
+    font-size: 9.5pt;
+  }
+  .badge {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 5px 10px;
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  h1, h2, h3 { page-break-after: avoid; }
+  h1 { font-size: 16pt; border-bottom: 2px solid var(--red); padding-bottom: 6px; margin-top: 20px; }
+  h2 { font-size: 12.5pt; color: #fff; margin-top: 16px; }
+  h3 { font-size: 11pt; color: #eee; margin-top: 12px; }
+  p { margin: 6px 0; color: #e6e6ea; font-size: 10pt; }
+  ul { margin: 8px 0 12px 18px; }
+  li { margin: 4px 0; }
+  a { color: #ff6b6b; text-decoration: none; }
+  code, pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 9.5pt;
+  }
+  code { background: #1c1c20; padding: 1px 5px; border-radius: 4px; }
+  pre {
+    background: #1c1c20;
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 8px;
+    overflow: hidden;
+    white-space: pre-wrap;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 18px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #1a1a1e; color: #fff; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  figure.shot {
+    margin: 10px 0 16px;
+    page-break-inside: avoid;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: 210mm;
+  }
+  figure.shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 195mm;
+    object-fit: contain;
+    object-position: top;
+    background: #000;
+  }
+  figcaption {
+    padding: 6px 10px;
+    font-size: 8pt;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+  table { font-size: 9pt; }
+  th, td { padding: 6px 8px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  .toc a { color: var(--text); }
+  .footer-note { color: var(--muted); font-size: 9pt; margin-top: 40px; }
+</style>
+</head>
+<body>
+  <section class="cover">
+    <img class="logo" src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/public/brand/logo-wordmark.png" alt="xpeacock" />
+    <h1>Platform User Guide</h1>
+    <p class="sub">Complete operations guide for Viewers, Creators, Admins, and Superadmins.</p>
+    <div class="badge">Confidential — Client Handover</div>
+    <p class="meta">Version 1.0 · 11 July 2026<br/>Product: xpeacock streaming platform</p>
+  </section>
+  <main>
+    <p><strong>Confidential client handover</strong> · Version 1.1 · July 2026</p>
+<p>Operator manual for the xpeacock streaming platform: browse &amp; watch, accounts, subscriptions, creator studio, and admin / superadmin controls.</p>
+<hr />
+<h2 id="1-roles-at-a-glance">1. Roles at a glance</h2>
+<table><thead><tr><th>Role</th><th>Access</th><th>Typical tasks</th></tr></thead><tbody>
+<tr><td><strong>Guest</strong></td><td>Public site</td><td>Browse, search, watch free titles, sign up</td></tr>
+<tr><td><strong>Viewer</strong></td><td>Signed-in user</td><td>Like, continue watching, subscribe, report, support tickets</td></tr>
+<tr><td><strong>Creator</strong></td><td><code>/dashboard</code></td><td>Upload videos, manage channel, request payouts</td></tr>
+<tr><td><strong>Admin</strong></td><td>Trust &amp; safety tools</td><td>Moderation, support inbox, verification, users</td></tr>
+<tr><td><strong>Superadmin</strong></td><td>Full ops</td><td>Plans, promos, payouts, UPI, payment audits, stats</td></tr>
+</tbody></table>
+<p>Local demo stack used for screenshots: frontend <code>localhost:3000</code> · API <code>localhost:5141</code>.</p>
+<hr />
+<h2 id="2-first-visit">2. First visit</h2>
+<p>Users must confirm <strong>18+</strong> age, then accept cookies. Preferences are stored in the browser.</p>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/01-age-gate.png" alt="Age gate" /><figcaption>Age gate</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/02-cookie-consent.png" alt="Cookie consent" /><figcaption>Cookie consent</figcaption></figure>
+<p><strong>Theme:</strong> sun/moon control in the header (and dashboard header) switches dark ↔ light.</p>
+<hr />
+<h2 id="3-browse-discover">3. Browse &amp; discover</h2>
+<p>Home shows a featured hero, filter chips (Trending, Newest, Premium, categories), and the video grid. Premium titles carry a gold <strong>PREMIUM</strong> badge. Sidebar Discover links and category counts mirror the same catalogue.</p>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/03-home.png" alt="Home catalogue" /><figcaption>Home catalogue</figcaption></figure>
+<table><thead><tr><th>Surface</th><th>Route</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>Categories</td><td><code>/categories</code></td><td>Directory of all categories</td></tr>
+<tr><td>Search</td><td><code>/search?q=</code></td><td>Videos, creators, categories</td></tr>
+<tr><td>Channel</td><td><code>/channel/[id]</code></td><td>Public creator page</td></tr>
+</tbody></table>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/04-categories.png" alt="Categories" /><figcaption>Categories</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/05-search.png" alt="Search" /><figcaption>Search</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/06-channel.png" alt="Creator channel" /><figcaption>Creator channel</figcaption></figure>
+<p><strong>Mobile:</strong> bottom nav + compact header for primary browse actions.</p>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/14-mobile.png" alt="Mobile home" /><figcaption>Mobile home</figcaption></figure>
+<hr />
+<h2 id="4-watch">4. Watch</h2>
+<p><strong>Free public titles</strong> play on <code>/watch/[id]</code> with metadata, comments, Up Next, and related videos.</p>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/07-watch-free.png" alt="Free watch" /><figcaption>Free watch</figcaption></figure>
+<p><strong>Paid / rent titles</strong> show a soft paywall (sign in / subscribe) until the viewer has entitlement. Metadata and related content may still appear.</p>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/08-watch-paywall.png" alt="Premium paywall" /><figcaption>Premium paywall</figcaption></figure>
+<p><strong>Signed-in actions:</strong> like, dislike, comment, share, and <strong>Report</strong> (opens a modal to flag content for moderation).</p>
+<table><thead><tr><th>Topic</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Geo restriction</td><td>Blocked region → unavailable state instead of stream</td></tr>
+<tr><td>DRM</td><td>Paid titles may use DRM-backed delivery after unlock</td></tr>
+<tr><td>Device sessions</td><td>Concurrent logins may be capped — clear older sessions if login is refused</td></tr>
+</tbody></table>
+<hr />
+<h2 id="5-accounts">5. Accounts</h2>
+<table><thead><tr><th>Action</th><th>Route</th></tr></thead><tbody>
+<tr><td>Sign in</td><td><code>/login</code></td></tr>
+<tr><td>Sign up (viewer)</td><td><code>/signup</code></td></tr>
+<tr><td>Sign up (creator)</td><td><code>/signup?role=creator</code></td></tr>
+<tr><td>Password reset</td><td><code>/forgot-password</code></td></tr>
+</tbody></table>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/10-login.png" alt="Login" /><figcaption>Login</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/11-signup.png" alt="Creator signup" /><figcaption>Creator signup</figcaption></figure>
+<p>Sign out from the header avatar menu.</p>
+<hr />
+<h2 id="6-viewer-library-profile">6. Viewer library &amp; profile</h2>
+<table><thead><tr><th>Feature</th><th>Route</th></tr></thead><tbody>
+<tr><td>Liked videos</td><td><code>/liked</code></td></tr>
+<tr><td>Profile &amp; preferences</td><td><code>/profile</code></td></tr>
+<tr><td>Continue watching</td><td>Home shelf (when history exists)</td></tr>
+<tr><td>Support tickets</td><td><code>/support</code> (signed in)</td></tr>
+</tbody></table>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/15-liked.png" alt="Liked" /><figcaption>Liked</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/16-profile.png" alt="Profile" /><figcaption>Profile</figcaption></figure>
+<hr />
+<h2 id="7-subscriptions-payments">7. Subscriptions &amp; payments</h2>
+<p><code>/subscriptions</code> lists plans for guests and signed-in checkout.</p>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/09-subscriptions.png" alt="Plans (guest)" /><figcaption>Plans (guest)</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/17-subscribe-checkout.png" alt="Checkout (signed in)" /><figcaption>Checkout (signed in)</figcaption></figure>
+<p><strong>Payment paths</strong></p>
+<p>1. <strong>Razorpay</strong> — card / wallet checkout via the configured public key; success activates entitlement.</p>
+<p>2. <strong>Manual UPI</strong> — pay to a listed UPI account, submit UTR; Superadmin approves under Payment Audits.</p>
+<p>Promo codes apply on the subscribe form when configured.</p>
+<hr />
+<h2 id="8-creator-studio">8. Creator studio</h2>
+<p>Creators work in <code>/dashboard</code>.</p>
+<table><thead><tr><th>Area</th><th>Route</th><th>What to do</th></tr></thead><tbody>
+<tr><td>Overview</td><td><code>/dashboard</code></td><td>Stats, charts, recent uploads</td></tr>
+<tr><td>Videos</td><td><code>/dashboard/videos</code></td><td>List, upload wizard, edit, public/private visibility</td></tr>
+<tr><td>Channels</td><td><code>/dashboard/channels</code></td><td>Channel profile + verification docs</td></tr>
+<tr><td>Payouts</td><td><code>/dashboard/payouts</code></td><td>Request payout, track status</td></tr>
+<tr><td>Settings</td><td><code>/dashboard/settings</code></td><td>Profile, security, payout UPI</td></tr>
+</tbody></table>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/19-creator-dashboard.png" alt="Creator dashboard" /><figcaption>Creator dashboard</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/20-creator-videos.png" alt="Videos" /><figcaption>Videos</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/21-upload-wizard.png" alt="Upload wizard" /><figcaption>Upload wizard</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/22-creator-channels.png" alt="Channels" /><figcaption>Channels</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/23-creator-payouts.png" alt="Payouts" /><figcaption>Payouts</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/24-creator-settings.png" alt="Settings" /><figcaption>Settings</figcaption></figure>
+<hr />
+<h2 id="9-admin-trust-safety">9. Admin (trust &amp; safety)</h2>
+<p>Available to <code>admin</code> and <code>superadmin</code>.</p>
+<table><thead><tr><th>Tool</th><th>Route</th></tr></thead><tbody>
+<tr><td>Moderation</td><td><code>/dashboard/admin/moderation</code> — reports, resolve, deactivate</td></tr>
+<tr><td>Support inbox</td><td><code>/dashboard/admin/support</code></td></tr>
+<tr><td>Verification</td><td><code>/dashboard/admin/verification</code> — approve/reject creator docs</td></tr>
+<tr><td>Users</td><td><code>/dashboard/users</code></td></tr>
+</tbody></table>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/25-moderation.png" alt="Moderation" /><figcaption>Moderation</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/26-admin-support.png" alt="Support inbox" /><figcaption>Support inbox</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/27-verification.png" alt="Verification" /><figcaption>Verification</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/28-users.png" alt="Users" /><figcaption>Users</figcaption></figure>
+<hr />
+<h2 id="10-superadmin-monetization">10. Superadmin (monetization)</h2>
+<table><thead><tr><th>Tool</th><th>Route / tab</th></tr></thead><tbody>
+<tr><td>Creator payouts</td><td><code>/dashboard/admin/payouts</code> — settle / reject</td></tr>
+<tr><td>Plans</td><td>Subscriptions → <strong>Plans</strong> — CRUD + enable/disable</td></tr>
+<tr><td>Promos</td><td>→ <strong>Promo Codes</strong></td></tr>
+<tr><td>Subscribers</td><td>→ <strong>Subscribers</strong> — list + manual grant</td></tr>
+<tr><td>Statistics</td><td>→ <strong>Statistics</strong> — revenue &amp; counts</td></tr>
+<tr><td>UPI accounts</td><td>→ <strong>UPI Accounts</strong> — shown on manual pay</td></tr>
+<tr><td>Payment audits</td><td>→ <strong>Payment Audits</strong> — approve UTRs</td></tr>
+<tr><td>Payment reports</td><td>→ <strong>Payment Reports</strong></td></tr>
+</tbody></table>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/29-admin-payouts.png" alt="Admin payouts" /><figcaption>Admin payouts</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/30-plans.png" alt="Plans" /><figcaption>Plans</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/31-promos.png" alt="Promos" /><figcaption>Promos</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/32-stats.png" alt="Statistics" /><figcaption>Statistics</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/33-payment-audits.png" alt="Payment audits" /><figcaption>Payment audits</figcaption></figure>
+<hr />
+<h2 id="11-legal-support">11. Legal &amp; support</h2>
+<p>Footer links: Terms (<code>/terms</code>), Privacy, Cookies, FAQ, DMCA, 2257. Support center: <code>/support</code>.</p>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/12-support.png" alt="Support" /><figcaption>Support</figcaption></figure>
+<figure class="shot"><img src="file:///Users/ravatrajsinhchauhan/Documents/Programs/streaming platform/stream-frontend/docs/assets/guide/13-legal.png" alt="Legal (Terms)" /><figcaption>Legal (Terms)</figcaption></figure>
+<p>Other legal pages use the same layout; open them from the footer.</p>
+<hr />
+<h2 id="12-demo-accounts-non-production">12. Demo accounts (non-production)</h2>
+<table><thead><tr><th>Role</th><th>Email</th><th>Password</th></tr></thead><tbody>
+<tr><td>Creator</td><td>creator@knightkings.com</td><td>Creator#2026</td></tr>
+<tr><td>Admin</td><td>admin@knightkings.com</td><td>Admin#2026</td></tr>
+<tr><td>Superadmin</td><td>superadmin@knightkings.com</td><td>SuperAdmin#2026</td></tr>
+</tbody></table>
+<hr />
+<h2 id="13-troubleshooting">13. Troubleshooting</h2>
+<table><thead><tr><th>Issue</th><th>Fix</th></tr></thead><tbody>
+<tr><td>Empty / endless skeletons</td><td>Open the app as <code>http://localhost:3000</code> (not <code>127.0.0.1</code>) when the API URL uses <code>localhost</code>. Confirm API on <code>:5141</code>.</td></tr>
+<tr><td>Login device limit</td><td>Sign out other devices or clear that user’s <code>loginsessions</code>.</td></tr>
+<tr><td>Premium won’t play</td><td>Active subscription required (or Superadmin grant).</td></tr>
+<tr><td>UTR not activating</td><td>Superadmin → Payment Audits → approve.</td></tr>
+<tr><td>Upload fails</td><td>Creator session + Bunny/TUS server config.</td></tr>
+</tbody></table>
+<h3 id="regenerate-this-document">Regenerate this document</h3>
+<pre><code>node docs/scripts/capture-user-guide.cjs
+node docs/scripts/build-guide-pdf.cjs</code></pre>
+<p>© 2026 xpeacock · Screenshots from live product UI</p>
+    <p class="footer-note">© 2026 xpeacock. Screenshots captured from the live product UI. Re-run <code>docs/scripts/capture-user-guide.cjs</code> after major UI changes.</p>
+  </main>
+</body>
+</html>

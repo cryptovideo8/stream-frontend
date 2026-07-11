@@ -1,0 +1,43 @@
+{
+  "at": "2026-07-11T16:50:51.258Z",
+  "fe": "http://localhost:3000",
+  "sample": {
+    "videoId": "69be213c2d408e3003fe0e0b",
+    "creatorId": "6a50fd92fa296f09591c33f7",
+    "paidVideoId": "69be254702823fd7f1dbc198"
+  },
+  "files": [
+    "01-age-gate.png",
+    "02-cookie-consent.png",
+    "03-home.png",
+    "04-categories.png",
+    "05-search.png",
+    "06-channel.png",
+    "07-watch-free.png",
+    "08-watch-paywall.png",
+    "09-subscriptions.png",
+    "10-login.png",
+    "11-signup.png",
+    "12-support.png",
+    "13-legal.png",
+    "14-mobile.png",
+    "15-liked.png",
+    "16-profile.png",
+    "17-subscribe-checkout.png",
+    "19-creator-dashboard.png",
+    "20-creator-videos.png",
+    "21-upload-wizard.png",
+    "22-creator-channels.png",
+    "23-creator-payouts.png",
+    "24-creator-settings.png",
+    "25-moderation.png",
+    "26-admin-support.png",
+    "27-verification.png",
+    "28-users.png",
+    "29-admin-payouts.png",
+    "30-plans.png",
+    "31-promos.png",
+    "32-stats.png",
+    "33-payment-audits.png"
+  ]
+}
