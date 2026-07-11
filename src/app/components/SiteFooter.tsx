@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAppSelector } from '../store/hooks';
 import { selectCurrentUser, selectIsAuthenticated } from '../store/slices/authSlice';
+import BrandLogo from './BrandLogo';
+import { BRAND } from '../config/brand';
 
 export default function SiteFooter() {
   const user = useAppSelector(selectCurrentUser);
@@ -28,15 +30,9 @@ export default function SiteFooter() {
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           {/* Brand */}
           <div className="space-y-4 col-span-2 sm:col-span-2 md:col-span-1">
-            <Link
-              href="/"
-              className="inline-block text-2xl font-black"
-              style={{ background: 'linear-gradient(135deg, #E30000, #FF5555)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-            >
-              NightKing
-            </Link>
+            <BrandLogo variant="mark-text" markClassName="h-9 w-9" />
             <p className="text-grey-60 text-sm leading-relaxed">
-              Your premium streaming platform for high-quality content and exclusive features.
+              {BRAND.tagline} for high-quality exclusive content — available where adult entertainment is legal.
             </p>
             <div className="flex items-center gap-4">
               {/* Twitter */}
@@ -126,8 +122,8 @@ export default function SiteFooter() {
                 <Link href="/support" className="text-grey-60 hover:text-white text-sm transition-colors duration-200">Create a Ticket</Link>
               </li>
               <li>
-                <a href="mailto:support@nightking.tv" className="text-grey-60 hover:text-white text-sm transition-colors duration-200">
-                  support@nightking.tv
+                <a href={`mailto:${BRAND.supportEmail}`} className="text-grey-60 hover:text-white text-sm transition-colors duration-200">
+                  {BRAND.supportEmail}
                 </a>
               </li>
             </ul>
@@ -153,7 +149,7 @@ export default function SiteFooter() {
         <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
           <div className="flex items-center gap-3">
             <p className="text-grey-60 text-xs">
-              © {new Date().getFullYear()} NightKing. All rights reserved.
+              © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
             </p>
             <span className="px-2 py-0.5 border border-red-45/50 text-red-45 text-[10px] font-bold rounded uppercase tracking-wider hidden sm:inline-block">18+ Adults Only</span>
           </div>

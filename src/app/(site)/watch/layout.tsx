@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { BRAND } from "../../config/brand";
 
 export const metadata: Metadata = {
-  title: "NightKing - Premium Streaming Platform",
-  description: "Your premium streaming destination for high-quality content",
+  title: `${BRAND.name} — ${BRAND.tagline}`,
+  description: `Your premium adult streaming destination on ${BRAND.name}`,
 };
 
 export default function RootLayout({

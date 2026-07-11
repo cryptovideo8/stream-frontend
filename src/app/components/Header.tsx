@@ -27,6 +27,7 @@ import { useLogoutMutation } from '../store/api/authApi';
 import { useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
 import toast from 'react-hot-toast';
+import BrandLogo from './BrandLogo';
 
 interface HeaderProps {
   hideNavMenu?: boolean;
@@ -116,14 +117,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
     >
       <div className="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
 
-        {/* Logo */}
-        <Link
-          href="/"
-          className="flex-shrink-0 text-xl font-black tracking-tight transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(227,0,0,0.8)]"
-          style={{ background: 'linear-gradient(135deg, #E30000, #FF5555)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-        >
-          NightKing
-        </Link>
+        <BrandLogo variant="mark-text" markClassName="h-8 w-8" priority />
 
         {/* Desktop Search */}
         <form

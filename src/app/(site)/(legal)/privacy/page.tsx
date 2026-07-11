@@ -100,7 +100,7 @@ export default function PrivacyPage() {
             <p className="mb-4">
               If you have any questions about this Privacy Policy, please contact us at:
             </p>
-            <p className="text-red-45">support@nightking.com</p>
+            <p className="text-red-45">support@xpeacock.com</p>
           </section>
 
           <div className="pt-8 border-t border-dark-20">

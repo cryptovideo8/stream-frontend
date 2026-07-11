@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://knightkings.vercel.app/sitemap.xml
+Sitemap: https://xpeacock.com/sitemap.xml

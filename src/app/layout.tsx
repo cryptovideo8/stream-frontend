@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "./components/Providers";
 import PageProgress from "./components/PageProgress";
 import { Toaster } from "react-hot-toast";
+import { BRAND } from "./config/brand";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -13,13 +14,26 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "NightKing — Premium Streaming",
-  description: "NightKing premium streaming platform for high-quality exclusive content.",
+  title: `${BRAND.name} — ${BRAND.tagline}`,
+  description: `${BRAND.name} — ${BRAND.tagline} for high-quality exclusive content.`,
+  metadataBase: new URL(BRAND.siteUrl),
+  icons: {
+    icon: [{ url: BRAND.logoMark, type: "image/png" }],
+    apple: [{ url: BRAND.appleTouchIcon }],
+  },
   openGraph: {
-    title: "NightKing — Premium Streaming",
-    description: "Watch premium content on NightKing.",
-    siteName: "NightKing",
+    title: `${BRAND.name} — ${BRAND.tagline}`,
+    description: `Watch premium content on ${BRAND.name}.`,
+    siteName: BRAND.name,
     type: "website",
+    url: BRAND.siteUrl,
+    images: [{ url: BRAND.ogImage, width: 1200, height: 630, alt: BRAND.name }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND.name} — ${BRAND.tagline}`,
+    description: `Watch premium content on ${BRAND.name}.`,
+    images: [BRAND.ogImage],
   },
 };
 

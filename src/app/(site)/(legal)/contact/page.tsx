@@ -18,7 +18,7 @@ export default function ContactPage() {
               <div className="space-y-4">
                 <div>
                   <h3 className="text-primary font-medium mb-1">Email</h3>
-                  <p className="text-grey-70">support@nightking.com</p>
+                  <p className="text-grey-70">support@xpeacock.com</p>
                 </div>
                 
                 <div>

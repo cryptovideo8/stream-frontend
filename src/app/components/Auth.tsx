@@ -17,6 +17,8 @@ import {
   useSignUpMutation 
 } from '../store/api/authApi';
 import { toast } from 'react-hot-toast';
+import BrandLogo from './BrandLogo';
+import { BRAND } from '../config/brand';
 
 interface FormData {
   email: string;
@@ -163,10 +165,10 @@ export default function Auth() {
         
         {/* Logo */}
         <div className="text-center mb-6">
-          <div className="flex items-center justify-center gap-2 mb-1 cursor-pointer group" onClick={() => router.push('/')}>
-            <VideoCameraIcon className="w-8 h-8 text-red-45 group-hover:animate-bounce-subtle" />
-            <h1 className="text-3xl font-black" style={{ background: 'linear-gradient(135deg, #E30000, #FF5555)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>NightKing</h1>
+          <div className="flex items-center justify-center mb-1">
+            <BrandLogo variant="mark-text" markClassName="h-10 w-10" className="justify-center" priority />
           </div>
+          <p className="text-[11px] uppercase tracking-[0.2em] text-grey-60 mb-3">{BRAND.tagline}</p>
           <div className="mt-4">
             <h2 className="text-xl font-bold text-white tracking-tight">{isLogin ? 'Welcome back' : 'Join the Revolution'}</h2>
             <p className="text-grey-60 text-sm mt-1">{isLogin ? 'Sign in to access your premium content' : 'Create an account and start streaming today'}</p>
@@ -312,7 +314,7 @@ export default function Auth() {
 
         {/* Social Proof */}
         <p className="text-center text-[11px] font-medium text-grey-60 mt-5 animate-fade-in flex items-center justify-center gap-1.5 opacity-80">
-          <ShieldCheckIcon className="w-3.5 h-3.5 text-green-45" /> Join 50K+ members already on NightKing
+          <ShieldCheckIcon className="w-3.5 h-3.5 text-green-45" /> Join 50K+ members already on {BRAND.name}
         </p>
       </div>
     </div>

@@ -187,7 +187,7 @@ export default function SupportPage() {
                <ShieldCheckIcon className="w-10 h-10 text-red-45 mb-4" />
                <h3 className="text-lg font-bold text-white mb-2">Secure & Dedicated Support</h3>
                <p className="text-grey-60 text-sm leading-relaxed mb-6">
-                 All tickets are encrypted and handled by our specialized verification team. For enterprise queries, please contact <span className="text-white font-medium">business@nightking.tv</span>
+                 All tickets are encrypted and handled by our specialized verification team. For enterprise queries, please contact <span className="text-white font-medium">business@xpeacock.com</span>
                </p>
                <div className="flex items-center gap-4">
                   <div className="flex -space-x-3">

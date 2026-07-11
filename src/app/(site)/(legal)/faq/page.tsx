@@ -12,9 +12,9 @@ export default function FAQPage() {
             
             <div className="space-y-6">
               <div>
-                <h3 className="text-xl text-primary mb-2">What is NightKing?</h3>
+                <h3 className="text-xl text-primary mb-2">What is xpeacock?</h3>
                 <p className="text-grey-70">
-                  NightKing is a premium streaming platform that offers high-quality content and exclusive features for our subscribers.
+                  xpeacock is a premium adult streaming platform that offers high-quality exclusive content for subscribers in jurisdictions where adult entertainment is legal.
                 </p>
               </div>
 

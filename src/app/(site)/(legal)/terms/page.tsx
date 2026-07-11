@@ -17,7 +17,7 @@ export default function TermsPage() {
             <h2 className="text-2xl font-semibold text-primary mb-4">2. Use License</h2>
             <p className="mb-4">
               Permission is granted to temporarily download one copy of the materials (information
-              or software) on NightKing for personal, non-commercial transitory viewing only.
+              or software) on xpeacock for personal, non-commercial transitory viewing only.
             </p>
             <p className="mb-4">This is the grant of a license, not a transfer of title, and under this license you may not:</p>
             <ul className="list-disc pl-6 space-y-2">
@@ -64,7 +64,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold text-primary mb-4">6. Limitations</h2>
             <p className="mb-4">
-              In no event shall NightKing or its suppliers be liable for any damages (including,
+              In no event shall xpeacock or its suppliers be liable for any damages (including,
               without limitation, damages for loss of data or profit, or due to business
               interruption) arising out of the use or inability to use the materials on the
               website.

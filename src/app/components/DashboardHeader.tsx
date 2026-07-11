@@ -17,6 +17,7 @@ import { useAppSelector } from '../store/hooks';
 import { logout, selectCurrentUser, selectIsAuthenticated } from '../store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import BrandLogo from './BrandLogo';
 
 interface DashboardHeaderProps {
   onMobileMenuToggle: () => void;
@@ -76,9 +77,7 @@ export default function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderP
             <Bars3Icon className="h-6 w-6" />
           </button>
 
-          <Link href="/" className="flex-shrink-0 text-2xl font-bold text-red-45">
-            NightKing
-          </Link>
+          <BrandLogo variant="mark-text" markClassName="h-8 w-8" className="text-2xl" />
 
         </div>
 
