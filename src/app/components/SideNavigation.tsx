@@ -115,8 +115,8 @@ export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }
                 }
               }}
               className={`relative flex items-center px-3 py-2.5 rounded-xl mb-1.5 transition-all duration-300 group ${isActive
-                ? 'bg-gradient-to-r from-red-45/15 to-transparent text-white'
-                : 'text-grey-60 hover:text-white hover:bg-dark-15'
+                ? 'bg-gradient-to-r from-red-45/15 to-transparent text-primary'
+                : 'text-grey-60 hover:text-primary hover:bg-dark-15'
                 }`}
             >
               {isActive && (
@@ -125,11 +125,11 @@ export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }
               <Icon className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ml-1 ${isActive ? 'text-red-45' : 'group-hover:scale-110'}`} />
               
               {!isCollapsed ? (
-                <span className={`ml-3 truncate text-sm font-medium ${isActive ? 'text-white' : 'group-hover:text-white'}`}>
+                <span className={`ml-3 truncate text-sm font-medium ${isActive ? 'text-primary' : 'group-hover:text-primary'}`}>
                   {item.text}
                 </span>
               ) : (
-                <div className="absolute left-14 px-2.5 py-1.5 bg-dark-20 border border-white/10 text-white text-xs font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-xl">
+                <div className="absolute left-14 px-2.5 py-1.5 bg-dark-20 border border-dark-25 text-primary text-xs font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-xl">
                   {item.text}
                 </div>
               )}

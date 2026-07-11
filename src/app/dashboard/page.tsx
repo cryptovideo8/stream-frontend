@@ -47,7 +47,7 @@ function StatCard({ title, value, change, icon: Icon, loading }: StatCardProps) 
         {loading ? (
           <div className="h-8 bg-dark-20 rounded animate-pulse w-24" />
         ) : (
-          <div className="text-3xl font-bold text-white">{value}</div>
+          <div className="text-3xl font-bold text-primary">{value}</div>
         )}
         {change && (
           <div className="flex items-center space-x-2">
@@ -137,7 +137,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Dashboard Overview</h1>
+          <h1 className="text-2xl font-bold text-primary mb-1">Dashboard Overview</h1>
           <p className="text-grey-70">Track your platform performance and growth</p>
         </div>
         {/* Date range filter */}
@@ -148,7 +148,7 @@ export default function DashboardPage() {
               onClick={() => setDateRange(r)}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${dateRange === r
                   ? 'bg-red-45 text-white'
-                  : 'text-grey-70 hover:text-white'
+                  : 'text-grey-70 hover:text-primary'
                 }`}
             >
               {r}
@@ -167,7 +167,7 @@ export default function DashboardPage() {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="chart-container bg-dark-10 rounded-xl p-6 border border-dark-20">
-          <h3 className="chart-title text-white font-semibold mb-4">Videos Uploaded (by Month)</h3>
+          <h3 className="chart-title text-primary font-semibold mb-4">Videos Uploaded (by Month)</h3>
           <div className="h-[280px]">
             {loadingVideos ? (
               <div className="h-full flex items-center justify-center text-grey-60">Loading chart...</div>
@@ -196,7 +196,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="chart-container bg-dark-10 rounded-xl p-6 border border-dark-20">
-          <h3 className="chart-title text-white font-semibold mb-4">User Growth</h3>
+          <h3 className="chart-title text-primary font-semibold mb-4">User Growth</h3>
           <div className="h-[280px] flex flex-col justify-center items-center space-y-4">
             {loadingStats ? (
               <div className="text-grey-60">Loading...</div>
@@ -267,7 +267,7 @@ export default function DashboardPage() {
                     )}
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-white truncate max-w-[180px]">{video.title}</div>
+                    <div className="text-sm font-medium text-primary truncate max-w-[180px]">{video.title}</div>
                     <div className="text-xs text-grey-60 flex items-center space-x-1">
                       <ClockIcon className="h-3 w-3" />
                       <span>{new Date(video.createdAt).toLocaleDateString()}</span>

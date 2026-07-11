@@ -107,13 +107,13 @@ export default function AdminPaymentReportsTab() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white">Payment & Revenue Report</h2>
+          <h2 className="text-xl font-bold text-primary">Payment & Revenue Report</h2>
           <p className="text-sm text-grey-60">Insights into manual UPI payments and subscription revenue.</p>
         </div>
         
         <button 
           onClick={() => setShowFilters(!showFilters)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${showFilters ? 'bg-red-45 border-red-45 text-white' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-white'}`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${showFilters ? 'bg-red-45 border-red-45 text-white' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-primary'}`}
         >
           <FunnelIcon className="w-4 h-4" />
           <span className="text-sm font-medium">Filters</span>
@@ -138,7 +138,7 @@ export default function AdminPaymentReportsTab() {
             <select 
               value={upiId} 
               onChange={(e) => setUpiId(e.target.value)}
-              className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white focus:border-red-45 outline-none transition-colors"
+              className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary focus:border-red-45 outline-none transition-colors"
             >
               <option value="">All UPI IDs</option>
               {upis.map(u => (
@@ -153,7 +153,7 @@ export default function AdminPaymentReportsTab() {
               type="date" 
               value={startDate} 
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white focus:border-red-45 outline-none transition-colors [color-scheme:dark]"
+              className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary focus:border-red-45 outline-none transition-colors [color-scheme:dark]"
             />
           </div>
 
@@ -164,11 +164,11 @@ export default function AdminPaymentReportsTab() {
                 type="date" 
                 value={endDate} 
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white focus:border-red-45 outline-none transition-colors [color-scheme:dark]"
+                className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary focus:border-red-45 outline-none transition-colors [color-scheme:dark]"
               />
               <button 
                 onClick={clearFilters}
-                className="p-2 bg-dark-20 hover:bg-dark-30 text-grey-60 hover:text-white rounded-lg border border-dark-25 transition-colors"
+                className="p-2 bg-dark-20 hover:bg-dark-30 text-grey-60 hover:text-primary rounded-lg border border-dark-25 transition-colors"
                 title="Clear Filters"
               >
                 <ArrowPathIcon className="w-5 h-5" />
@@ -186,7 +186,7 @@ export default function AdminPaymentReportsTab() {
           </div>
           <div>
             <p className="text-xs text-grey-60 font-medium uppercase tracking-wider">Total Revenue</p>
-            <p className="text-2xl font-bold text-white">₹{stats.totalRevenue.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-primary">₹{stats.totalRevenue.toLocaleString()}</p>
           </div>
         </div>
 
@@ -197,7 +197,7 @@ export default function AdminPaymentReportsTab() {
           </div>
           <div>
             <p className="text-xs text-grey-60 font-medium uppercase tracking-wider">Approved</p>
-            <p className="text-2xl font-bold text-white">{stats.approvedCount}</p>
+            <p className="text-2xl font-bold text-primary">{stats.approvedCount}</p>
           </div>
         </div>
 
@@ -208,7 +208,7 @@ export default function AdminPaymentReportsTab() {
           </div>
           <div>
             <p className="text-xs text-grey-60 font-medium uppercase tracking-wider">Pending Audit</p>
-            <p className="text-2xl font-bold text-white">{stats.pendingCount}</p>
+            <p className="text-2xl font-bold text-primary">{stats.pendingCount}</p>
           </div>
         </div>
 
@@ -219,13 +219,13 @@ export default function AdminPaymentReportsTab() {
           </div>
           <div>
             <p className="text-xs text-grey-60 font-medium uppercase tracking-wider">Rejected</p>
-            <p className="text-2xl font-bold text-white">{stats.rejectedCount}</p>
+            <p className="text-2xl font-bold text-primary">{stats.rejectedCount}</p>
           </div>
         </div>
       </div>
 
       <div className="bg-dark-12 border border-dark-20 rounded-xl p-5">
-        <h3 className="text-base font-semibold text-white mb-6">
+        <h3 className="text-base font-semibold text-primary mb-6">
           {startDate && endDate ? `Revenue Growth (${format(new Date(startDate), 'MMM d')} - ${format(new Date(endDate), 'MMM d')})` : 'Revenue Over Last 7 Days'}
         </h3>
         <div className="h-80 w-full">

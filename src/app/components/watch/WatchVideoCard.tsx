@@ -94,7 +94,7 @@ export default function WatchVideoCard({
 
   const meta = (
     <div className={variant === 'sidebar' ? "min-w-0 flex-1" : "p-2.5"}>
-      <h3 className="text-sm font-medium text-white line-clamp-2 leading-snug group-hover:text-red-45 transition-colors duration-200">
+      <h3 className="text-sm font-medium text-primary line-clamp-2 leading-snug group-hover:text-red-45 transition-colors duration-200">
         {video.title}
       </h3>
       <div className="flex items-center gap-1.5 mt-1.5 text-xs text-grey-60">

@@ -210,7 +210,7 @@ export default function UserManagement() {
       cell: (info) => (
         <button
           onClick={() => { setSelectedUser(info.row.original); setShowUserDetails(true); }}
-          className="bg-dark-15 text-white px-2 py-1 rounded hover:bg-dark-20 flex items-center space-x-1"
+          className="bg-dark-15 text-primary px-2 py-1 rounded hover:bg-dark-20 flex items-center space-x-1"
         >
           <EllipsisVerticalIcon className="h-4 w-4" />
         </button>
@@ -225,7 +225,7 @@ export default function UserManagement() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-wrap justify-between items-center gap-3">
-        <h1 className="text-2xl font-bold text-white">User Management</h1>
+        <h1 className="text-2xl font-bold text-primary">User Management</h1>
         <div className="flex items-center gap-3 flex-wrap">
           {/* Search */}
           <div className="relative">
@@ -236,7 +236,7 @@ export default function UserManagement() {
           </div>
           {/* Role filter */}
           <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}
-            className="bg-dark-10 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
+            className="bg-dark-10 text-primary px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
             <option value="">All Roles</option>
             <option value="viewer">Viewer</option>
             <option value="creator">Creator</option>
@@ -245,7 +245,7 @@ export default function UserManagement() {
           </select>
           {/* Status filter */}
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-dark-10 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
+            className="bg-dark-10 text-primary px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
             <option value="">All Status</option>
             <option value="active">Active</option>
             <option value="blocked">Blocked</option>
@@ -317,11 +317,11 @@ export default function UserManagement() {
           </span>
           <div className="flex items-center space-x-2">
             <button onClick={() => setPage((p) => Math.max(p - 1, 1))} disabled={page === 1}
-              className="px-3 py-1 text-sm text-gray-400 hover:text-white disabled:opacity-40 bg-dark-15 rounded">
+              className="px-3 py-1 text-sm text-gray-400 hover:text-primary disabled:opacity-40 bg-dark-15 rounded">
               ← Prev
             </button>
             <button onClick={() => setPage((p) => Math.min(p + 1, totalPages))} disabled={page >= totalPages}
-              className="px-3 py-1 text-sm text-gray-400 hover:text-white disabled:opacity-40 bg-dark-15 rounded">
+              className="px-3 py-1 text-sm text-gray-400 hover:text-primary disabled:opacity-40 bg-dark-15 rounded">
               Next →
             </button>
           </div>
@@ -332,7 +332,7 @@ export default function UserManagement() {
       {showCreateUserModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-dark-8 rounded-xl p-6 max-w-md w-full border border-dark-20">
-            <h2 className="text-xl font-bold text-white mb-5">Create New User</h2>
+            <h2 className="text-xl font-bold text-primary mb-5">Create New User</h2>
             <div className="space-y-4">
               {[
                 { label: 'Name', field: 'name', type: 'text' },
@@ -343,14 +343,14 @@ export default function UserManagement() {
                   <label className="text-grey-70 block mb-1 text-sm">{label}</label>
                   <input type={type} value={(createUserForm as any)[field]}
                     onChange={(e) => setCreateUserForm((prev) => ({ ...prev, [field]: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg bg-dark-10 text-white text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                    className="w-full px-3 py-2 rounded-lg bg-dark-10 text-primary text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
                 </div>
               ))}
               <div>
                 <label className="text-grey-70 block mb-1 text-sm">Role</label>
                 <select value={createUserForm.role}
                   onChange={(e) => setCreateUserForm((prev) => ({ ...prev, role: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-dark-10 text-white text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45">
+                  className="w-full px-3 py-2 rounded-lg bg-dark-10 text-primary text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45">
                   {creatableRoles.map((opt) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                   ))}
@@ -358,7 +358,7 @@ export default function UserManagement() {
               </div>
             </div>
             <div className="flex justify-end mt-6 space-x-3">
-              <button onClick={() => setShowCreateUserModal(false)} className="px-4 py-2 text-grey-70 hover:text-white text-sm">Cancel</button>
+              <button onClick={() => setShowCreateUserModal(false)} className="px-4 py-2 text-grey-70 hover:text-primary text-sm">Cancel</button>
               <button onClick={handleCreateUser} disabled={isCreating}
                 className="bg-red-45 hover:bg-red-60 text-white px-4 py-2 rounded-lg text-sm disabled:opacity-60">
                 {isCreating ? 'Creating...' : 'Create User'}
@@ -373,8 +373,8 @@ export default function UserManagement() {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-dark-8 rounded-xl p-6 max-w-lg w-full border border-dark-20">
             <div className="flex justify-between items-center mb-5">
-              <h2 className="text-xl font-bold text-white">User Details</h2>
-              <button onClick={() => setShowUserDetails(false)} className="text-grey-70 hover:text-white">
+              <h2 className="text-xl font-bold text-primary">User Details</h2>
+              <button onClick={() => setShowUserDetails(false)} className="text-grey-70 hover:text-primary">
                 <XCircleIcon className="h-5 w-5" />
               </button>
             </div>
@@ -431,7 +431,7 @@ function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="text-grey-70 text-xs">{label}</p>
-      <p className="text-white text-sm font-medium">{value}</p>
+      <p className="text-primary text-sm font-medium">{value}</p>
     </div>
   );
 }

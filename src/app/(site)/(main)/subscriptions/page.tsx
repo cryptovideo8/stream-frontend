@@ -183,7 +183,7 @@ export default function SubscriptionsPage() {
   const pendingAudits = myAudits.filter(a => a.status === 'pending');
 
   return (
-    <div className="min-h-[calc(100vh-56px)] bg-dark-6 text-white pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[calc(100vh-56px)] bg-dark-6 text-primary pt-24 pb-20 px-4 sm:px-6 lg:px-8">
       {pendingAudits.length > 0 && !activeSubscription && (
         <div className="max-w-7xl mx-auto mb-8 animate-fade-in-down">
           <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-yellow-500/5">
@@ -204,16 +204,16 @@ export default function SubscriptionsPage() {
       <div className="max-w-7xl mx-auto text-center mb-16 px-4 animate-fade-in-up">
         {activeSubscription ? (
           <>
-            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-6">
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-primary mb-6">
               Your Current Plan
             </h1>
             <p className="text-lg text-grey-60 max-w-2xl mx-auto">
-              You are currently subscribed to <strong className="text-white">{typeof activeSubscription.planId === 'object' ? activeSubscription.planId.name : 'your plan'}</strong>.
+              You are currently subscribed to <strong className="text-primary">{typeof activeSubscription.planId === 'object' ? activeSubscription.planId.name : 'your plan'}</strong>.
             </p>
           </>
         ) : (
           <>
-            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-6">
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-primary mb-6">
               Choose Your Perfect Plan
             </h1>
             <p className="text-lg text-grey-60 max-w-2xl mx-auto">
@@ -228,7 +228,7 @@ export default function SubscriptionsPage() {
         <div className="max-w-3xl mx-auto bg-dark-12 border border-dark-25 rounded-2xl p-8 mb-16 animate-fade-in-up flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h2 className="text-3xl font-bold text-white">{typeof activeSubscription.planId === 'object' ? activeSubscription.planId.name : 'Current Plan'}</h2>
+              <h2 className="text-3xl font-bold text-primary">{typeof activeSubscription.planId === 'object' ? activeSubscription.planId.name : 'Current Plan'}</h2>
               <span className="px-3 py-1 bg-green-500/20 text-green-45 text-xs font-semibold rounded-full border border-green-500/30">
                 ACTIVE
               </span>
@@ -236,14 +236,14 @@ export default function SubscriptionsPage() {
             <p className="text-grey-60 text-sm mb-4">
               Valid until: {new Date(activeSubscription.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
-            <p className="text-white font-medium">
+            <p className="text-primary font-medium">
               {typeof activeSubscription.planId === 'object' ? activeSubscription.planId.currency : 'INR'} {activeSubscription.finalAmountPaid} <span className="text-sm font-normal text-grey-60">paid via {activeSubscription.paymentDetails.paymentMethod}</span>
             </p>
           </div>
           <button
             onClick={handleCancel}
             disabled={cancelling}
-            className="w-full sm:w-auto px-6 py-3 bg-dark-20 hover:bg-dark-30 border border-dark-35 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
+            className="w-full sm:w-auto px-6 py-3 bg-dark-20 hover:bg-dark-30 border border-dark-35 text-primary font-medium rounded-xl transition-colors disabled:opacity-50"
           >
             {cancelling ? 'Cancelling...' : 'Cancel Subscription'}
           </button>
@@ -276,11 +276,11 @@ export default function SubscriptionsPage() {
               )}
 
               <div className="mb-6">
-                <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                <h3 className="text-2xl font-bold text-primary mb-2">{plan.name}</h3>
                 {plan.description && <p className="text-grey-60 text-sm h-10">{plan.description}</p>}
               </div>
 
-              <div className="mb-8 flex items-baseline text-white">
+              <div className="mb-8 flex items-baseline text-primary">
                 <span className="text-sm font-semibold text-grey-50 mr-1">{plan.currency}</span>
                 <span className="text-5xl font-black tracking-tight">{plan.price}</span>
                 <span className="text-grey-60 ml-2">/ {plan.validityDays} days</span>
@@ -299,7 +299,7 @@ export default function SubscriptionsPage() {
                 onClick={() => openCheckout(plan)}
                 className={`w-full py-4 rounded-xl font-bold transition-all duration-200 ${plan.highlight
                     ? 'bg-red-45 hover:bg-red-55 text-white shadow-lg shadow-red-45/20'
-                    : 'bg-dark-20 hover:bg-dark-30 text-white'
+                    : 'bg-dark-20 hover:bg-dark-30 text-primary'
                   }`}
               >
                 Choose {plan.name}
@@ -322,10 +322,10 @@ export default function SubscriptionsPage() {
           <div className="relative bg-dark-10 border border-dark-25 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-slide-up max-h-[90vh] flex flex-col">
             {/* Header */}
             <div className="px-6 py-5 border-b border-dark-25 flex items-center justify-between bg-dark-12 shrink-0">
-              <h3 className="text-xl font-bold text-white">Complete Checkout</h3>
+              <h3 className="text-xl font-bold text-primary">Complete Checkout</h3>
               <button
                 onClick={() => setShowCheckout(false)}
-                className="text-grey-60 hover:text-white p-1 rounded-lg hover:bg-dark-20 transition-colors"
+                className="text-grey-60 hover:text-primary p-1 rounded-lg hover:bg-dark-20 transition-colors"
               >
                 <XMarkIcon className="h-6 w-6" />
               </button>
@@ -335,8 +335,8 @@ export default function SubscriptionsPage() {
               {/* Plan Summary */}
               <div className="mb-6 bg-dark-15 border border-dark-25 rounded-2xl p-4">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="font-medium text-white">{selectedPlan.name} Plan</span>
-                  <span className="font-semibold text-white">{selectedPlan.currency} {selectedPlan.price}</span>
+                  <span className="font-medium text-primary">{selectedPlan.name} Plan</span>
+                  <span className="font-semibold text-primary">{selectedPlan.currency} {selectedPlan.price}</span>
                 </div>
                 <p className="text-sm text-grey-60">Valid for {selectedPlan.validityDays} days</p>
 
@@ -347,7 +347,7 @@ export default function SubscriptionsPage() {
                       <span>Promo Discount ({promoResult.code})</span>
                       <span>-{selectedPlan.currency} {promoResult.discountAmount}</span>
                     </div>
-                    <div className="flex justify-between items-center font-bold text-lg text-white mt-2">
+                    <div className="flex justify-between items-center font-bold text-lg text-primary mt-2">
                       <span>Total Due</span>
                       <span>{selectedPlan.currency} {promoResult.finalPrice}</span>
                     </div>
@@ -362,7 +362,7 @@ export default function SubscriptionsPage() {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      className="flex-1 bg-dark-15 border border-dark-25 rounded-xl px-4 text-white focus:outline-none focus:border-red-45 uppercase"
+                      className="flex-1 bg-dark-15 border border-dark-25 rounded-xl px-4 text-primary focus:outline-none focus:border-red-45 uppercase"
                       placeholder="ENTER CODE"
                       value={promoCode}
                       onChange={(e) => setPromoCode(e.target.value)}
@@ -370,7 +370,7 @@ export default function SubscriptionsPage() {
                     <button
                       onClick={handleApplyPromo}
                       disabled={!promoCode || validatingPromo}
-                      className="px-4 bg-dark-25 hover:bg-dark-35 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
+                      className="px-4 bg-dark-25 hover:bg-dark-35 text-primary font-medium rounded-xl transition-colors disabled:opacity-50"
                     >
                       {validatingPromo ? '...' : 'Apply'}
                     </button>
@@ -381,7 +381,7 @@ export default function SubscriptionsPage() {
               {/* Payment Method — controlled by backend PAYMENT_MODE */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-grey-70 mb-2">Payment Method</label>
-                <div className="w-full bg-dark-15 border border-dark-25 rounded-xl px-4 py-3 text-white">
+                <div className="w-full bg-dark-15 border border-dark-25 rounded-xl px-4 py-3 text-primary">
                   {gatewayEnabled
                     ? 'Pay online (Razorpay — instant activation)'
                     : manualEnabled
@@ -404,7 +404,7 @@ export default function SubscriptionsPage() {
               {gatewayEnabled && (
                 <div className="mb-6 bg-dark-15 border border-dark-25 rounded-xl p-4 text-sm text-grey-70">
                   You will complete payment of{' '}
-                  <span className="text-white font-semibold">
+                  <span className="text-primary font-semibold">
                     {selectedPlan.currency} {promoResult?.finalPrice ?? selectedPlan.price}
                   </span>{' '}
                   in the Razorpay checkout window.
@@ -420,7 +420,7 @@ export default function SubscriptionsPage() {
                     </div>
                   ) : activeUpi ? (
                     <div className="bg-dark-15 border border-dark-25 rounded-xl p-4 sm:p-6 text-center shadow-inner">
-                      <p className="text-sm font-medium text-white mb-3">Pay with any UPI App</p>
+                      <p className="text-sm font-medium text-primary mb-3">Pay with any UPI App</p>
                       <div className="bg-white p-2 rounded-lg inline-block mb-3 shadow-md">
                         <QRCodeSVG 
                           value={`upi://pay?pa=${activeUpi.upiId}&pn=${encodeURIComponent(BRAND.name)}&am=${promoResult?.finalPrice ?? selectedPlan.price}&cu=INR`}
@@ -430,14 +430,14 @@ export default function SubscriptionsPage() {
                       </div>
                       <p className="text-sm text-grey-70 flex flex-col items-center justify-center gap-1 mb-2">
                         <span>Or pay to UPI ID:</span>
-                        <span className="font-mono text-white text-sm sm:text-base bg-dark-20 px-3 py-1 rounded select-all break-all">{activeUpi.upiId}</span>
+                        <span className="font-mono text-primary text-sm sm:text-base bg-dark-20 px-3 py-1 rounded select-all break-all">{activeUpi.upiId}</span>
                       </p>
                       
                       <div className="text-left mt-6">
                         <label className="block text-sm font-medium text-grey-70 mb-2">Enter 12-Digit UTR Number</label>
                         <input
                           type="text"
-                          className="w-full bg-dark-20 border border-dark-35 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-45 transition-colors font-mono tracking-widest text-center"
+                          className="w-full bg-dark-20 border border-dark-35 rounded-xl px-4 py-3 text-primary focus:outline-none focus:border-red-45 transition-colors font-mono tracking-widest text-center"
                           placeholder="e.g. 301982746192"
                           maxLength={12}
                           value={transactionId}

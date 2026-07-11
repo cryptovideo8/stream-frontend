@@ -2,8 +2,8 @@
 
 import { Suspense, use } from 'react';
 import Link from 'next/link';
-import { useSearchVideosQuery } from '../../../store/api/videoApi';
-import { useGetPublicProfileQuery } from '../../../store/api/userApi';
+import { useSearchVideosQuery } from '../../../../store/api/videoApi';
+import { useGetPublicProfileQuery } from '../../../../store/api/userApi';
 
 function formatCount(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -60,7 +60,7 @@ function ChannelContent({ id }: { id: string }) {
             />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white">{name}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary">{name}</h1>
             <p className="text-sm text-grey-60 mt-1">
               {data?.total != null ? `${data.total.toLocaleString()} videos` : 'Creator'}
             </p>
@@ -69,7 +69,7 @@ function ChannelContent({ id }: { id: string }) {
       </div>
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-8">
-        <h2 className="text-lg font-bold text-white mb-5">Videos</h2>
+        <h2 className="text-lg font-bold text-primary mb-5">Videos</h2>
         {videosLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {Array.from({ length: 10 }).map((_, i) => (
@@ -96,7 +96,7 @@ function ChannelContent({ id }: { id: string }) {
                     />
                   </div>
                   <div className="p-2.5">
-                    <h3 className="text-sm font-medium text-white line-clamp-2 group-hover:text-red-45">
+                    <h3 className="text-sm font-medium text-primary line-clamp-2 group-hover:text-red-45">
                       {video.title}
                     </h3>
                     <p className="text-xs text-grey-60 mt-1">

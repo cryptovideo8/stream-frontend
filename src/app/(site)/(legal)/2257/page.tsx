@@ -2,7 +2,7 @@ import { BRAND } from '../../../config/brand';
 
 export default function RecordKeeping2257Page() {
   return (
-    <div className="min-h-screen bg-dark-6 text-white pt-24 pb-16 px-6">
+    <div className="min-h-screen bg-dark-6 text-primary pt-24 pb-16 px-6">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold mb-4">18 U.S.C. § 2257 Record-Keeping Statement</h1>
         <p className="text-grey-70 text-sm mb-8">Last updated: July 11, 2026</p>

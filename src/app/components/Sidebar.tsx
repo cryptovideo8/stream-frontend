@@ -70,13 +70,12 @@ export default function Sidebar() {
 
   return (
     <div
-      className={`min-h-full flex-shrink-0 py-3 transition-all duration-300 hidden md:flex flex-col ${isCollapsed ? 'w-16' : 'w-60'}`}
-      style={{ background: '#0a0a0a', borderRight: '1px solid rgba(255,255,255,0.05)' }}
+      className={`theme-shell min-h-full flex-shrink-0 py-3 transition-all duration-300 hidden md:flex flex-col border-r ${isCollapsed ? 'w-16' : 'w-60'}`}
     >
       <div className="px-3 flex justify-end mb-2">
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1.5 rounded-lg text-grey-60 hover:text-white hover:bg-dark-15 transition-colors"
+          className="p-1.5 rounded-lg text-grey-60 hover:text-primary hover:bg-dark-15 transition-colors"
         >
           {isCollapsed ? <ChevronRightIcon className="h-5 w-5" /> : <ChevronLeftIcon className="h-5 w-5" />}
         </button>
@@ -88,7 +87,7 @@ export default function Sidebar() {
         <SidebarLink href="/subscriptions" icon={RssIcon} label="Subscriptions" isCollapsed={isCollapsed} />
         <SidebarLink href="/categories" icon={TagIcon} label="Categories" isCollapsed={isCollapsed} />
 
-        <div className="my-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+        <div className="my-3 border-t theme-hairline" />
 
         {/* Discover */}
         {!isCollapsed && <p className="sidebar-section-title">Discover</p>}
@@ -96,7 +95,7 @@ export default function Sidebar() {
         <SidebarLink href="/?sortBy=createdAt&sortOrder=desc" icon={ClockIcon} label="Newest Videos" isCollapsed={isCollapsed} />
         <SidebarLink href="/?sortBy=views&sortOrder=desc" icon={HandThumbUpIcon} label="Most Viewed" isCollapsed={isCollapsed} />
 
-        <div className="my-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }} />
+        <div className="my-3 border-t theme-hairline" />
 
         {/* Categories */}
         {!isCollapsed && <p className="sidebar-section-title">Categories</p>}
@@ -115,15 +114,14 @@ export default function Sidebar() {
 
         <div
           className={`overflow-y-auto pr-1 ${isCollapsed ? 'space-y-2 flex flex-col items-center' : 'flex flex-col gap-1'}`}
-          style={{ maxHeight: '300px', scrollbarWidth: 'thin', scrollbarColor: '#333 transparent' }}
+          style={{ maxHeight: '300px', scrollbarWidth: 'thin' }}
         >
           {isLoading || countsLoading ? (
             <>
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className={`${isCollapsed ? 'h-8 w-8' : 'h-9 w-full'} rounded-lg animate-pulse`}
-                  style={{ background: 'rgba(255,255,255,0.05)' }}
+                  className={`${isCollapsed ? 'h-8 w-8' : 'h-9 w-full'} rounded-lg animate-pulse theme-soft-fill-strong`}
                 />
               ))}
             </>
@@ -147,14 +145,14 @@ export default function Sidebar() {
                   href={`/?category=${encodeURIComponent(cat.value)}`}
                   className={`flex items-center justify-between gap-2 w-full min-h-[36px] px-3 py-2 rounded-lg text-[12px] font-medium transition-all ${
                     isActive
-                      ? 'bg-red-45/15 text-white border border-red-45/40'
-                      : 'bg-dark-12/80 text-grey-70 hover:bg-dark-15 hover:text-white border border-transparent hover:border-dark-25'
+                      ? 'bg-red-45/15 text-primary border border-red-45/40'
+                      : 'bg-dark-12/80 text-grey-70 hover:bg-dark-15 hover:text-primary border border-transparent hover:border-dark-25'
                   }`}
                 >
                   <span className="truncate flex-1 text-left">{cat.value}</span>
                   <span
                     className={`flex-shrink-0 min-w-[1.5rem] text-center text-[10px] px-1.5 py-0.5 rounded-md tabular-nums ${
-                      isActive ? 'bg-red-45/30 text-white' : 'bg-dark-20 text-grey-60'
+                      isActive ? 'bg-red-45/30 text-primary' : 'bg-dark-20 text-grey-60'
                     }`}
                   >
                     {formatCount(cat.count)}

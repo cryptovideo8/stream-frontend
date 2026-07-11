@@ -42,19 +42,19 @@ export default function AgeGate() {
   return (
     <div
       className="fixed inset-0 z-[100000] flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(12px)' }}
+      style={{ background: 'var(--overlay-scrim)', backdropFilter: 'blur(12px)' }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="age-gate-title"
     >
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-dark-10 p-8 text-center shadow-2xl">
+      <div className="w-full max-w-md rounded-2xl border border-dark-25 bg-dark-10 p-8 text-center shadow-card-hover">
         <img
           src={BRAND.logoMark}
           alt=""
           className="mx-auto mb-4 h-16 w-16 rounded-xl object-contain"
         />
         <p className="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-red-45">Adults only</p>
-        <h1 id="age-gate-title" className="mb-3 text-2xl font-black text-white">
+        <h1 id="age-gate-title" className="mb-3 text-2xl font-black text-primary">
           Are you 18 or older?
         </h1>
         <p className="mb-6 text-sm leading-relaxed text-grey-60">
@@ -73,7 +73,7 @@ export default function AgeGate() {
           <button
             type="button"
             onClick={leave}
-            className="rounded-xl border border-dark-25 bg-dark-15 px-6 py-3 text-sm font-medium text-grey-70 transition hover:border-dark-30 hover:text-white"
+            className="rounded-xl border border-dark-25 bg-dark-15 px-6 py-3 text-sm font-medium text-grey-70 transition hover:border-dark-30 hover:text-primary"
           >
             Exit
           </button>

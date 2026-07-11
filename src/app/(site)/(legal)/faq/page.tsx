@@ -44,8 +44,8 @@ export default function FAQPage() {
               <div>
                 <h3 className="text-xl text-primary mb-2">What payment methods do you accept?</h3>
                 <p>
-                  Depending on platform configuration: <strong className="text-white">online payment via Razorpay</strong>{' '}
-                  (instant plan activation) or <strong className="text-white">manual UPI</strong> (pay via QR, submit UTR,
+                  Depending on platform configuration: <strong className="text-primary">online payment via Razorpay</strong>{' '}
+                  (instant plan activation) or <strong className="text-primary">manual UPI</strong> (pay via QR, submit UTR,
                   admin approves). Card and UPI options inside Razorpay depend on your Razorpay account settings.
                 </p>
               </div>

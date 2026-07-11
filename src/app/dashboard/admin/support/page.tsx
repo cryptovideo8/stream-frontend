@@ -36,13 +36,13 @@ export default function AdminSupportPage() {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Support inbox</h1>
+          <h1 className="text-2xl font-bold text-primary">Support inbox</h1>
           <p className="text-sm text-grey-60 mt-1">Review and update user support tickets.</p>
         </div>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="bg-dark-12 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white"
+          className="bg-dark-12 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary"
         >
           <option value="open">Open</option>
           <option value="in-progress">In progress</option>
@@ -63,7 +63,7 @@ export default function AdminSupportPage() {
           {tickets.map((t) => (
             <div key={t._id} className="bg-dark-10 border border-dark-25 rounded-xl p-4">
               <div className="flex flex-wrap items-center gap-2 mb-2">
-                <h2 className="text-white font-semibold">{t.subject}</h2>
+                <h2 className="text-primary font-semibold">{t.subject}</h2>
                 <span className="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded bg-dark-20 text-grey-60">
                   {t.status}
                 </span>
@@ -76,7 +76,7 @@ export default function AdminSupportPage() {
                 From: {userLabel(t)} · {new Date(t.createdAt).toLocaleString()}
               </p>
               <textarea
-                className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white mb-3"
+                className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary mb-3"
                 rows={2}
                 placeholder="Admin notes"
                 value={notes[t._id] ?? t.adminNotes ?? ''}
@@ -87,7 +87,7 @@ export default function AdminSupportPage() {
                   type="button"
                   disabled={updating}
                   onClick={() => handleUpdate(t._id, 'in-progress')}
-                  className="px-3 py-1.5 text-xs rounded-lg border border-dark-25 text-grey-70 hover:text-white"
+                  className="px-3 py-1.5 text-xs rounded-lg border border-dark-25 text-grey-70 hover:text-primary"
                 >
                   In progress
                 </button>
@@ -103,7 +103,7 @@ export default function AdminSupportPage() {
                   type="button"
                   disabled={updating}
                   onClick={() => handleUpdate(t._id, 'closed')}
-                  className="px-3 py-1.5 text-xs rounded-lg border border-dark-25 text-grey-70 hover:text-white"
+                  className="px-3 py-1.5 text-xs rounded-lg border border-dark-25 text-grey-70 hover:text-primary"
                 >
                   Close
                 </button>

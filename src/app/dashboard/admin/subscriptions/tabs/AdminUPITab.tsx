@@ -62,7 +62,7 @@ export default function AdminUPITab() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white">Manage UPI Accounts</h2>
+          <h2 className="text-xl font-bold text-primary">Manage UPI Accounts</h2>
           <p className="text-sm text-grey-60">Add and manage active UPI IDs for users to send subscription payments.</p>
         </div>
         <form onSubmit={handleAddUpi} className="flex gap-2">
@@ -71,7 +71,7 @@ export default function AdminUPITab() {
             value={newUpiId}
             onChange={(e) => setNewUpiId(e.target.value)}
             placeholder="e.g. streaming@ybl"
-            className="bg-dark-15 text-white text-sm rounded-lg px-4 py-2 border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45"
+            className="bg-dark-15 text-primary text-sm rounded-lg px-4 py-2 border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45"
             required
           />
           <button
@@ -104,7 +104,7 @@ export default function AdminUPITab() {
               {upis.map((upi) => (
                 <tr key={upi._id} className="hover:bg-dark-15/50 transition-colors">
                   <td className="py-3 px-4">
-                    <span className="text-sm font-semibold text-white">{upi.upiId}</span>
+                    <span className="text-sm font-semibold text-primary">{upi.upiId}</span>
                   </td>
                   <td className="py-3 px-4">
                     <button
@@ -124,7 +124,7 @@ export default function AdminUPITab() {
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex flex-col">
-                      <span className="text-sm text-white">{upi.createdBy?.name || 'System Admin'}</span>
+                      <span className="text-sm text-primary">{upi.createdBy?.name || 'System Admin'}</span>
                       <span className="text-xs text-grey-60">{upi.createdBy?.email}</span>
                     </div>
                   </td>

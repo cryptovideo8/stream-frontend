@@ -161,7 +161,7 @@ export default function Auth() {
       ))}
 
       {/* Auth Card */}
-      <div className="relative w-full max-w-md rounded-2xl p-8 animate-fade-in z-10" style={{ background: 'rgba(20,20,20,0.85)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+      <div className="theme-panel relative w-full max-w-md rounded-2xl p-8 animate-fade-in z-10 shadow-card-hover">
         
         {/* Logo */}
         <div className="text-center mb-6">
@@ -170,7 +170,7 @@ export default function Auth() {
           </div>
           <p className="text-[11px] uppercase tracking-[0.2em] text-grey-60 mb-3">{BRAND.tagline}</p>
           <div className="mt-4">
-            <h2 className="text-xl font-bold text-white tracking-tight">{isLogin ? 'Welcome back' : 'Join the Revolution'}</h2>
+            <h2 className="text-xl font-bold text-primary tracking-tight">{isLogin ? 'Welcome back' : 'Join the Revolution'}</h2>
             <p className="text-grey-60 text-sm mt-1">{isLogin ? 'Sign in to access your premium content' : 'Create an account and start streaming today'}</p>
           </div>
         </div>
@@ -178,11 +178,11 @@ export default function Auth() {
         {/* Role Selection (Signup) */}
         {!isLogin && !otpSent && (
           <div className="grid grid-cols-2 gap-3 mb-6">
-             <button type="button" onClick={() => setFormData({...formData, role: 'viewer'})} className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border text-sm font-medium transition-all duration-300 ${formData.role === 'viewer' ? 'bg-red-45/10 border-red-45 text-white shadow-glow-sm' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-white hover:border-dark-30'}`}>
+             <button type="button" onClick={() => setFormData({...formData, role: 'viewer'})} className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border text-sm font-medium transition-all duration-300 ${formData.role === 'viewer' ? 'bg-red-45/10 border-red-45 text-primary shadow-glow-sm' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-primary hover:border-dark-30'}`}>
                 <UserIcon className={`w-6 h-6 ${formData.role === 'viewer' ? 'text-red-45' : 'text-grey-60'}`} />
                 <span>Viewer</span>
              </button>
-             <button type="button" onClick={() => setFormData({...formData, role: 'creator'})} className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border text-sm font-medium transition-all duration-300 ${formData.role === 'creator' ? 'bg-red-45/10 border-red-45 text-white shadow-glow-sm' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-white hover:border-dark-30'}`}>
+             <button type="button" onClick={() => setFormData({...formData, role: 'creator'})} className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border text-sm font-medium transition-all duration-300 ${formData.role === 'creator' ? 'bg-red-45/10 border-red-45 text-primary shadow-glow-sm' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-primary hover:border-dark-30'}`}>
                 <VideoCameraIcon className={`w-6 h-6 ${formData.role === 'creator' ? 'text-red-45' : 'text-grey-60'}`} />
                 <span>Creator</span>
              </button>
@@ -196,7 +196,7 @@ export default function Auth() {
                <ShieldCheckIcon className="w-5 h-5" />
                <span className="font-semibold tracking-wide">Verification Required</span>
             </div>
-            <p className="text-xs text-grey-60">We sent a 6-digit code to <span className="text-white font-medium">{formData.email}</span></p>
+            <p className="text-xs text-grey-60">We sent a 6-digit code to <span className="text-primary font-medium">{formData.email}</span></p>
           </div>
         )}
 
@@ -204,7 +204,7 @@ export default function Auth() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && !otpSent && (
             <div className="animate-slide-up relative">
-              <input type="text" name="name" id="name" value={formData.name} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 w-full text-sm text-white bg-dark-15 rounded-xl border ${errors.name ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
+              <input type="text" name="name" id="name" value={formData.name} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 w-full text-sm text-primary bg-dark-15 rounded-xl border ${errors.name ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
               <label htmlFor="name" className="absolute text-sm text-grey-60 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-red-45 cursor-text">Full Name</label>
               <UserIcon className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-grey-60 pointer-events-none" />
               {errors.name && <p className="text-red-500 text-[10px] ml-4 mt-1">{errors.name}</p>}
@@ -213,7 +213,7 @@ export default function Auth() {
 
           {!otpSent && (
             <div className="animate-slide-up relative">
-              <input type="email" name="email" id="email" value={formData.email} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 w-full text-sm text-white bg-dark-15 rounded-xl border ${errors.email ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
+              <input type="email" name="email" id="email" value={formData.email} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 w-full text-sm text-primary bg-dark-15 rounded-xl border ${errors.email ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
               <label htmlFor="email" className="absolute text-sm text-grey-60 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-red-45 cursor-text">Email Address</label>
               <EnvelopeIcon className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-grey-60 pointer-events-none" />
               {errors.email && <p className="text-red-500 text-[10px] ml-4 mt-1">{errors.email}</p>}
@@ -222,9 +222,9 @@ export default function Auth() {
 
           {!otpSent && (
             <div className="animate-slide-up relative">
-              <input type={showPassword ? 'text' : 'password'} name="password" id="password" value={formData.password} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 pr-11 w-full text-sm text-white bg-dark-15 rounded-xl border ${errors.password ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
+              <input type={showPassword ? 'text' : 'password'} name="password" id="password" value={formData.password} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 pr-11 w-full text-sm text-primary bg-dark-15 rounded-xl border ${errors.password ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
               <label htmlFor="password" className="absolute text-sm text-grey-60 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-red-45 cursor-text">Password</label>
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-grey-60 hover:text-white transition-colors">
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-grey-60 hover:text-primary transition-colors">
                 {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
               </button>
               {errors.password && <p className="text-red-500 text-[10px] ml-4 mt-1">{errors.password}</p>}
@@ -233,7 +233,7 @@ export default function Auth() {
 
           {!isLogin && !otpSent && (
             <div className="animate-slide-up relative">
-              <input type={showPassword ? 'text' : 'password'} name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 pr-11 w-full text-sm text-white bg-dark-15 rounded-xl border ${errors.confirmPassword ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
+              <input type={showPassword ? 'text' : 'password'} name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 pr-11 w-full text-sm text-primary bg-dark-15 rounded-xl border ${errors.confirmPassword ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
               <label htmlFor="confirmPassword" className="absolute text-sm text-grey-60 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-red-45 cursor-text">Confirm Password</label>
               <LockClosedIcon className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-grey-60 pointer-events-none" />
               {errors.confirmPassword && <p className="text-red-500 text-[10px] ml-4 mt-1">{errors.confirmPassword}</p>}
@@ -264,7 +264,7 @@ export default function Auth() {
                         (e.currentTarget.previousElementSibling as HTMLInputElement).focus();
                       }
                     }}
-                    className={`w-12 h-14 text-center text-xl font-bold bg-dark-15 border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-red-45/40 ${errors.otp ? 'border-red-500/60' : 'border-dark-25 focus:border-red-45'}`}
+                    className={`w-12 h-14 text-center text-xl font-bold bg-dark-15 border rounded-xl text-primary focus:outline-none focus:ring-2 focus:ring-red-45/40 ${errors.otp ? 'border-red-500/60' : 'border-dark-25 focus:border-red-45'}`}
                   />
                 ))}
               </div>

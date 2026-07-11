@@ -52,7 +52,7 @@ function RelatedVideosShelves({
     <div className="space-y-10">
       {related.length > 0 && (
         <section aria-labelledby="related-heading">
-          <h2 id="related-heading" className="mb-4 text-lg font-bold tracking-tight text-white sm:text-xl">
+          <h2 id="related-heading" className="mb-4 text-lg font-bold tracking-tight text-primary sm:text-xl">
             Related to this video
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -65,7 +65,7 @@ function RelatedVideosShelves({
 
       {related.length > 0 && discover.length > 0 && (
         <section aria-labelledby="discover-heading">
-          <h2 id="discover-heading" className="mb-4 text-lg font-bold tracking-tight text-white sm:text-xl">
+          <h2 id="discover-heading" className="mb-4 text-lg font-bold tracking-tight text-primary sm:text-xl">
             More to explore
           </h2>
           <div className="relative">
@@ -81,7 +81,7 @@ function RelatedVideosShelves({
 
       {related.length === 0 && discover.length > 0 && (
         <section aria-labelledby="rec-heading">
-          <h2 id="rec-heading" className="mb-4 text-lg font-bold tracking-tight text-white sm:text-xl">
+          <h2 id="rec-heading" className="mb-4 text-lg font-bold tracking-tight text-primary sm:text-xl">
             Recommended for you
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -207,7 +207,7 @@ export default function WatchPageClient() {
                   className="absolute inset-0 h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/70 via-black/75 to-black/90 px-4 text-center">
-                  <h2 className="mb-2 text-2xl font-bold text-white">
+                  <h2 className="mb-2 text-2xl font-bold text-primary">
                     {videoData.title || 'Premium content'}
                   </h2>
                   {needsAuth ? (
@@ -268,7 +268,7 @@ export default function WatchPageClient() {
     if (errData?.code === 'geo_restricted') {
       return (
         <div className="px-4 py-20 text-center max-w-lg mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-3">Not available in your region</h2>
+          <h2 className="text-2xl font-bold text-primary mb-3">Not available in your region</h2>
           <p className="text-grey-60 mb-6">
             {errData.message || 'This video cannot be watched from your current location.'}
           </p>

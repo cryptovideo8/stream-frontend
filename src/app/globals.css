@@ -4,6 +4,126 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Theme tokens: dark = default (:root / .dark), light = .light ─── */
+:root,
+.dark {
+  color-scheme: dark;
+
+  --color-dark-6: 15 15 15;
+  --color-dark-8: 20 20 20;
+  --color-dark-10: 26 26 26;
+  --color-dark-12: 31 31 31;
+  --color-dark-15: 38 38 38;
+  --color-dark-20: 51 51 51;
+  --color-dark-25: 64 64 64;
+  --color-dark-30: 76 76 76;
+
+  --color-fg: 255 255 255;
+  --color-grey-60: 153 153 153;
+  --color-grey-65: 166 166 166;
+  --color-grey-70: 179 179 179;
+  --color-grey-75: 191 191 191;
+  --color-grey-90: 228 228 231;
+  --color-grey-95: 241 241 243;
+  --color-grey-97: 247 247 248;
+  --color-grey-99: 252 252 253;
+
+  --glass-bg: rgba(20, 20, 20, 0.7);
+  --glass-bg-strong: rgba(15, 15, 15, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-border-strong: rgba(255, 255, 255, 0.08);
+  --header-bg: rgba(10, 10, 10, 0.85);
+  --dropdown-bg: rgba(20, 20, 20, 0.95);
+  --panel-bg: rgba(20, 20, 20, 0.85);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --hairline: rgba(255, 255, 255, 0.06);
+  --overlay-scrim: rgba(0, 0, 0, 0.92);
+  --soft-fill: rgba(255, 255, 255, 0.03);
+  --soft-fill-strong: rgba(255, 255, 255, 0.05);
+
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.6);
+  --shadow-header: 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-bottom-nav: 0 -1px 0 rgba(255, 255, 255, 0.05), 0 -8px 32px rgba(0, 0, 0, 0.5);
+
+  --gradient-dark: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+  --gradient-card: linear-gradient(135deg, #1f1f1f 0%, #1a1a1a 100%);
+  --gradient-hero: linear-gradient(to right, rgba(15, 15, 15, 0.98), rgba(15, 15, 15, 0.3));
+  --shimmer: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 50%, transparent 100%);
+
+  --chart-grid: #333333;
+  --chart-text: #999999;
+  --chart-tooltip-bg: #1a1a1a;
+  --chart-tooltip-border: #333333;
+  --scrollbar-thumb: #333333;
+  --hero-overlay: linear-gradient(
+    to right,
+    rgba(15, 15, 15, 0.98) 0%,
+    rgba(15, 15, 15, 0.85) 40%,
+    rgba(15, 15, 15, 0.3) 70%,
+    rgba(15, 15, 15, 0.1) 100%
+  );
+}
+
+.light {
+  color-scheme: light;
+
+  --color-dark-6: 245 245 246;
+  --color-dark-8: 255 255 255;
+  --color-dark-10: 255 255 255;
+  --color-dark-12: 238 238 240;
+  --color-dark-15: 228 228 231;
+  --color-dark-20: 228 228 231;
+  --color-dark-25: 212 212 216;
+  --color-dark-30: 161 161 170;
+
+  --color-fg: 17 17 19;
+  --color-grey-60: 113 113 122;
+  --color-grey-65: 82 82 91;
+  --color-grey-70: 82 82 91;
+  --color-grey-75: 63 63 70;
+  --color-grey-90: 39 39 42;
+  --color-grey-95: 24 24 27;
+  --color-grey-97: 17 17 19;
+  --color-grey-99: 9 9 11;
+
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-bg-strong: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-border-strong: rgba(0, 0, 0, 0.1);
+  --header-bg: rgba(255, 255, 255, 0.9);
+  --dropdown-bg: rgba(255, 255, 255, 0.98);
+  --panel-bg: rgba(255, 255, 255, 0.95);
+  --panel-border: rgba(0, 0, 0, 0.08);
+  --hairline: rgba(0, 0, 0, 0.08);
+  --overlay-scrim: rgba(0, 0, 0, 0.55);
+  --soft-fill: rgba(0, 0, 0, 0.03);
+  --soft-fill-strong: rgba(0, 0, 0, 0.05);
+
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.12);
+  --shadow-header: 0 1px 0 rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-bottom-nav: 0 -1px 0 rgba(0, 0, 0, 0.06), 0 -8px 24px rgba(0, 0, 0, 0.06);
+
+  --gradient-dark: linear-gradient(180deg, #ffffff 0%, #f5f5f6 100%);
+  --gradient-card: linear-gradient(135deg, #ffffff 0%, #eeeeef 100%);
+  --gradient-hero: linear-gradient(to right, rgba(245, 245, 246, 0.98), rgba(245, 245, 246, 0.3));
+  --shimmer: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.04) 50%, transparent 100%);
+
+  --chart-grid: #e4e4e7;
+  --chart-text: #71717a;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #e4e4e7;
+  --scrollbar-thumb: #d4d4d8;
+  --hero-overlay: linear-gradient(
+    to right,
+    rgba(245, 245, 246, 0.98) 0%,
+    rgba(245, 245, 246, 0.85) 40%,
+    rgba(245, 245, 246, 0.3) 70%,
+    rgba(245, 245, 246, 0.1) 100%
+  );
+}
+
 @layer base {
   body {
     @apply bg-dark-6 text-primary antialiased min-h-screen;
@@ -14,7 +134,6 @@
     scroll-behavior: smooth;
   }
 
-  /* Smooth custom scrollbar */
   ::-webkit-scrollbar {
     width: 4px;
     height: 4px;
@@ -23,11 +142,11 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: #333;
+    background: var(--scrollbar-thumb);
     border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #E30000;
+    background: #e30000;
   }
 
   * {
@@ -35,37 +154,42 @@
     scrollbar-width: none;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold tracking-tight;
   }
 }
 
 @layer components {
-  /* ─── Layout ─────────────────────────────────────── */
   .container {
     @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl w-full;
   }
 
-  /* ─── Glassmorphism ───────────────────────────────── */
   .glass {
-    @apply bg-dark-8/70 backdrop-blur-md border border-white/[0.06];
+    background: var(--glass-bg);
+    @apply backdrop-blur-md border;
+    border-color: var(--glass-border);
   }
   .glass-strong {
-    @apply bg-dark-6/80 backdrop-blur-xl border border-white/[0.08];
+    background: var(--glass-bg-strong);
+    @apply backdrop-blur-xl border;
+    border-color: var(--glass-border-strong);
   }
 
-  /* ─── Cards ──────────────────────────────────────── */
   .card {
-    @apply bg-dark-10 rounded-2xl p-4 sm:p-6 shadow-lg
-           hover:shadow-xl transition-all duration-300
-           border border-dark-20/20;
+    @apply bg-dark-10 rounded-2xl p-4 sm:p-6 shadow-card
+           hover:shadow-card-hover transition-all duration-300
+           border border-dark-20/40;
   }
 
   .card-hover {
     @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-glow-red;
   }
 
-  /* ─── Video Card ─────────────────────────────────── */
   .video-card {
     @apply bg-dark-10 rounded-xl overflow-hidden
            border border-transparent
@@ -77,7 +201,6 @@
     @apply relative overflow-hidden aspect-video bg-dark-15;
   }
 
-  /* ─── Badges ─────────────────────────────────────── */
   .badge-premium {
     @apply absolute top-2 right-2 bg-gradient-to-r from-yellow-500 to-amber-400
            text-black text-[10px] font-bold px-2 py-0.5 rounded-sm
@@ -96,15 +219,14 @@
            backdrop-blur-sm;
   }
 
-  /* ─── Sidebar ────────────────────────────────────── */
   .sidebar-link {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm
-           text-grey-70 hover:text-white hover:bg-dark-15
+           text-grey-70 hover:text-primary hover:bg-dark-15
            transition-all duration-200 font-medium;
   }
 
   .sidebar-link.active {
-    @apply text-white bg-red-45/10 border-l-2 border-red-45;
+    @apply text-primary bg-red-45/10 border-l-2 border-red-45;
   }
 
   .sidebar-section-title {
@@ -112,14 +234,13 @@
            text-grey-60 mt-3 mb-1;
   }
 
-  /* ─── Nav ─────────────────────────────────────────── */
   .nav-link {
     @apply flex items-center gap-1.5 px-3 py-3 text-sm text-grey-70
-           hover:text-white relative transition-colors duration-200;
+           hover:text-primary relative transition-colors duration-200;
   }
 
   .nav-link.active {
-    @apply text-white;
+    @apply text-primary;
   }
 
   .nav-link.active::after {
@@ -127,9 +248,9 @@
     @apply absolute bottom-0 left-3 right-3 h-0.5 bg-red-45 rounded-full;
   }
 
-  /* Stable classes for SSR/client — avoids hydration mismatch from long arbitrary Tailwind strings */
   .header-subnav {
     @apply border-t overflow-x-auto;
+    border-color: var(--hairline);
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
   }
@@ -142,16 +263,15 @@
     @apply flex min-h-[44px] items-center gap-0.5 text-sm whitespace-nowrap sm:gap-1 sm:h-10 sm:min-h-0;
   }
 
-  /* ─── Stats Cards ────────────────────────────────── */
   .stats-card {
     @apply bg-dark-10 p-4 sm:p-6 rounded-2xl
-           border border-dark-20/20
-           hover:border-dark-20/40 hover:shadow-card
+           border border-dark-20/40
+           hover:border-dark-20/60 hover:shadow-card
            transition-all duration-300;
   }
 
   .stats-value {
-    @apply text-2xl sm:text-3xl font-bold text-white mt-2;
+    @apply text-2xl sm:text-3xl font-bold text-primary mt-2;
   }
 
   .stats-icon-wrap {
@@ -162,9 +282,8 @@
     @apply text-grey-70 text-sm font-medium;
   }
 
-  /* ─── Forms & Inputs ─────────────────────────────── */
   .input-field {
-    @apply w-full bg-dark-15 text-white rounded-xl px-4 py-3
+    @apply w-full bg-dark-15 text-primary rounded-xl px-4 py-3
            border border-dark-25 placeholder-grey-60
            focus:outline-none focus:ring-2 focus:ring-red-45/60 focus:border-transparent
            transition-all duration-200;
@@ -182,7 +301,6 @@
     @apply input-field pl-10;
   }
 
-  /* ─── Buttons ────────────────────────────────────── */
   .btn-primary {
     @apply w-full bg-red-45 hover:bg-red-55 active:bg-red-60
            text-white font-semibold py-3 px-6 rounded-xl
@@ -193,61 +311,59 @@
   }
 
   .btn-secondary {
-    @apply px-4 py-2 bg-dark-15 hover:bg-dark-20 text-grey-70 hover:text-white
+    @apply px-4 py-2 bg-dark-15 hover:bg-dark-20 text-grey-70 hover:text-primary
            rounded-lg border border-dark-25 transition-all duration-200
-           font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-dark-6;
+           font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-red-45/30 focus-visible:ring-offset-2 focus-visible:ring-offset-dark-6;
   }
 
   .btn-icon {
     @apply flex items-center gap-2 bg-dark-12 hover:bg-dark-15 border border-dark-25
-           text-grey-70 hover:text-white px-4 py-2 rounded-full
+           text-grey-70 hover:text-primary px-4 py-2 rounded-full
            transition-all duration-200 text-sm font-medium
-           focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-dark-6;
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-red-45/30 focus-visible:ring-offset-2 focus-visible:ring-offset-dark-6;
   }
 
   .btn-icon-active {
     @apply btn-icon bg-red-45/15 border-red-45/40 text-red-45 hover:bg-red-45/25;
   }
 
-  /* ─── Charts ─────────────────────────────────────── */
   .chart-container {
     @apply bg-dark-10 rounded-2xl p-4 sm:p-6
-           border border-dark-20/20
-           hover:border-dark-20/30 transition-all duration-300
+           border border-dark-20/40
+           hover:border-dark-20/50 transition-all duration-300
            w-full overflow-x-auto;
   }
 
   .chart-title {
-    @apply text-base sm:text-lg font-semibold text-white mb-6
+    @apply text-base sm:text-lg font-semibold text-primary mb-6
            flex items-center gap-2;
   }
 
   .recharts-cartesian-grid-horizontal line,
   .recharts-cartesian-grid-vertical line {
-    stroke: #333;
+    stroke: var(--chart-grid);
   }
 
   .recharts-text {
-    fill: #999;
+    fill: var(--chart-text);
     font-size: 12px;
     font-family: 'Inter', sans-serif;
   }
 
   .recharts-default-tooltip {
-    background-color: #1A1A1A !important;
-    border: 1px solid #333 !important;
+    background-color: var(--chart-tooltip-bg) !important;
+    border: 1px solid var(--chart-tooltip-border) !important;
     border-radius: 12px !important;
   }
 
   .recharts-tooltip-label {
-    color: #fff !important;
+    color: rgb(var(--color-fg)) !important;
   }
 
   .recharts-tooltip-item {
-    color: #999 !important;
+    color: rgb(var(--color-grey-60)) !important;
   }
 
-  /* ─── Activity ───────────────────────────────────── */
   .activity-item {
     @apply flex items-center space-x-3 py-2;
   }
@@ -256,28 +372,57 @@
     @apply w-2 h-2 rounded-full bg-red-45;
   }
 
-  /* ─── Hero Gradient Overlay ──────────────────────── */
   .hero-overlay {
-    background: linear-gradient(
-      to right,
-      rgba(15,15,15,0.98) 0%,
-      rgba(15,15,15,0.85) 40%,
-      rgba(15,15,15,0.3) 70%,
-      rgba(15,15,15,0.1) 100%
-    );
+    background: var(--hero-overlay);
   }
 
-  /* ─── Dropdown ───────────────────────────────────── */
   .dropdown-menu {
     @apply absolute right-0 mt-2 rounded-xl glass-strong
-           shadow-2xl shadow-black/40 border border-white/[0.08]
+           shadow-2xl border
            animate-scale-in origin-top-right z-[99999] overflow-hidden;
+    border-color: var(--glass-border-strong);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .dropdown-item {
     @apply flex items-center gap-3 px-4 py-2.5 text-sm text-grey-70
-           hover:text-white hover:bg-white/5 w-full text-left
+           hover:text-primary hover:bg-dark-15 w-full text-left
            transition-colors duration-150;
+  }
+
+  .theme-header {
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--hairline);
+    backdrop-filter: blur(16px);
+  }
+
+  .theme-panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(24px);
+  }
+
+  .theme-dropdown {
+    background: var(--dropdown-bg);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(16px);
+  }
+
+  .theme-shell {
+    background: rgb(var(--color-dark-6));
+    border-color: var(--hairline);
+  }
+
+  .theme-hairline {
+    border-color: var(--hairline);
+  }
+
+  .theme-soft-fill {
+    background: var(--soft-fill);
+  }
+
+  .theme-soft-fill-strong {
+    background: var(--soft-fill-strong);
   }
 }
 
@@ -287,7 +432,9 @@
   }
 
   .glass-effect {
-    @apply bg-dark-8/80 backdrop-blur-md border border-dark-20/20;
+    background: var(--glass-bg);
+    @apply backdrop-blur-md border;
+    border-color: var(--glass-border);
   }
 
   .hover-lift {
@@ -295,7 +442,7 @@
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-white to-grey-70 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-[rgb(var(--color-fg))] to-grey-70 bg-clip-text text-transparent;
   }
 
   .gradient-text-red {
@@ -352,6 +499,6 @@
   }
 
   .text-shadow {
-    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   }
 }

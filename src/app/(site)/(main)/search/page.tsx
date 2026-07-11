@@ -61,7 +61,7 @@ function VideoCard({ video }: { video: VideoDetail }) {
         ) : null}
       </div>
       <div className="p-2.5">
-        <h3 className="text-sm font-medium text-white line-clamp-2 leading-snug group-hover:text-red-45 transition-colors">
+        <h3 className="text-sm font-medium text-primary line-clamp-2 leading-snug group-hover:text-red-45 transition-colors">
           {video.title}
         </h3>
         <div className="flex items-center gap-1.5 mt-1 text-xs text-grey-60">
@@ -155,13 +155,13 @@ function SearchContent() {
             placeholder="Search videos, creators, categories..."
             autoFocus
             autoComplete="off"
-            className="w-full h-12 bg-dark-12 rounded-xl pl-11 pr-11 text-sm text-white placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 focus:bg-dark-10 transition-all"
+            className="w-full h-12 bg-dark-12 rounded-xl pl-11 pr-11 text-sm text-primary placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 focus:bg-dark-10 transition-all shadow-xl"
           />
           {inputValue && (
             <button
               type="button"
               onClick={clearSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-grey-60 hover:text-white transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-grey-60 hover:text-primary transition-colors"
               aria-label="Clear search"
             >
               <XMarkIcon className="h-5 w-5" />
@@ -173,7 +173,7 @@ function SearchContent() {
       {!debouncedQuery ? (
         <div className="py-20 text-center">
           <MagnifyingGlassIcon className="h-12 w-12 text-grey-60 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-white mb-2">Search videos</h2>
+          <h2 className="text-xl font-semibold text-primary mb-2">Search videos</h2>
           <p className="text-grey-60 text-sm max-w-sm mx-auto">
             Type a title, creator, or category to find something to watch.
           </p>
@@ -186,7 +186,7 @@ function SearchContent() {
         </div>
       ) : isError ? (
         <div className="py-20 text-center bg-red-45/10 rounded-2xl border border-red-45/30">
-          <h3 className="text-xl font-semibold text-white mb-2">Connection Issue</h3>
+          <h3 className="text-xl font-semibold text-primary mb-2">Connection Issue</h3>
           <p className="text-grey-70 mb-4">Failed to load results. Please try again.</p>
           <button
             onClick={() => window.location.reload()}
@@ -197,7 +197,7 @@ function SearchContent() {
         </div>
       ) : videos.length === 0 ? (
         <div className="py-20 text-center bg-dark-10 rounded-2xl border border-dark-25">
-          <h3 className="text-xl font-semibold text-white mb-2">No results</h3>
+          <h3 className="text-xl font-semibold text-primary mb-2">No results</h3>
           <p className="text-grey-70">
             Nothing matched &ldquo;<span className="text-red-45">{debouncedQuery}</span>&rdquo;. Try a different term.
           </p>
@@ -205,7 +205,7 @@ function SearchContent() {
       ) : (
         <>
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold text-white">
+            <h2 className="text-lg font-bold text-primary">
               Results for &ldquo;<span className="text-red-45">{debouncedQuery}</span>&rdquo;
             </h2>
             <span className="text-xs text-grey-60">{total.toLocaleString()} videos</span>
@@ -222,7 +222,7 @@ function SearchContent() {
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={isFetching}
-                className="inline-flex items-center gap-2 bg-dark-15 hover:bg-dark-20 border border-dark-25 hover:border-red-45/50 text-white font-medium px-8 py-3 rounded-xl transition-all disabled:opacity-50"
+                className="inline-flex items-center gap-2 bg-dark-15 hover:bg-dark-20 border border-dark-25 hover:border-red-45/50 text-primary font-medium px-8 py-3 rounded-xl transition-all disabled:opacity-50 shadow-sm"
               >
                 {isFetching ? 'Loading...' : 'Load More'}
               </button>

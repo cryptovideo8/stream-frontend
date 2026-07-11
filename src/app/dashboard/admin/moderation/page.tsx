@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import {
   useAdminGetReportsQuery,
   useAdminUpdateReportMutation,
-} from '../../store/api/interactionApi';
+} from '../../../store/api/interactionApi';
 
 export default function AdminModerationPage() {
   const [status, setStatus] = useState('open');
@@ -32,13 +32,13 @@ export default function AdminModerationPage() {
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Content moderation</h1>
+          <h1 className="text-2xl font-bold text-primary">Content moderation</h1>
           <p className="text-sm text-grey-60 mt-1">Review user reports and deactivate violating videos.</p>
         </div>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="bg-dark-12 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white"
+          className="bg-dark-12 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary"
         >
           <option value="open">Open</option>
           <option value="actioned">Actioned</option>
@@ -70,7 +70,7 @@ export default function AdminModerationPage() {
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <h2 className="text-white font-semibold truncate">
+                    <h2 className="text-primary font-semibold truncate">
                       {r.videoId?.title || 'Deleted / unknown video'}
                     </h2>
                     <span className="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded bg-dark-20 text-grey-60">
@@ -83,7 +83,7 @@ export default function AdminModerationPage() {
                     )}
                   </div>
                   <p className="text-sm text-grey-60 mb-2">
-                    Reason: <span className="text-white">{r.reason}</span>
+                    Reason: <span className="text-primary">{r.reason}</span>
                     {r.details ? ` — ${r.details}` : ''}
                   </p>
                   <p className="text-xs text-grey-60 mb-3">
@@ -101,7 +101,7 @@ export default function AdminModerationPage() {
                     </Link>
                   )}
                   <textarea
-                    className="mt-3 w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white"
+                    className="mt-3 w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary"
                     rows={2}
                     placeholder="Admin notes"
                     value={notes[r._id] ?? r.adminNotes ?? ''}
@@ -111,7 +111,7 @@ export default function AdminModerationPage() {
                     <button
                       disabled={updating}
                       onClick={() => handleUpdate(r._id, { status: 'dismissed' })}
-                      className="px-3 py-1.5 text-xs rounded-lg border border-dark-25 text-grey-70 hover:text-white"
+                      className="px-3 py-1.5 text-xs rounded-lg border border-dark-25 text-grey-70 hover:text-primary"
                     >
                       Dismiss
                     </button>
@@ -125,7 +125,7 @@ export default function AdminModerationPage() {
                     <button
                       disabled={updating}
                       onClick={() => handleUpdate(r._id, { deactivateVideo: false, status: 'actioned' })}
-                      className="px-3 py-1.5 text-xs rounded-lg border border-dark-25 text-grey-70 hover:text-white"
+                      className="px-3 py-1.5 text-xs rounded-lg border border-dark-25 text-grey-70 hover:text-primary"
                     >
                       Reactivate video
                     </button>

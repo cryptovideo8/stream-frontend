@@ -59,7 +59,7 @@ export default function SupportPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">How can we <span className="text-red-45">help?</span></h1>
+          <h1 className="text-4xl md:text-5xl font-black text-primary mb-4 tracking-tight">How can we <span className="text-red-45">help?</span></h1>
           <p className="text-grey-60 text-lg max-w-2xl mx-auto">
             Our support team is available 24/7. Submit a ticket and we&apos;ll get back to you within 24 hours.
           </p>
@@ -71,7 +71,7 @@ export default function SupportPage() {
             <div className="bg-dark-12 border border-dark-25 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
                <div className="absolute top-0 right-0 w-32 h-32 bg-red-45/5 rounded-full -mr-16 -mt-16 blur-3xl pointer-events-none" />
                
-               <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+               <h2 className="text-2xl font-bold text-primary mb-8 flex items-center gap-3">
                  <ChatBubbleBottomCenterTextIcon className="w-7 h-7 text-red-45" />
                  Submit a Request
                </h2>
@@ -86,7 +86,7 @@ export default function SupportPage() {
                         value={formData.subject}
                         onChange={(e) => setFormData({...formData, subject: e.target.value})}
                         placeholder="e.g., Billing issue, Feature request..."
-                        className="w-full bg-dark-15 border border-dark-25 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-red-45 transition-all text-sm font-medium"
+                        className="w-full bg-dark-15 border border-dark-25 rounded-2xl pl-12 pr-4 py-4 text-primary focus:outline-none focus:border-red-45 transition-all text-sm font-medium"
                       />
                     </div>
                   </div>
@@ -100,7 +100,7 @@ export default function SupportPage() {
                              key={p}
                              type="button"
                              onClick={() => setFormData({...formData, priority: p as CreateTicketRequest['priority']})}
-                             className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border ${formData.priority === p ? 'bg-red-45 border-red-45 text-white shadow-lg' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-white'}`}
+                             className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border ${formData.priority === p ? 'bg-red-45 border-red-45 text-white shadow-lg' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-primary'}`}
                            >
                              {p}
                            </button>
@@ -116,7 +116,7 @@ export default function SupportPage() {
                       value={formData.message}
                       onChange={(e) => setFormData({...formData, message: e.target.value})}
                       placeholder="Please provide as much detail as possible..."
-                      className="w-full bg-dark-15 border border-dark-25 rounded-2xl p-4 text-white focus:outline-none focus:border-red-45 transition-all text-sm font-medium resize-none"
+                      className="w-full bg-dark-15 border border-dark-25 rounded-2xl p-4 text-primary focus:outline-none focus:border-red-45 transition-all text-sm font-medium resize-none"
                     />
                   </div>
 
@@ -139,7 +139,7 @@ export default function SupportPage() {
           {/* Ticket History */}
           <div className="lg:col-span-5 space-y-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-xl font-bold text-white flex items-center gap-3">
+              <h2 className="text-xl font-bold text-primary flex items-center gap-3">
                 <ClockIcon className="w-6 h-6 text-red-55" />
                 Ticket History
               </h2>
@@ -157,7 +157,7 @@ export default function SupportPage() {
                  <div className="w-16 h-16 bg-dark-20 border border-dark-30 rounded-full flex items-center justify-center mx-auto mb-4">
                     <EnvelopeIcon className="w-8 h-8 text-grey-60" />
                  </div>
-                 <h3 className="text-white font-bold mb-1">No tickets yet</h3>
+                 <h3 className="text-primary font-bold mb-1">No tickets yet</h3>
                  <p className="text-grey-60 text-sm">Your support history will appear here once you submit your first request.</p>
               </div>
             ) : (
@@ -171,7 +171,7 @@ export default function SupportPage() {
                         {getStatusBadge(ticket.status)}
                         <span className="text-[11px] font-medium text-grey-60">{format(new Date(ticket.createdAt), 'MMM d, h:mm a')}</span>
                      </div>
-                     <h4 className="text-white font-bold mb-2 group-hover:text-red-45 transition-colors line-clamp-1">{ticket.subject}</h4>
+                     <h4 className="text-primary font-bold mb-2 group-hover:text-red-45 transition-colors line-clamp-1">{ticket.subject}</h4>
                      <p className="text-grey-60 text-xs mb-4 line-clamp-2 leading-relaxed">{ticket.message}</p>
                      <div className="flex items-center gap-2 pt-4 border-t border-dark-25">
                         <div className={`w-1.5 h-1.5 rounded-full ${ticket.priority === 'high' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : ticket.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'}`} />
@@ -185,9 +185,9 @@ export default function SupportPage() {
             {/* Support Info */}
             <div className="bg-gradient-to-br from-red-45/20 to-transparent border border-red-45/20 rounded-3xl p-8 shadow-xl">
                <ShieldCheckIcon className="w-10 h-10 text-red-45 mb-4" />
-               <h3 className="text-lg font-bold text-white mb-2">Secure & Dedicated Support</h3>
+               <h3 className="text-lg font-bold text-primary mb-2">Secure & Dedicated Support</h3>
                <p className="text-grey-60 text-sm leading-relaxed mb-6">
-                 All tickets are encrypted and handled by our specialized verification team. For enterprise queries, please contact <span className="text-white font-medium">business@xpeacock.com</span>
+                 All tickets are encrypted and handled by our specialized verification team. For enterprise queries, please contact <span className="text-primary font-medium">business@xpeacock.com</span>
                </p>
                <div className="flex items-center gap-4">
                   <div className="flex -space-x-3">

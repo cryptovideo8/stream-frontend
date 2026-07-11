@@ -103,7 +103,7 @@ export default function ChannelDetails() {
           {mounted ? (currentUser?.name?.charAt(0)?.toUpperCase() ?? 'C') : 'C'}
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">{mounted ? (currentUser?.name ?? 'My Channel') : 'My Channel'}</h1>
+          <h1 className="text-2xl font-bold text-primary">{mounted ? (currentUser?.name ?? 'My Channel') : 'My Channel'}</h1>
           <p className="text-grey-70 text-sm capitalize">{mounted ? (currentUser?.role ?? 'Creator') : 'Creator'}</p>
           <p className="text-grey-60 text-xs mt-1">{mounted ? currentUser?.email : ''}</p>
         </div>
@@ -124,7 +124,7 @@ export default function ChannelDetails() {
             {stat.loading ? (
               <div className="h-6 bg-dark-20 rounded animate-pulse w-16 mb-1" />
             ) : (
-              <p className="text-2xl font-bold text-white">{stat.value}</p>
+              <p className="text-2xl font-bold text-primary">{stat.value}</p>
             )}
             <p className="text-grey-70 text-xs">{stat.label}</p>
           </div>
@@ -134,7 +134,7 @@ export default function ChannelDetails() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-dark-10 rounded-lg p-5 border border-dark-20">
-          <h3 className="text-white font-semibold mb-4">Videos by Category</h3>
+          <h3 className="text-primary font-semibold mb-4">Videos by Category</h3>
           {loadingVideos ? (
             <div className="h-48 flex items-center justify-center text-grey-60">Loading...</div>
           ) : categoryChartData.length === 0 ? (
@@ -154,7 +154,7 @@ export default function ChannelDetails() {
         </div>
 
         <div className="bg-dark-10 rounded-lg p-5 border border-dark-20">
-          <h3 className="text-white font-semibold mb-4">Upload Activity (by Month)</h3>
+          <h3 className="text-primary font-semibold mb-4">Upload Activity (by Month)</h3>
           {loadingVideos ? (
             <div className="h-48 flex items-center justify-center text-grey-60">Loading...</div>
           ) : monthlyChartData.length === 0 ? (
@@ -176,7 +176,7 @@ export default function ChannelDetails() {
 
       {/* Monetization Breakdown */}
       <div className="bg-dark-10 rounded-lg p-5 border border-dark-20">
-        <h3 className="text-white font-semibold mb-4">Video Insights</h3>
+        <h3 className="text-primary font-semibold mb-4">Video Insights</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { label: 'Free', value: videos.filter((v: any) => v.monetization?.type === 'free').length, color: 'text-green-400' },
@@ -223,7 +223,7 @@ export default function ChannelDetails() {
           <div className="bg-dark-10 rounded-lg p-5 border border-dark-20">
             <div className="flex items-center space-x-2 mb-4">
               <PencilIcon className="w-5 h-5 text-purple-400" />
-              <h3 className="text-white font-semibold">Branding</h3>
+              <h3 className="text-primary font-semibold">Branding</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -251,25 +251,25 @@ export default function ChannelDetails() {
           <div className="bg-dark-10 rounded-lg p-5 border border-dark-20">
             <div className="flex items-center space-x-2 mb-4">
               <PencilIcon className="w-5 h-5 text-blue-400" />
-              <h3 className="text-white font-semibold">Basic Info</h3>
+              <h3 className="text-primary font-semibold">Basic Info</h3>
             </div>
             <div className="space-y-4">
               <div>
                 <label className="block text-grey-70 text-sm mb-1">Display Name</label>
                 <Field name="name" type="text"
-                  className="w-full bg-dark-15 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20" />
+                  className="w-full bg-dark-15 text-primary px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20" />
                 {errors.name && touched.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
               </div>
               <div>
                 <label className="block text-grey-70 text-sm mb-1">Description</label>
                 <Field as="textarea" name="description" rows={3}
-                  className="w-full bg-dark-15 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20" />
+                  className="w-full bg-dark-15 text-primary px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20" />
                 {errors.description && touched.description && <p className="text-red-400 text-xs mt-1">{errors.description}</p>}
               </div>
               <div>
                 <label className="block text-grey-70 text-sm mb-1">Category</label>
                 <Field as="select" name="category"
-                  className="w-full bg-dark-15 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
+                  className="w-full bg-dark-15 text-primary px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
                   <option value="">Select category</option>
                   {categoryList.map((cat: { value: string }) => (
                     <option key={cat.value} value={cat.value}>{cat.value}</option>
@@ -284,12 +284,12 @@ export default function ChannelDetails() {
           <div className="bg-dark-10 rounded-lg p-5 border border-dark-20">
             <div className="flex items-center space-x-2 mb-4">
               <LinkIcon className="w-5 h-5 text-green-400" />
-              <h3 className="text-white font-semibold">Website</h3>
+              <h3 className="text-primary font-semibold">Website</h3>
             </div>
             <div>
               <label className="block text-grey-70 text-sm mb-1">Website URL</label>
               <Field type="url" name="website" placeholder="https://..."
-                className="w-full bg-dark-15 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20" />
+                className="w-full bg-dark-15 text-primary px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20" />
               {errors.website && touched.website && <p className="text-red-400 text-xs mt-1">{errors.website}</p>}
             </div>
           </div>
@@ -298,16 +298,16 @@ export default function ChannelDetails() {
           <div className="bg-dark-10 rounded-lg p-5 border border-dark-20">
             <div className="flex items-center space-x-2 mb-4">
               <ShieldCheckIcon className="w-5 h-5 text-yellow-400" />
-              <h3 className="text-white font-semibold">Advanced Settings</h3>
+              <h3 className="text-primary font-semibold">Advanced Settings</h3>
             </div>
             <div className="space-y-4">
               <div className="flex items-center justify-between py-2 border-b border-dark-15">
                 <div>
-                  <p className="text-white text-sm">Channel Language</p>
+                  <p className="text-primary text-sm">Channel Language</p>
                   <p className="text-grey-70 text-xs">Primary content language</p>
                 </div>
                 <Field as="select" name="language"
-                  className="bg-dark-15 text-white px-3 py-1.5 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
+                  className="bg-dark-15 text-primary px-3 py-1.5 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
                   <option value="en">English</option>
                   <option value="hi">Hindi</option>
                   <option value="es">Spanish</option>
@@ -316,13 +316,13 @@ export default function ChannelDetails() {
               </div>
               <div className="flex items-center justify-between py-2 border-b border-dark-15">
                 <div>
-                  <p className="text-white text-sm">Channel Verification</p>
+                  <p className="text-primary text-sm">Channel Verification</p>
                   <p className="text-grey-70 text-xs">Upload ID / release docs for 2257 compliance review</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowVerify((v) => !v)}
-                  className="bg-dark-15 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-dark-20 flex items-center space-x-1 border border-dark-20"
+                  className="bg-dark-15 text-primary px-3 py-1.5 text-sm rounded-lg hover:bg-dark-20 flex items-center space-x-1 border border-dark-20"
                 >
                   <CheckBadgeIcon className="w-4 h-4 text-blue-400" />
                   <span>{showVerify ? 'Hide' : 'Verify Now'}</span>
@@ -334,7 +334,7 @@ export default function ChannelDetails() {
                     <select
                       value={docType}
                       onChange={(e) => setDocType(e.target.value as VerificationDocType)}
-                      className="bg-dark-12 text-white text-sm rounded-lg px-3 py-2 border border-dark-25"
+                      className="bg-dark-12 text-primary text-sm rounded-lg px-3 py-2 border border-dark-25"
                     >
                       <option value="id_front">ID front</option>
                       <option value="id_back">ID back</option>
@@ -426,7 +426,7 @@ export default function ChannelDetails() {
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className={`flex items-center space-x-2 px-6 py-4 transition-all text-sm font-medium ${activeTab === tab.id
                 ? 'text-red-45 border-b-2 border-red-45 bg-dark-8'
-                : 'text-grey-70 hover:text-white hover:bg-dark-15'
+                : 'text-grey-70 hover:text-primary hover:bg-dark-15'
                 }`}>
               {tab.icon}
               <span>{tab.title}</span>

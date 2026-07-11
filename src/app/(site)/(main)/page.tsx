@@ -166,7 +166,7 @@ function VideoCard({ video }: VideoCardProps) {
         </div>
         <div className="flex-1 min-w-0">
           <a href={href} className="block">
-            <h3 className="text-sm font-medium text-white line-clamp-2 leading-snug group-hover:text-red-45 transition-colors duration-200">
+            <h3 className="text-sm font-medium text-primary line-clamp-2 leading-snug group-hover:text-red-45 transition-colors duration-200">
               {video.title}
             </h3>
           </a>
@@ -179,7 +179,7 @@ function VideoCard({ video }: VideoCardProps) {
             channelHref ? (
               <Link
                 href={channelHref}
-                className="text-xs text-grey-60 mt-0.5 hover:text-white transition-colors truncate block"
+                className="text-xs text-grey-60 mt-0.5 hover:text-primary transition-colors truncate block"
               >
                 {creatorLabel}
               </Link>
@@ -328,7 +328,7 @@ function HomeContent() {
 
         {mounted && isAuthenticated && continueItems.length > 0 && (
           <section className="mb-8" aria-labelledby="continue-watching-heading">
-            <h2 id="continue-watching-heading" className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <h2 id="continue-watching-heading" className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
               <ClockIcon className="h-5 w-5 text-red-45" /> Continue watching
             </h2>
             <div className="flex gap-3 overflow-x-auto pb-3 [scrollbar-width:thin] snap-x snap-mandatory">
@@ -358,7 +358,7 @@ function HomeContent() {
                         </div>
                       )}
                     </div>
-                    <p className="mt-2 text-sm text-white line-clamp-2 group-hover:text-red-45 transition-colors">
+                    <p className="mt-2 text-sm text-primary line-clamp-2 group-hover:text-red-45 transition-colors">
                       {v.title}
                     </p>
                   </Link>
@@ -377,13 +377,10 @@ function HomeContent() {
                   key={chip.label}
                   onClick={() => handleChipClick(idx)}
                   className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all duration-300 relative overflow-hidden ${activeChip === idx
-                      ? 'text-white shadow-[0_0_15px_rgba(227,0,0,0.3)]'
-                      : 'bg-dark-12 text-grey-70 hover:bg-dark-15 hover:text-white border border-dark-25'
+                      ? 'text-white bg-gradient-to-r from-red-45 to-red-55 shadow-[0_0_15px_rgba(227,0,0,0.3)] border border-transparent'
+                      : 'bg-dark-12 text-grey-70 hover:bg-dark-15 hover:text-primary border border-dark-25'
                     }`}
                 >
-                  {activeChip === idx && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-red-45 to-red-55 -z-10" />
-                  )}
                   {Icon && <Icon className="h-3.5 w-3.5 relative z-10" />}
                   <span className="relative z-10">{chip.label}</span>
                 </button>
@@ -393,7 +390,7 @@ function HomeContent() {
 
         {/* ── Section Heading ────────────────────────────── */}
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+          <h2 className="text-lg font-bold text-primary flex items-center gap-2">
             <FireIcon className="h-5 w-5 text-red-45" /> Trending Videos
           </h2>
           {data?.total != null && (
@@ -412,7 +409,7 @@ function HomeContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Connection Issue</h3>
+              <h3 className="text-xl font-semibold text-primary mb-2">Connection Issue</h3>
               <p className="text-grey-70 mb-4 px-4 max-w-md mx-auto">
                 Failed to load videos. Please check your connection and try again.
               </p>
@@ -430,7 +427,7 @@ function HomeContent() {
               <div className="flex justify-center mb-4">
                 <ClockIcon className="h-12 w-12 text-grey-60" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">
+              <h3 className="text-xl font-semibold text-primary mb-2">
                 No Videos Available
               </h3>
               <p className="text-grey-70">
@@ -446,7 +443,7 @@ function HomeContent() {
             {(data?.videos?.length || 0) < (data?.total || 0) ? (
               <button
                 onClick={() => setPage(p => p + 1)}
-                className="group relative inline-flex items-center gap-2 bg-dark-15 hover:bg-dark-20 border border-dark-25 hover:border-red-45/50 text-white font-medium px-8 py-3 rounded-xl transition-all duration-300"
+                className="group relative inline-flex items-center gap-2 bg-dark-15 hover:bg-dark-20 border border-dark-25 hover:border-red-45/50 text-primary font-medium px-8 py-3 rounded-xl transition-all duration-300"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-red-45/0 via-red-45/10 to-red-45/0 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
                 <SparklesIcon className="w-5 h-5 text-red-45" />

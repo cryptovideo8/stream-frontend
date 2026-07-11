@@ -73,54 +73,54 @@ export default function SelectWithSearch({
     const customStyles = {
         control: (base: any, state: any) => ({
             ...base,
-            backgroundColor: '#333333', // dark-20
-            borderColor: state.isFocused ? '#E30000' : '#404040', // red-45 or dark-25
-            color: 'white',
-            borderRadius: '0.75rem', // rounded-xl to match standard inputs
+            backgroundColor: 'rgb(var(--color-dark-15))',
+            borderColor: state.isFocused ? '#E30000' : 'rgb(var(--color-dark-25))',
+            color: 'rgb(var(--color-fg))',
+            borderRadius: '0.75rem',
             padding: '2px 6px',
             minHeight: '44px',
             boxShadow: 'none',
             '&:hover': {
-                borderColor: state.isFocused ? '#E30000' : '#4C4C4C'
+                borderColor: state.isFocused ? '#E30000' : 'rgb(var(--color-dark-30))'
             }
         }),
         menu: (base: any) => ({
             ...base,
-            backgroundColor: '#1F1F1F', // dark-12
-            border: '1px solid #404040', // dark-25
+            backgroundColor: 'rgb(var(--color-dark-10))',
+            border: '1px solid rgb(var(--color-dark-25))',
             borderRadius: '0.75rem',
             overflow: 'hidden',
             zIndex: 9999
         }),
         option: (base: any, state: any) => ({
             ...base,
-            backgroundColor: state.isFocused ? '#333333' : 'transparent',
-            color: state.isSelected ? '#E30000' : 'white',
+            backgroundColor: state.isFocused ? 'rgb(var(--color-dark-15))' : 'transparent',
+            color: state.isSelected ? '#E30000' : 'rgb(var(--color-fg))',
             padding: '10px 15px',
             cursor: 'pointer',
             fontSize: '14px',
             '&:active': {
-                backgroundColor: '#262626'
+                backgroundColor: 'rgb(var(--color-dark-20))'
             }
         }),
         singleValue: (base: any) => ({
             ...base,
-            color: 'white',
+            color: 'rgb(var(--color-fg))',
             fontSize: '14px'
         }),
         multiValue: (base: any) => ({
             ...base,
-            backgroundColor: '#262626',
-            color: 'white',
+            backgroundColor: 'rgb(var(--color-dark-15))',
+            color: 'rgb(var(--color-fg))',
             borderRadius: '6px'
         }),
         multiValueLabel: (base: any) => ({
             ...base,
-            color: 'white'
+            color: 'rgb(var(--color-fg))'
         }),
         multiValueRemove: (base: any) => ({
             ...base,
-            color: '#999999',
+            color: 'rgb(var(--color-grey-60))',
             '&:hover': {
                 backgroundColor: '#E30000',
                 color: 'white'
@@ -128,7 +128,7 @@ export default function SelectWithSearch({
         }),
         input: (base: any) => ({
             ...base,
-            color: 'white',
+            color: 'rgb(var(--color-fg))',
             fontSize: '14px',
             '& input': {
                 outline: 'none !important',
@@ -138,7 +138,7 @@ export default function SelectWithSearch({
         }),
         placeholder: (base: any) => ({
             ...base,
-            color: '#999999', // grey-60
+            color: 'rgb(var(--color-grey-60))',
             fontSize: '14px'
         }),
         indicatorSeparator: () => ({
@@ -146,7 +146,7 @@ export default function SelectWithSearch({
         }),
         dropdownIndicator: (base: any) => ({
             ...base,
-            color: '#666'
+            color: 'rgb(var(--color-grey-60))'
         })
     };
 

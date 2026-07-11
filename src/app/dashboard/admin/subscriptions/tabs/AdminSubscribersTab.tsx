@@ -45,13 +45,13 @@ export default function AdminSubscribersTab() {
     return (
         <div>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 className="text-xl font-bold text-white">Subscribers List</h2>
+                <h2 className="text-xl font-bold text-primary">Subscribers List</h2>
 
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                     <select
                         value={filter}
                         onChange={(e) => setFilter(e.target.value)}
-                        className="bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-45"
+                        className="bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary text-sm focus:outline-none focus:border-red-45"
                     >
                         <option value="active">Active Only</option>
                         <option value="expired">Expired</option>
@@ -60,7 +60,7 @@ export default function AdminSubscribersTab() {
                     </select>
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="px-4 py-2 bg-dark-20 border border-dark-25 hover:bg-dark-30 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
+                        className="px-4 py-2 bg-dark-20 border border-dark-25 hover:bg-dark-30 text-primary text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
                     >
                         Grant Access Manually
                     </button>
@@ -81,7 +81,7 @@ export default function AdminSubscribersTab() {
                         {subscriptions.map((sub) => (
                             <tr key={sub._id} className="hover:bg-dark-12 transition-colors">
                                 <td className="px-6 py-4">
-                                    <div className="font-medium text-white">{typeof sub.userId === 'object' ? sub.userId?.name : 'User'}</div>
+                                    <div className="font-medium text-primary">{typeof sub.userId === 'object' ? sub.userId?.name : 'User'}</div>
                                     <div className="text-xs text-grey-60">{typeof sub.userId === 'object' ? sub.userId?.email : sub.userId}</div>
                                 </td>
                                 <td className="px-6 py-4">
@@ -92,14 +92,14 @@ export default function AdminSubscribersTab() {
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-2 mb-1">
                                         <span className={`h-2 w-2 rounded-full ${sub.status === 'active' ? 'bg-green-500' : sub.status === 'cancelled' ? 'bg-red-500' : 'bg-grey-50'}`} />
-                                        <span className="text-white capitalize">{sub.status}</span>
+                                        <span className="text-primary capitalize">{sub.status}</span>
                                     </div>
                                     <div className="text-xs text-grey-60">
                                         {new Date(sub.startDate).toLocaleDateString()} - {new Date(sub.endDate).toLocaleDateString()}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <div className="text-white font-medium">
+                                    <div className="text-primary font-medium">
                                         {typeof sub.planId === 'object' ? sub.planId?.currency : 'INR'} {sub.finalAmountPaid}
                                     </div>
                                     <div className="text-[10px] text-grey-60 uppercase mt-0.5">
@@ -128,13 +128,13 @@ export default function AdminSubscribersTab() {
                     <button
                         disabled={page === 1}
                         onClick={() => setPage(p => p - 1)}
-                        className="px-3 py-1 bg-dark-15 rounded text-white disabled:opacity-50"
+                        className="px-3 py-1 bg-dark-15 rounded text-primary disabled:opacity-50"
                     >Prev</button>
                     <span className="px-3 py-1 text-grey-60">Page {page} of {subsData.totalPages}</span>
                     <button
                         disabled={page === subsData.totalPages}
                         onClick={() => setPage(p => p + 1)}
-                        className="px-3 py-1 bg-dark-15 rounded text-white disabled:opacity-50"
+                        className="px-3 py-1 bg-dark-15 rounded text-primary disabled:opacity-50"
                     >Next</button>
                 </div>
             )}
@@ -144,8 +144,8 @@ export default function AdminSubscribersTab() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
                     <div className="bg-dark-10 border border-dark-25 rounded-2xl w-full max-w-md">
                         <div className="p-6 border-b border-dark-25 flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-white">Manually Grant Access</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="text-grey-50 hover:text-white">&times;</button>
+                            <h3 className="text-lg font-bold text-primary">Manually Grant Access</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="text-grey-50 hover:text-primary">&times;</button>
                         </div>
                         <form onSubmit={handleGrant} className="p-6 space-y-4">
                             <div>
@@ -162,7 +162,7 @@ export default function AdminSubscribersTab() {
 
                             <div>
                                 <label className="block text-sm font-medium text-grey-70 mb-1">Select Plan</label>
-                                <select required value={grantForm.planId} onChange={(e) => setGrantForm({ ...grantForm, planId: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white">
+                                <select required value={grantForm.planId} onChange={(e) => setGrantForm({ ...grantForm, planId: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary">
                                     <option value="" disabled>Select a plan...</option>
                                     {plansData.filter((p: Plan) => p.isActive).map((plan: Plan) => (
                                         <option key={plan._id} value={plan._id}>{plan.name} ({plan.validityDays} days)</option>
@@ -171,7 +171,7 @@ export default function AdminSubscribersTab() {
                             </div>
 
                             <div className="pt-4 flex justify-end gap-3 border-t border-dark-25">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-dark-20 text-white rounded-lg hover:bg-dark-25">Cancel</button>
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-dark-20 text-primary rounded-lg hover:bg-dark-25">Cancel</button>
                                 <button type="submit" disabled={isGranting} className="px-4 py-2 bg-red-45 text-white rounded-lg hover:bg-red-55 disabled:opacity-50">
                                     {isGranting ? 'Granting...' : 'Grant Access'}
                                 </button>

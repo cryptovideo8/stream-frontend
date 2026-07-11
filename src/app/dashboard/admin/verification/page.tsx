@@ -28,13 +28,13 @@ export default function AdminVerificationPage() {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Creator verification</h1>
+          <h1 className="text-2xl font-bold text-primary">Creator verification</h1>
           <p className="text-sm text-grey-60 mt-1">Review 2257 / ID documents from creators.</p>
         </div>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="bg-dark-12 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white"
+          className="bg-dark-12 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary"
         >
           <option value="pending">Pending</option>
           <option value="approved">Approved</option>
@@ -59,7 +59,7 @@ export default function AdminVerificationPage() {
             return (
               <div key={d._id} className="bg-dark-10 border border-dark-25 rounded-xl p-4">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <span className="text-white font-semibold">{d.docType}</span>
+                  <span className="text-primary font-semibold">{d.docType}</span>
                   <span className="text-[10px] uppercase px-2 py-0.5 rounded bg-dark-20 text-grey-60">
                     {d.status}
                   </span>
@@ -76,7 +76,7 @@ export default function AdminVerificationPage() {
                   Open document
                 </a>
                 <textarea
-                  className="mt-3 w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white"
+                  className="mt-3 w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary"
                   rows={2}
                   placeholder="Admin notes"
                   value={notes[d._id] ?? d.adminNotes ?? ''}

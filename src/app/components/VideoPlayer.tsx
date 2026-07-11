@@ -340,7 +340,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
 
       {/* ── Video Info ────────────────────────────────── */}
       <div className="space-y-3">
-        <h1 className="text-lg sm:text-xl font-bold text-white leading-snug">
+        <h1 className="text-lg sm:text-xl font-bold text-primary leading-snug">
           {data?.title || 'Untitled Video'}
         </h1>
 
@@ -349,7 +349,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
             {data?.creatorId?._id ? (
               <Link
                 href={`/channel/${data.creatorId._id}`}
-                className="flex items-center gap-2 hover:text-white transition-colors"
+                className="flex items-center gap-2 hover:text-primary transition-colors"
               >
                 {data?.creatorId?.profileImage ? (
                   <img
@@ -363,12 +363,12 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                   </div>
                 )}
                 <span className="opacity-80">By</span>
-                <span className="text-white font-medium">{creatorName}</span>
+                <span className="text-primary font-medium">{creatorName}</span>
               </Link>
             ) : (
               <>
                 <span className="opacity-80">By</span>
-                <span className="text-white font-medium">{creatorName}</span>
+                <span className="text-primary font-medium">{creatorName}</span>
               </>
             )}
           </div>
@@ -392,15 +392,12 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
           </div>
 
           <div className="watch-actions-row flex min-w-0 w-full flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-2 sm:w-auto">
-            <div
-              className="flex shrink-0 items-center rounded-full overflow-hidden border border-dark-25"
-              style={{ background: '#1a1a1a' }}
-            >
+            <div className="flex shrink-0 items-center rounded-full overflow-hidden border border-dark-25 bg-dark-10">
               <button
                 type="button"
                 onClick={handleLike}
                 className={`flex items-center gap-1 px-2 py-2 text-sm font-medium transition-all duration-200 sm:gap-1.5 sm:px-4 ${
-                  isLiked ? 'text-green-500 bg-green-500/15' : 'text-grey-70 hover:text-white hover:bg-white/5'
+                  isLiked ? 'text-green-500 bg-green-500/15' : 'text-grey-70 hover:text-primary hover:bg-dark-15'
                 }`}
               >
                 <HandThumbUpIcon className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
@@ -411,7 +408,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                 type="button"
                 onClick={handleDislike}
                 className={`flex items-center gap-1 px-2 py-2 text-sm font-medium transition-all duration-200 sm:gap-1.5 sm:px-4 ${
-                  isDisliked ? 'text-red-45 bg-red-45/10' : 'text-grey-70 hover:text-white hover:bg-white/5'
+                  isDisliked ? 'text-red-45 bg-red-45/10' : 'text-grey-70 hover:text-primary hover:bg-white/5'
                 }`}
               >
                 <HandThumbDownIcon className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
@@ -442,15 +439,15 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                   className="fixed inset-x-0 bottom-0 sm:absolute sm:right-0 sm:inset-x-auto sm:bottom-auto sm:mt-2 rounded-t-2xl sm:rounded-xl p-4 w-full sm:w-[18rem] z-50 animate-slide-in-bottom sm:animate-scale-in"
 
                   style={{
-                    background: 'rgba(20,20,20,0.95)',
+                    background: 'var(--dropdown-bg)',
                     backdropFilter: 'blur(16px)',
-                    border: '1px solid rgba(255,255,255,0.08)',
+                    border: '1px solid var(--panel-border)',
                     boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
                   }}
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-semibold text-white">Share video</span>
-                    <button type="button" onClick={() => setSharePopup(false)} className="text-grey-60 hover:text-white rounded-lg p-1" aria-label="Close share dialog">
+                    <span className="text-sm font-semibold text-primary">Share video</span>
+                    <button type="button" onClick={() => setSharePopup(false)} className="text-grey-60 hover:text-primary rounded-lg p-1" aria-label="Close share dialog">
                       <XMarkIcon className="w-4 h-4" />
                     </button>
                   </div>
@@ -458,7 +455,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                     <button
                       type="button"
                       onClick={handleNativeShare}
-                      className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.06] px-3 py-2.5 text-sm font-medium text-white hover:bg-white/[0.1]"
+                      className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.06] px-3 py-2.5 text-sm font-medium text-primary hover:bg-white/[0.1]"
                     >
                       <ArrowUpTrayIcon className="h-4 w-4" />
                       Share via…
@@ -466,7 +463,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                   )}
                   <div
                     className="flex items-center gap-2 p-2 rounded-lg mb-2"
-                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+                    style={{ background: 'var(--soft-fill)', border: '1px solid var(--panel-border)' }}
                   >
                     <span className="text-xs text-grey-60 flex-1 truncate">{typeof window !== 'undefined' ? window.location.href : ''}</span>
                     <button type="button" onClick={copyLink} className="text-xs text-red-45 hover:text-red-55 font-medium flex items-center gap-1 shrink-0">
@@ -498,18 +495,18 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                   className="fixed inset-x-0 bottom-0 sm:absolute sm:right-0 sm:inset-x-auto sm:bottom-auto sm:mt-2 rounded-t-2xl sm:rounded-xl p-4 w-full sm:w-[18rem] z-50 animate-slide-in-bottom sm:animate-scale-in"
 
                   style={{
-                    background: 'rgba(20,20,20,0.95)',
+                    background: 'var(--dropdown-bg)',
                     backdropFilter: 'blur(16px)',
-                    border: '1px solid rgba(255,255,255,0.08)',
+                    border: '1px solid var(--panel-border)',
                     boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
                   }}
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-semibold text-white">Report video</span>
+                    <span className="text-sm font-semibold text-primary">Report video</span>
                     <button
                       type="button"
                       onClick={() => setReportPopup(false)}
-                      className="text-grey-60 hover:text-white rounded-lg p-1"
+                      className="text-grey-60 hover:text-primary rounded-lg p-1"
                       aria-label="Close report dialog"
                     >
                       <XMarkIcon className="w-4 h-4" />
@@ -525,7 +522,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                         id="report-reason"
                         value={reportReason}
                         onChange={(e) => setReportReason(e.target.value)}
-                        className="w-full bg-dark-12 text-white text-sm rounded-xl px-3 py-2 border border-dark-25 focus:outline-none focus:ring-2 focus:ring-red-45/40"
+                        className="w-full bg-dark-12 text-primary text-sm rounded-xl px-3 py-2 border border-dark-25 focus:outline-none focus:ring-2 focus:ring-red-45/40"
                       >
                         <option value="spam">Spam</option>
                         <option value="inappropriate">Inappropriate content</option>
@@ -546,7 +543,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                         onChange={(e) => setReportDetails(e.target.value)}
                         placeholder="Add any extra context for moderation..."
                         rows={3}
-                        className="w-full bg-dark-12 text-white text-sm rounded-xl px-3 py-2 resize-none border border-dark-25 focus:outline-none focus:ring-2 focus:ring-red-45/40"
+                        className="w-full bg-dark-12 text-primary text-sm rounded-xl px-3 py-2 resize-none border border-dark-25 focus:outline-none focus:ring-2 focus:ring-red-45/40"
                       />
                     </div>
 
@@ -584,13 +581,13 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
         </div>
 
         {data?.description && (
-          <div className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="rounded-xl p-4" style={{ background: 'var(--soft-fill)', border: '1px solid var(--panel-border)' }}>
             <p className={`text-sm text-grey-70 leading-relaxed ${!descExpanded ? 'line-clamp-3' : ''}`}>{data.description}</p>
             {data.description.length > 200 && (
               <button
                 type="button"
                 onClick={() => setDescExpanded(!descExpanded)}
-                className="text-xs text-grey-60 hover:text-white mt-2 flex items-center gap-1 transition-colors"
+                className="text-xs text-grey-60 hover:text-primary mt-2 flex items-center gap-1 transition-colors"
               >
                 {descExpanded ? 'Show less' : 'Show more'}
                 <ChevronDownIcon className={`w-3.5 h-3.5 transition-transform ${descExpanded ? 'rotate-180' : ''}`} />
@@ -606,14 +603,14 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
           role="region"
           aria-label="Comments"
         >
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-dark-10/90">
-            <h3 className="text-sm font-semibold text-white">Comments ({localCommentsCount})</h3>
-            <button type="button" onClick={() => setShowComments(false)} className="text-grey-60 hover:text-white rounded-lg p-1" aria-label="Close comments">
+          <div className="flex items-center justify-between px-4 py-3 border-b theme-hairline bg-dark-10/90">
+            <h3 className="text-sm font-semibold text-primary">Comments ({localCommentsCount})</h3>
+            <button type="button" onClick={() => setShowComments(false)} className="text-grey-60 hover:text-primary rounded-lg p-1" aria-label="Close comments">
               <XMarkIcon className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="p-4 border-b border-white/[0.06] bg-dark-8/50">
+          <div className="p-4 border-b theme-hairline bg-dark-8/50">
             <label htmlFor="watch-comment-input" className="mb-2 block text-xs font-medium uppercase tracking-wide text-grey-50">
               Add a comment
             </label>
@@ -624,7 +621,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
               placeholder="What do you think about this video? Join the conversation..."
               rows={4}
               disabled={isPostingComment}
-              className="w-full bg-dark-12 text-white text-base sm:text-sm rounded-xl p-4 resize-none border border-dark-25 focus:outline-none focus:ring-2 focus:ring-red-45/40 focus:border-red-45/50 placeholder:text-grey-60 transition-all disabled:opacity-50"
+              className="w-full bg-dark-12 text-primary text-base sm:text-sm rounded-xl p-4 resize-none border border-dark-25 focus:outline-none focus:ring-2 focus:ring-red-45/40 focus:border-red-45/50 placeholder:text-grey-60 transition-all disabled:opacity-50"
             />
             <div className="mt-2 flex items-center justify-between gap-2">
               <span className={`text-[11px] font-medium transition-colors ${
@@ -669,7 +666,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
             ) : !commentsData?.length ? (
               <div className="px-6 py-12 text-center">
                 <ChatBubbleLeftIcon className="w-10 h-10 text-grey-60 mx-auto mb-3 opacity-80" />
-                <p className="text-sm font-medium text-white">No comments yet</p>
+                <p className="text-sm font-medium text-primary">No comments yet</p>
                 <p className="text-sm text-grey-60 mt-1">Start the conversation below.</p>
               </div>
             ) : (
@@ -678,14 +675,14 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                   <li key={comment._id} className="px-4 py-4 hover:bg-white/[0.02] transition-colors">
                     <div className="flex items-start gap-3">
                       <div
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-gradient-to-br from-dark-15 to-dark-25 text-xs font-bold text-white"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-gradient-to-br from-dark-15 to-dark-25 text-xs font-bold text-primary"
                         aria-hidden
                       >
                         {commentInitial(comment.userId)}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-1">
-                          <span className="text-sm font-semibold text-white">{commentAuthorName(comment.userId)}</span>
+                          <span className="text-sm font-semibold text-primary">{commentAuthorName(comment.userId)}</span>
                           <time className="text-[11px] text-grey-60" dateTime={comment.timestamp ? new Date(comment.timestamp).toISOString() : undefined}>
                             {formatRelativeTime(comment.timestamp)}
                           </time>
@@ -697,7 +694,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                             <button
                               type="button"
                               onClick={() => toggleRepliesForComment(String(comment._id))}
-                              className="text-[12px] text-grey-60 hover:text-white transition-colors flex items-center gap-2"
+                              className="text-[12px] text-grey-60 hover:text-primary transition-colors flex items-center gap-2"
                             >
                               <span>
                                 {expandedReplies[String(comment._id)] ? 'Hide' : 'Show'} replies ({comment.replies.length})
@@ -713,7 +710,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                                     </div>
                                     <div className="min-w-0 flex-1">
                                       <div className="flex items-center gap-2">
-                                        <span className="text-[12px] font-semibold text-white truncate">
+                                        <span className="text-[12px] font-semibold text-primary truncate">
                                           {commentAuthorName(r.fromUser)}
                                         </span>
                                         {r.createdAt && (

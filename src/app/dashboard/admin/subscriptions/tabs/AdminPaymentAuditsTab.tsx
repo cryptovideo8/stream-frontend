@@ -85,7 +85,7 @@ export default function AdminPaymentAuditsTab() {
         <div className="flex items-center gap-2">
            <button 
              onClick={() => setShowFilters(!showFilters)}
-             className={`p-2 rounded-lg border transition-all ${showFilters ? 'bg-red-45 border-red-45 text-white' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-white'}`}
+             className={`p-2 rounded-lg border transition-all ${showFilters ? 'bg-red-45 border-red-45 text-white' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-primary'}`}
              title="Toggle Filters"
            >
              <FunnelIcon className="w-5 h-5" />
@@ -98,7 +98,7 @@ export default function AdminPaymentAuditsTab() {
                 className={`px-4 py-1.5 text-sm font-medium rounded-md capitalize transition-colors ${
                   filterStatus === tab
                     ? 'bg-red-45 text-white shadow'
-                    : 'text-grey-60 hover:text-white hover:bg-dark-20'
+                    : 'text-grey-60 hover:text-primary hover:bg-dark-20'
                 }`}
               >
                 {tab}
@@ -126,7 +126,7 @@ export default function AdminPaymentAuditsTab() {
             <select 
               value={upiId} 
               onChange={(e) => setUpiId(e.target.value)}
-              className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white focus:border-red-45 outline-none transition-colors"
+              className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary focus:border-red-45 outline-none transition-colors"
             >
               <option value="">All UPI IDs</option>
               {upis.map(u => (
@@ -141,7 +141,7 @@ export default function AdminPaymentAuditsTab() {
               type="date" 
               value={startDate} 
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white focus:border-red-45 outline-none transition-colors [color-scheme:dark]"
+              className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary focus:border-red-45 outline-none transition-colors [color-scheme:dark]"
             />
           </div>
 
@@ -152,11 +152,11 @@ export default function AdminPaymentAuditsTab() {
                 type="date" 
                 value={endDate} 
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-white focus:border-red-45 outline-none transition-colors [color-scheme:dark]"
+                className="w-full bg-dark-20 border border-dark-25 rounded-lg px-3 py-2 text-sm text-primary focus:border-red-45 outline-none transition-colors [color-scheme:dark]"
               />
               <button 
                 onClick={clearFilters}
-                className="p-2 bg-dark-20 hover:bg-dark-30 text-grey-60 hover:text-white rounded-lg border border-dark-25 transition-colors"
+                className="p-2 bg-dark-20 hover:bg-dark-30 text-grey-60 hover:text-primary rounded-lg border border-dark-25 transition-colors"
                 title="Clear Filters"
               >
                 <ArrowPathIcon className="w-5 h-5" />
@@ -195,7 +195,7 @@ export default function AdminPaymentAuditsTab() {
                 <tr key={audit._id} className="hover:bg-dark-15 transition-colors">
                   <td className="py-3 px-4">
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium text-white">{audit.userId?.name || 'Unknown'}</span>
+                      <span className="text-sm font-medium text-primary">{audit.userId?.name || 'Unknown'}</span>
                       <span className="text-xs text-grey-60">{audit.userId?.email || 'N/A'}</span>
                     </div>
                   </td>
@@ -207,7 +207,7 @@ export default function AdminPaymentAuditsTab() {
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex flex-col">
-                      <span className="text-sm font-mono text-white tracking-widest">{audit.utrNumber}</span>
+                      <span className="text-sm font-mono text-primary tracking-widest">{audit.utrNumber}</span>
                       <span className="text-[11px] text-grey-60">To: {audit.upiIdUsed}</span>
                     </div>
                   </td>

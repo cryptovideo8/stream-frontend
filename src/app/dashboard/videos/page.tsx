@@ -401,7 +401,7 @@ export default function VideoManagement() {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => handleEditVideo(row)}
-              className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800"
+              className="p-1.5 text-gray-400 hover:text-primary rounded-lg hover:bg-gray-800"
               title="Edit"
             >
               <PencilIcon className="h-4 w-4" />
@@ -520,7 +520,7 @@ export default function VideoManagement() {
               <div>
                 <label className="block text-grey-70 mb-2">Video Type</label>
                 <select name="videoType" value={videoData.videoType} onChange={handleInputChange}
-                  className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45">
+                  className="w-full bg-dark-10 text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45">
                   <option value="internal">Internal Upload</option>
                   <option value="external">External (URL)</option>
                 </select>
@@ -530,20 +530,20 @@ export default function VideoManagement() {
               <div>
                 <label className="block text-grey-70 mb-2">Video URL</label>
                 <input name="videoUrl" value={videoData.videoUrl} onChange={handleInputChange}
-                  className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
+                  className="w-full bg-dark-10 text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
                   placeholder="https://..." />
               </div>
             )}
             <div>
               <label className="block text-grey-70 mb-2">Title</label>
               <input type="text" name="title" value={videoData.title} onChange={handleInputChange}
-                className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
+                className="w-full bg-dark-10 text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
                 placeholder="Enter video title" />
             </div>
             <div>
               <label className="block text-grey-70 mb-2">Description</label>
               <textarea name="description" value={videoData.description} onChange={handleInputChange}
-                className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45 h-28"
+                className="w-full bg-dark-10 text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45 h-28"
                 placeholder="Enter video description" />
             </div>
             <div>
@@ -590,7 +590,7 @@ export default function VideoManagement() {
             <div>
               <label className="block text-grey-70 mb-2 flex items-center space-x-1"><GlobeAltIcon className="h-4 w-4" /><span>Visibility</span></label>
               <select name="visibility" value={videoData.visibility} onChange={handleInputChange}
-                className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45">
+                className="w-full bg-dark-10 text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45">
                 <option value="private">Private</option>
                 <option value="public">Public</option>
                 <option value="unlisted">Unlisted</option>
@@ -601,7 +601,7 @@ export default function VideoManagement() {
                 <div>
                   <label className="block text-grey-70 mb-2 flex items-center space-x-1"><CurrencyDollarIcon className="h-4 w-4" /><span>Monetization</span></label>
                   <select name="monetizationType" value={videoData.monetizationType} onChange={handleInputChange}
-                    className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45">
+                    className="w-full bg-dark-10 text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45">
                     <option value="free">Free</option>
                     <option value="paid">Paid (Platform Subscription)</option>
                     <option value="rent">Rent (Individual Purchase)</option>
@@ -617,7 +617,7 @@ export default function VideoManagement() {
                       onChange={handleInputChange}
                       min="0"
                       step="0.01"
-                      className="w-full bg-dark-10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
+                      className="w-full bg-dark-10 text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-45"
                       placeholder="e.g. 49.00"
                     />
                   </div>
@@ -627,7 +627,7 @@ export default function VideoManagement() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-green-300 text-xs font-semibold uppercase tracking-wide mb-0.5">Creator Payout Rate</p>
-                        <p className="text-white text-sm">
+                        <p className="text-primary text-sm">
                           Your earnings will be calculated at the platform rate of{' '}
                           <span className="text-green-400 font-bold">
                             ₹{payoutRate?.ratePerMinute ?? '—'} / minute
@@ -663,12 +663,12 @@ export default function VideoManagement() {
         return (
           <div className="space-y-5">
             <div className="bg-dark-10 p-4 rounded-lg">
-              <h3 className="text-sm font-semibold text-white mb-3">Summary</h3>
+              <h3 className="text-sm font-semibold text-primary mb-3">Summary</h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><p className="text-grey-70">Title</p><p className="text-white font-medium">{videoData.title}</p></div>
-                <div><p className="text-grey-70">Category</p><p className="text-white font-medium">{videoData.category}</p></div>
-                <div><p className="text-grey-70">Visibility</p><p className="text-white font-medium">{videoData.visibility}</p></div>
-                <div><p className="text-grey-70">Monetization</p><p className="text-white font-medium">{videoData.monetizationType}</p></div>
+                <div><p className="text-grey-70">Title</p><p className="text-primary font-medium">{videoData.title}</p></div>
+                <div><p className="text-grey-70">Category</p><p className="text-primary font-medium">{videoData.category}</p></div>
+                <div><p className="text-grey-70">Visibility</p><p className="text-primary font-medium">{videoData.visibility}</p></div>
+                <div><p className="text-grey-70">Monetization</p><p className="text-primary font-medium">{videoData.monetizationType}</p></div>
               </div>
             </div>
 
@@ -686,7 +686,7 @@ export default function VideoManagement() {
               <div {...getPreviewRootProps()} className={`border-2 border-dashed border-yellow-400 rounded-lg p-5 text-center cursor-pointer ${isPreviewDragActive ? 'bg-yellow-900/10' : ''}`}>
                 <input {...getPreviewInputProps()} />
                 <p className="text-yellow-300">Drag & drop thumbnail image (.jpg), or click</p>
-                {externalPreviewFile && <p className="text-white mt-1 text-sm">✓ {externalPreviewFile.name}</p>}
+                {externalPreviewFile && <p className="text-primary mt-1 text-sm">✓ {externalPreviewFile.name}</p>}
                 <p className="text-yellow-400 text-xs mt-1">JPG only, max 2MB</p>
               </div>
             )}
@@ -719,12 +719,12 @@ export default function VideoManagement() {
       case 'uploading' as any:
         return (
           <div className="text-center py-8">
-            <h3 className="text-xl font-semibold text-white mb-2">Uploading...</h3>
+            <h3 className="text-xl font-semibold text-primary mb-2">Uploading...</h3>
             <p className="text-gray-400 mb-4">Please wait while your video is being uploaded.</p>
             <div className="w-3/4 mx-auto bg-gray-700 rounded-full h-4 overflow-hidden mb-2">
               <div className="bg-blue-500 h-full transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
             </div>
-            <p className="text-sm text-white">{uploadProgress}%</p>
+            <p className="text-sm text-primary">{uploadProgress}%</p>
           </div>
         );
 
@@ -745,7 +745,7 @@ export default function VideoManagement() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-white">Video Management</h1>
+        <h1 className="text-2xl font-bold text-primary">Video Management</h1>
         <button
           onClick={() => { resetForm(); setShowUploadModal(true); }}
           className="flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
@@ -758,7 +758,7 @@ export default function VideoManagement() {
       {/* Insight Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
-          { label: 'Total', value: insightStats.total, color: 'text-white' },
+          { label: 'Total', value: insightStats.total, color: 'text-primary' },
           { label: 'Internal', value: insightStats.internal, color: 'text-blue-400' },
           { label: 'External', value: insightStats.thirdparty, color: 'text-purple-400' },
           { label: 'Public', value: insightStats.public, color: 'text-green-400' },
@@ -780,24 +780,24 @@ export default function VideoManagement() {
             placeholder="Search by title..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-dark-10 text-white pl-9 pr-4 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20"
+            className="w-full bg-dark-10 text-primary pl-9 pr-4 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20"
           />
         </div>
         <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}
-          className="bg-dark-10 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
+          className="bg-dark-10 text-primary px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
           <option value="">All Categories</option>
           {categoryList.map((cat: { value: string }) => (
             <option key={cat.value} value={cat.value}>{cat.value}</option>
           ))}
         </select>
         <select value={filterType} onChange={(e) => setFilterType(e.target.value)}
-          className="bg-dark-10 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
+          className="bg-dark-10 text-primary px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
           <option value="">All Types</option>
           <option value="uploaded">Internal</option>
           <option value="thirdparty">External</option>
         </select>
         <select value={filterMonetization} onChange={(e) => setFilterMonetization(e.target.value)}
-          className="bg-dark-10 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
+          className="bg-dark-10 text-primary px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-red-45 border border-dark-20">
           <option value="">All Monetization</option>
           <option value="free">Free</option>
           <option value="paid">Paid</option>
@@ -820,14 +820,14 @@ export default function VideoManagement() {
         </div>
         {(search || filterCategory || filterType || filterMonetization || filterUploader) && (
           <button onClick={() => { setSearch(''); setFilterCategory(''); setFilterType(''); setFilterMonetization(''); setFilterUploader(''); }}
-            className="text-grey-70 hover:text-white text-sm underline">
+            className="text-grey-70 hover:text-primary text-sm underline">
             Clear
           </button>
         )}
       </div>
 
       {/* Table */}
-      <div className="bg-[#1A1A1A] rounded-lg overflow-hidden border border-dark-20">
+      <div className="bg-dark-10 rounded-lg overflow-hidden border border-dark-20">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -881,11 +881,11 @@ export default function VideoManagement() {
           </span>
           <div className="flex items-center space-x-2">
             <button onClick={() => setPage((p) => Math.max(p - 1, 1))} disabled={page === 1}
-              className="px-3 py-1 text-sm text-gray-400 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed bg-dark-15 rounded">
+              className="px-3 py-1 text-sm text-gray-400 hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed bg-dark-15 rounded">
               ← Prev
             </button>
             <button onClick={() => setPage((p) => p + 1)} disabled={!data || data.videos.length < limit}
-              className="px-3 py-1 text-sm text-gray-400 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed bg-dark-15 rounded">
+              className="px-3 py-1 text-sm text-gray-400 hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed bg-dark-15 rounded">
               Next →
             </button>
           </div>
@@ -896,12 +896,12 @@ export default function VideoManagement() {
       {
         showUploadModal && (
           <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-            <div className="bg-[#1A1A1A] rounded-xl p-6 max-w-2xl w-full mx-auto max-h-[90vh] overflow-y-auto">
+            <div className="bg-dark-10 rounded-xl p-6 max-w-2xl w-full mx-auto max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-white">
+                <h2 className="text-xl font-bold text-primary">
                   {editingVideo ? 'Edit Video' : 'Upload New Video'}
                 </h2>
-                <button onClick={handleCloseModal} className="text-gray-400 hover:text-white">
+                <button onClick={handleCloseModal} className="text-gray-400 hover:text-primary">
                   <XMarkIcon className="h-6 w-6" />
                 </button>
               </div>

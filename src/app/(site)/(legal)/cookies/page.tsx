@@ -2,7 +2,7 @@ import { BRAND } from '../../../config/brand';
 
 export default function CookiesPage() {
   return (
-    <div className="min-h-screen bg-dark-6 text-white pt-24 pb-16 px-6">
+    <div className="min-h-screen bg-dark-6 text-primary pt-24 pb-16 px-6">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold mb-4">Cookie Policy</h1>
         <p className="text-grey-70 text-sm mb-8">Last updated: July 11, 2026</p>
@@ -12,10 +12,10 @@ export default function CookiesPage() {
         </p>
         <ul className="list-disc pl-6 text-grey-60 space-y-2 mb-4">
           <li>
-            <span className="text-white">Essential:</span> authentication, security, age gate, cookie consent choice
+            <span className="text-primary">Essential:</span> authentication, security, age gate, cookie consent choice
           </li>
           <li>
-            <span className="text-white">Optional analytics:</span> only if you choose &quot;Accept all&quot; on the consent banner
+            <span className="text-primary">Optional analytics:</span> only if you choose &quot;Accept all&quot; on the consent banner
           </li>
         </ul>
         <p className="text-grey-60 leading-relaxed mb-4">

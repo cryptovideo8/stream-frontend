@@ -43,7 +43,7 @@ export default function AdminStatsTab() {
     return (
         <div>
             <div className="mb-6">
-                <h2 className="text-xl font-bold text-white mb-1">Platform Statistics</h2>
+                <h2 className="text-xl font-bold text-primary mb-1">Platform Statistics</h2>
                 <p className="text-sm text-grey-60">Overview of subscription revenue and active users.</p>
             </div>
 
@@ -54,7 +54,7 @@ export default function AdminStatsTab() {
                             <stat.icon className={classNames('w-8 h-8', stat.textColor)} />
                         </div>
                         <p className="text-sm font-medium text-grey-60 mb-1">{stat.name}</p>
-                        <p className="text-3xl font-bold text-white">{stat.value}</p>
+                        <p className="text-3xl font-bold text-primary">{stat.value}</p>
                     </div>
                 ))}
             </div>
@@ -62,14 +62,14 @@ export default function AdminStatsTab() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Top Plans Breakdown */}
                 <div className="bg-dark-12 border border-dark-25 rounded-2xl p-6">
-                    <h3 className="text-lg font-bold text-white mb-4">Active Subs by Plan</h3>
+                    <h3 className="text-lg font-bold text-primary mb-4">Active Subs by Plan</h3>
                     {stats.planBreakdown.length > 0 ? (
                         <div className="space-y-4">
                             {stats.planBreakdown.map((item: { _id: string; name: string; count: number }) => (
                                 <div key={item._id} className="flex items-center justify-between">
                                     <span className="text-grey-70 font-medium">{item.name}</span>
                                     <div className="flex items-center gap-3">
-                                        <span className="text-white font-bold">{item.count}</span>
+                                        <span className="text-primary font-bold">{item.count}</span>
                                         <div className="w-24 h-2 bg-dark-25 rounded-full overflow-hidden">
                                             <div
                                                 className="h-full bg-red-45 rounded-full"
@@ -87,7 +87,7 @@ export default function AdminStatsTab() {
 
                 {/* Promo Usage Stats */}
                 <div className="bg-dark-12 border border-dark-25 rounded-2xl p-6">
-                    <h3 className="text-lg font-bold text-white mb-4">Top Promo Campaigns</h3>
+                    <h3 className="text-lg font-bold text-primary mb-4">Top Promo Campaigns</h3>
                     {stats.promoBreakdown.length > 0 ? (
                         <div className="space-y-4">
                             {stats.promoBreakdown.map((item: { _id: string; code: string; discountType: string; discountValue: number; uses: number }) => (
@@ -98,7 +98,7 @@ export default function AdminStatsTab() {
                                             {item.discountType === 'percent' ? `${item.discountValue}%` : `FLAT ${item.discountValue}`}
                                         </span>
                                     </div>
-                                    <span className="text-white font-medium">{item.uses} uses</span>
+                                    <span className="text-primary font-medium">{item.uses} uses</span>
                                 </div>
                             ))}
                         </div>

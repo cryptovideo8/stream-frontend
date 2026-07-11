@@ -54,7 +54,7 @@ export default function MobileBottomNav() {
               key={item.name}
               href={item.href}
               className={`flex flex-col items-center justify-center w-full h-full space-y-1 relative group transition-colors duration-200 ${
-                isActive ? 'text-red-45' : 'text-grey-60 hover:text-white'
+                isActive ? 'text-red-45' : 'text-grey-60 hover:text-primary'
               }`}
             >
               {isActive && (

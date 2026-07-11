@@ -98,7 +98,7 @@ export default function AdminPromosTab() {
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-white">Promo Codes</h2>
+                <h2 className="text-xl font-bold text-primary">Promo Codes</h2>
                 <button
                     onClick={() => handleOpenModal()}
                     className="flex items-center gap-2 px-4 py-2 bg-red-45 hover:bg-red-55 text-white text-sm font-medium rounded-lg transition-colors"
@@ -121,14 +121,14 @@ export default function AdminPromosTab() {
                     <tbody className="divide-y divide-dark-25">
                         {promos.map((promo: Promo) => (
                             <tr key={promo._id} className="hover:bg-dark-12 transition-colors">
-                                <td className="px-6 py-4 font-bold text-white uppercase tracking-wider">{promo.code}</td>
+                                <td className="px-6 py-4 font-bold text-primary uppercase tracking-wider">{promo.code}</td>
                                 <td className="px-6 py-4">
-                                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-dark-25 text-white">
+                                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-dark-25 text-primary">
                                         {promo.discountType === 'percent' ? `${promo.discountValue}% OFF` : `FLAT ${promo.discountValue} OFF`}
                                     </span>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <div className="text-white font-medium">{promo.usedCount} <span className="text-grey-50 font-normal">uses</span></div>
+                                    <div className="text-primary font-medium">{promo.usedCount} <span className="text-grey-50 font-normal">uses</span></div>
                                     {promo.maxUses > 0 && <div className="text-xs text-grey-60">Limit: {promo.maxUses}</div>}
                                 </td>
                                 <td className="px-6 py-4">
@@ -145,7 +145,7 @@ export default function AdminPromosTab() {
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 text-right">
-                                    <button onClick={() => handleOpenModal(promo)} className="text-grey-50 hover:text-white transition-colors">
+                                    <button onClick={() => handleOpenModal(promo)} className="text-grey-50 hover:text-primary transition-colors">
                                         <PencilSquareIcon className="w-5 h-5" />
                                     </button>
                                 </td>
@@ -166,26 +166,26 @@ export default function AdminPromosTab() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
                     <div className="bg-dark-10 border border-dark-25 rounded-2xl w-full max-lg max-h-[90vh] overflow-y-auto">
                         <div className="p-6 border-b border-dark-25 flex justify-between items-center">
-                            <h3 className="text-xl font-bold text-white">{editingPromo ? 'Edit Promo Code' : 'Create Promo Code'}</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="text-grey-50 hover:text-white">&times;</button>
+                            <h3 className="text-xl font-bold text-primary">{editingPromo ? 'Edit Promo Code' : 'Create Promo Code'}</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="text-grey-50 hover:text-primary">&times;</button>
                         </div>
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-grey-70 mb-1">Promo Code</label>
-                                <input required value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white uppercase" placeholder="SUMMER50" />
+                                <input required value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary uppercase" placeholder="SUMMER50" />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-grey-70 mb-1">Discount Type</label>
-                                    <select value={formData.discountType} onChange={(e) => setFormData({ ...formData, discountType: e.target.value as 'percent' | 'flat' })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white">
+                                    <select value={formData.discountType} onChange={(e) => setFormData({ ...formData, discountType: e.target.value as 'percent' | 'flat' })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary">
                                         <option value="percent">Percentage (%)</option>
                                         <option value="flat">Flat Amount</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-grey-70 mb-1">Discount Value</label>
-                                    <input required type="number" min="0" step="0.01" value={formData.discountValue} onChange={(e) => setFormData({ ...formData, discountValue: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white" />
+                                    <input required type="number" min="0" step="0.01" value={formData.discountValue} onChange={(e) => setFormData({ ...formData, discountValue: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary" />
                                 </div>
                             </div>
 
@@ -198,7 +198,7 @@ export default function AdminPromosTab() {
                                         return;
                                     }
                                     setFormData({ ...formData, applicablePlans: options.filter(o => o.selected).map(o => o.value).filter(v => v !== 'all') });
-                                }} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white h-24">
+                                }} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary h-24">
                                     <option value="all">All Plans</option>
                                     {plansData.map((plan: Plan) => (
                                         <option key={plan._id} value={plan._id}>{plan.name} ({plan.currency} {plan.price})</option>
@@ -210,21 +210,21 @@ export default function AdminPromosTab() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-grey-70 mb-1">Valid From</label>
-                                    <input required type="date" value={formData.validFrom} onChange={(e) => setFormData({ ...formData, validFrom: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white [&::-webkit-calendar-picker-indicator]:invert" />
+                                    <input required type="date" value={formData.validFrom} onChange={(e) => setFormData({ ...formData, validFrom: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary [&::-webkit-calendar-picker-indicator]:invert" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-grey-70 mb-1">Valid Until (Optional)</label>
-                                    <input type="date" value={formData.validUntil} onChange={(e) => setFormData({ ...formData, validUntil: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white [&::-webkit-calendar-picker-indicator]:invert" />
+                                    <input type="date" value={formData.validUntil} onChange={(e) => setFormData({ ...formData, validUntil: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary [&::-webkit-calendar-picker-indicator]:invert" />
                                 </div>
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-grey-70 mb-1">Max Uses (0 = Unlimited)</label>
-                                <input required type="number" min="0" value={formData.maxUses} onChange={(e) => setFormData({ ...formData, maxUses: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white" />
+                                <input required type="number" min="0" value={formData.maxUses} onChange={(e) => setFormData({ ...formData, maxUses: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary" />
                             </div>
 
                             <div className="pt-4 flex justify-end gap-3 border-t border-dark-25">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-dark-20 text-white rounded-lg hover:bg-dark-25">Cancel</button>
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-dark-20 text-primary rounded-lg hover:bg-dark-25">Cancel</button>
                                 <button type="submit" className="px-4 py-2 bg-red-45 text-white rounded-lg hover:bg-red-55">{editingPromo ? 'Save Changes' : 'Create Promo'}</button>
                             </div>
                         </form>

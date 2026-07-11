@@ -27,6 +27,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
 import toast from 'react-hot-toast';
 import BrandLogo from './BrandLogo';
+import ThemeSwitch from './ThemeSwitch';
 
 interface HeaderProps {
   hideNavMenu?: boolean;
@@ -109,14 +110,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
   ];
 
   return (
-    <header
-      className="fixed w-full z-[9999] shadow-header transition-all duration-300"
-      style={{
-        background: 'rgba(10,10,10,0.85)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
-      }}
-    >
+    <header className="theme-header fixed w-full z-[9999] shadow-header transition-all duration-300">
       <div className="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
 
         <BrandLogo variant="mark-text" markClassName="h-8 w-8" priority />
@@ -132,7 +126,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
               placeholder="Search videos, creators, categories..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-9 bg-dark-12 rounded-full py-2 pl-4 pr-10 text-sm text-white placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 focus:bg-dark-10 transition-all duration-200"
+              className="w-full h-9 bg-dark-12 rounded-full py-2 pl-4 pr-10 text-sm text-primary placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 focus:bg-dark-10 transition-all duration-200"
             />
             <button
               type="submit"
@@ -145,9 +139,10 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
 
         {/* Right Actions */}
         <div className="flex items-center gap-1 sm:gap-2">
+          <ThemeSwitch />
           {/* Mobile Search Toggle */}
           <button
-            className="sm:hidden p-2 text-grey-70 hover:text-white transition-colors"
+            className="sm:hidden p-2 text-grey-70 hover:text-primary transition-colors"
             onClick={() => setMobileSearch(!mobileSearch)}
           >
             {mobileSearch ? <XMarkIcon className="h-5 w-5" /> : <MagnifyingGlassIcon className="h-5 w-5" />}
@@ -163,7 +158,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
                 <>
                   <Link
                     href="/login"
-                    className="px-3 py-1.5 text-sm text-grey-70 hover:text-white border border-dark-25 hover:border-dark-30 rounded-lg font-medium transition-all duration-200"
+                    className="px-3 py-1.5 text-sm text-grey-70 hover:text-primary border border-dark-25 hover:border-dark-30 rounded-lg font-medium transition-all duration-200"
                   >
                     Login
                   </Link>
@@ -182,8 +177,8 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
                       onClick={() => setProfileDropDown(!profileDropDown)}
                     >
                     <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white overflow-hidden border-2"
-                      style={{ borderColor: profileDropDown ? '#E30000' : 'rgba(255,255,255,0.1)', transition: 'border-color 0.2s' }}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-primary overflow-hidden border-2 border-dark-25"
+                      style={{ borderColor: profileDropDown ? '#E30000' : undefined, transition: 'border-color 0.2s' }}
                     >
                       {avatarError ? (
                         <span>{userInitial}</span>
@@ -196,7 +191,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
                         />
                       )}
                     </div>
-                    <span className="hidden sm:inline text-sm font-medium text-grey-70 hover:text-white transition-colors">
+                    <span className="hidden sm:inline text-sm font-medium text-grey-70 hover:text-primary transition-colors">
                       {userName}
                     </span>
                     <ChevronDownIcon className={`h-3.5 w-3.5 text-grey-60 transition-transform duration-200 ${profileDropDown ? 'rotate-180' : ''}`} />
@@ -205,8 +200,8 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
                   {profileDropDown && (
                     <div className="dropdown-menu min-w-[200px] animate-fade-in">
                       {/* User info header */}
-                      <div className="px-4 py-3 border-b border-white/[0.06]">
-                        <p className="text-sm font-semibold text-white">{userName}</p>
+                      <div className="px-4 py-3 border-b theme-hairline">
+                        <p className="text-sm font-semibold text-primary">{userName}</p>
                         <p className="text-xs text-grey-60 mt-0.5">{userEmail}</p>
                       </div>
                       <div className="py-1">
@@ -219,7 +214,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
                           </Link>
                         )}
                       </div>
-                      <div className="border-t border-white/[0.06] py-1">
+                      <div className="border-t theme-hairline py-1">
                         <button onClick={handleLogout} className="dropdown-item text-red-45 hover:text-red-55 hover:bg-red-45/5">
                           <ArrowRightOnRectangleIcon className="h-4 w-4" /> Sign out
                         </button>
@@ -242,7 +237,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
         onClick={() => setMobileSearch(false)}
       >
         <div
-          className={`bg-dark-10 p-4 border-b border-white/[0.08] transform transition-transform duration-300 ${
+          className={`bg-dark-10 p-4 border-b theme-hairline transform transition-transform duration-300 ${
             mobileSearch ? 'translate-y-0' : '-translate-y-full'
           }`}
           onClick={(e) => e.stopPropagation()}
@@ -255,7 +250,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 autoFocus={mobileSearch}
-                className="w-full h-11 bg-dark-15 rounded-xl py-2 pl-4 pr-11 text-sm text-white placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 transition-all shadow-input-focus"
+                className="w-full h-11 bg-dark-15 rounded-xl py-2 pl-4 pr-11 text-sm text-primary placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 transition-all shadow-input-focus"
               />
               <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-grey-60 hover:text-red-45">
                 <MagnifyingGlassIcon className="h-5 w-5" />
@@ -267,7 +262,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
 
       {/* Navigation Bar */}
       {!hideNavMenu && (
-        <nav className="header-subnav" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+        <nav className="header-subnav">
           <div className="header-subnav-inner">
             <ul className="header-subnav-list">
 
@@ -284,8 +279,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
                 </button>
                 {videosDropDown && (
                   <div
-                    className="absolute top-full left-0 mt-1 min-w-[180px] rounded-xl shadow-2xl shadow-black/50 py-1.5 animate-fade-in"
-                    style={{ background: 'rgba(20,20,20,0.95)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.08)', zIndex: 99999 }}
+                    className="theme-dropdown absolute top-full left-0 mt-1 min-w-[180px] rounded-xl shadow-card-hover py-1.5 animate-fade-in z-[99999]"
                     onMouseEnter={() => setVideosDropDown(true)}
                     onMouseLeave={() => setVideosDropDown(false)}
                   >
@@ -298,7 +292,7 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
                     <Link href={likedHref} className="dropdown-item">
                       <HeartIcon className="h-4 w-4" /> Liked
                     </Link>
-                    <div className="my-1 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }} />
+                    <div className="my-1 border-t theme-hairline" />
                     <Link href="/?category=Indian" className="dropdown-item">
                       <span className="text-sm">🇮🇳</span> Indian
                     </Link>

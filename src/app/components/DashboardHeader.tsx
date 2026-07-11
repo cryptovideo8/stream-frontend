@@ -17,6 +17,7 @@ import { logout, selectCurrentUser, selectIsAuthenticated } from '../store/slice
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import BrandLogo from './BrandLogo';
+import ThemeSwitch from './ThemeSwitch';
 
 interface DashboardHeaderProps {
   onMobileMenuToggle: () => void;
@@ -93,7 +94,8 @@ export default function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderP
         </div>
 
         {/* Right section with notifications and profile */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3 sm:space-x-4">
+          <ThemeSwitch />
           {/* Mobile search button */}
           <button
             className="md:hidden text-grey-70 hover:text-primary p-2 rounded-lg"

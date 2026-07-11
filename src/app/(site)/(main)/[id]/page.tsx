@@ -53,10 +53,10 @@ export default function Home({ params }: PageProps) {
   // Early return for loading state
   if (isLoading) {
     return (
-      <div className="p-6 bg-[#0f1216]">
+      <div className="p-6 bg-dark-6">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold text-white">Loading...</h1>
+            <h1 className="text-2xl font-bold text-primary">Loading...</h1>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {[...Array(10)].map((_, index) => (
@@ -77,10 +77,10 @@ export default function Home({ params }: PageProps) {
   // Early return for error state
   if (isError) {
     return (
-      <div className="p-6 bg-[#0f1216]">
+      <div className="p-6 bg-dark-6">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold text-white">Error loading videos</h1>
+            <h1 className="text-2xl font-bold text-primary">Error loading videos</h1>
           </div>
           <div className="text-red-500 text-center">
             Failed to load videos. Please try again later.
@@ -93,11 +93,11 @@ export default function Home({ params }: PageProps) {
 
 
   return (
-    <div className="p-6 bg-[#0f1216]">
+    <div className="p-6 bg-dark-6">
       <div className="max-w-[1600px] mx-auto">
         {/* Header with search results info */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-primary">
             {resolvedParams.id === 'liked'
               ? 'Liked videos'
               : search
@@ -112,7 +112,7 @@ export default function Home({ params }: PageProps) {
         {/* No results message */}
         {videos.length === 0 ? (
           <div className="text-center py-12 border border-dark-25 rounded-xl bg-dark-10">
-            <h2 className="text-xl text-white">
+            <h2 className="text-xl text-primary">
               {resolvedParams.id === 'liked' ? 'No liked videos yet' : 'No videos found'}
             </h2>
             <p className="text-grey-60 mt-2">
@@ -184,7 +184,7 @@ export default function Home({ params }: PageProps) {
                 >
                   Previous
                 </button>
-                <span className="px-4 py-2 text-white">
+                <span className="px-4 py-2 text-primary">
                   Page {page} of {totalPages}
                 </span>
                 <button

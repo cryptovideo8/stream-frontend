@@ -157,7 +157,7 @@ export default function LoginPage() {
              </div>
            </div>
            <p className="text-[10px] font-black text-red-45 uppercase tracking-[0.2em] mb-1">Upload & Earn</p>
-           <h3 className="text-white font-bold text-base mb-1">Become a <span className="text-red-45 italic">Creator</span></h3>
+           <h3 className="text-primary font-bold text-base mb-1">Become a <span className="text-red-45 italic">Creator</span></h3>
            <p className="text-grey-70 text-xs">Share your videos with our community and start building your audience today!</p>
            
            <div className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-red-45 group-hover:gap-3 transition-all">

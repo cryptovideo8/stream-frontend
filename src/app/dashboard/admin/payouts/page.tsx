@@ -183,7 +183,7 @@ export default function AdminPayoutsPage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
                 <ShieldExclamationIcon className="h-16 w-16 text-red-45 mb-4 opacity-60" />
-                <h2 className="text-2xl font-bold text-white mb-2">Access Denied</h2>
+                <h2 className="text-2xl font-bold text-primary mb-2">Access Denied</h2>
                 <p className="text-grey-70 text-sm max-w-md">
                     This page is restricted to super admins only.<br />
                     Contact your platform administrator if you believe this is an error.
@@ -195,7 +195,7 @@ export default function AdminPayoutsPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-white">Payout Settlement</h1>
+                <h1 className="text-2xl font-bold text-primary">Payout Settlement</h1>
                 <p className="text-grey-70 text-sm mt-0.5">Super admin settlement screen for creator payouts</p>
             </div>
 
@@ -225,7 +225,7 @@ export default function AdminPayoutsPage() {
                         <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
                             className={`flex items-center space-x-2 px-4 py-2.5 text-sm font-medium transition-all ${activeTab === tab.id
                                 ? 'text-red-45 border-b-2 border-red-45'
-                                : 'text-grey-70 hover:text-white'
+                                : 'text-grey-70 hover:text-primary'
                                 }`}>
                             {tab.icon}
                             <span>{tab.label}</span>
@@ -243,7 +243,7 @@ export default function AdminPayoutsPage() {
                         <div>
                             <label className="text-xs text-grey-70 mb-1 block">Status</label>
                             <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-                                className="bg-dark-15 text-white px-3 py-2 rounded text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45">
+                                className="bg-dark-15 text-primary px-3 py-2 rounded text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45">
                                 <option value="">All</option>
                                 <option value="pending">Pending</option>
                                 <option value="settled">Settled</option>
@@ -254,23 +254,23 @@ export default function AdminPayoutsPage() {
                             <label className="text-xs text-grey-70 mb-1 block">Creator email</label>
                             <input type="text" value={creatorEmailFilter} placeholder="exact match"
                                 onChange={(e) => { setCreatorEmailFilter(e.target.value); setPage(1); }}
-                                className="bg-dark-15 text-white px-3 py-2 rounded text-sm border border-dark-20 w-48 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                                className="bg-dark-15 text-primary px-3 py-2 rounded text-sm border border-dark-20 w-48 focus:outline-none focus:ring-1 focus:ring-red-45" />
                         </div>
                         <div>
                             <label className="text-xs text-grey-70 mb-1 block">Min amount (₹)</label>
                             <input type="number" min={0} step={0.01} value={minAmountFilter} placeholder="0"
                                 onChange={(e) => { setMinAmountFilter(e.target.value); setPage(1); }}
-                                className="bg-dark-15 text-white px-3 py-2 rounded text-sm border border-dark-20 w-28 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                                className="bg-dark-15 text-primary px-3 py-2 rounded text-sm border border-dark-20 w-28 focus:outline-none focus:ring-1 focus:ring-red-45" />
                         </div>
                         <div>
                             <label className="text-xs text-grey-70 mb-1 block">From</label>
                             <input type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setPage(1); }}
-                                className="bg-dark-15 text-white px-3 py-2 rounded text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                                className="bg-dark-15 text-primary px-3 py-2 rounded text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
                         </div>
                         <div>
                             <label className="text-xs text-grey-70 mb-1 block">To</label>
                             <input type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setPage(1); }}
-                                className="bg-dark-15 text-white px-3 py-2 rounded text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                                className="bg-dark-15 text-primary px-3 py-2 rounded text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
                         </div>
                         <button type="button" onClick={handleExportCsv} disabled={exportLoading}
                             className="text-sm border border-dark-20 px-3 py-2 rounded hover:border-green-500 text-green-400 disabled:opacity-50">
@@ -285,7 +285,7 @@ export default function AdminPayoutsPage() {
                                 setMinAmountFilter('');
                                 setPage(1);
                             }}
-                                className="text-grey-70 hover:text-white text-sm flex items-center space-x-1 border border-dark-20 px-3 py-2 rounded hover:border-red-45">
+                                className="text-grey-70 hover:text-primary text-sm flex items-center space-x-1 border border-dark-20 px-3 py-2 rounded hover:border-red-45">
                                 <XMarkIcon className="h-4 w-4" /><span>Clear</span>
                             </button>
                         )}
@@ -324,7 +324,7 @@ export default function AdminPayoutsPage() {
                                                 <tr key={r._id} className="border-b border-gray-800 hover:bg-gray-800/20 transition-colors">
                                                     <td className="px-4 py-3">
                                                         <div>
-                                                            <p className="text-white font-medium text-xs">{r.creatorId?.name ?? 'Unknown'}</p>
+                                                            <p className="text-primary font-medium text-xs">{r.creatorId?.name ?? 'Unknown'}</p>
                                                             <p className="text-grey-70 text-xs">{r.creatorId?.email}</p>
                                                         </div>
                                                     </td>
@@ -332,7 +332,7 @@ export default function AdminPayoutsPage() {
                                                         {new Date(r.periodStart).toLocaleDateString()} –<br />{new Date(r.periodEnd).toLocaleDateString()}
                                                     </td>
                                                     <td className="px-4 py-3 text-grey-70">{r.totalWatchMinutes.toFixed(1)} min</td>
-                                                    <td className="px-4 py-3 text-white font-semibold">₹{r.totalAmount.toFixed(2)}</td>
+                                                    <td className="px-4 py-3 text-primary font-semibold">₹{r.totalAmount.toFixed(2)}</td>
                                                     <td className="px-4 py-3 text-grey-70 capitalize">{r.paymentMethod}</td>
                                                     <td className="px-4 py-3">
                                                         <span className={`px-2 py-0.5 rounded text-xs ${STATUS_COLORS[r.status]}`}>{r.status}</span>
@@ -341,7 +341,7 @@ export default function AdminPayoutsPage() {
                                                     <td className="px-4 py-3">
                                                         <div className="flex items-center gap-1">
                                                             <button onClick={() => setDetailModal(r)}
-                                                                className="text-xs bg-dark-15 text-grey-70 hover:text-white px-2 py-1 rounded border border-dark-20">
+                                                                className="text-xs bg-dark-15 text-grey-70 hover:text-primary px-2 py-1 rounded border border-dark-20">
                                                                 Detail
                                                             </button>
                                                             {r.status === 'pending' && (
@@ -370,9 +370,9 @@ export default function AdminPayoutsPage() {
                             </span>
                             <div className="flex gap-2">
                                 <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}
-                                    className="px-3 py-1 text-sm text-grey-70 hover:text-white disabled:opacity-40 bg-dark-15 rounded">← Prev</button>
+                                    className="px-3 py-1 text-sm text-grey-70 hover:text-primary disabled:opacity-40 bg-dark-15 rounded">← Prev</button>
                                 <button onClick={() => setPage((p) => Math.min(requests?.totalPages ?? 1, p + 1))} disabled={page >= (requests?.totalPages ?? 1)}
-                                    className="px-3 py-1 text-sm text-grey-70 hover:text-white disabled:opacity-40 bg-dark-15 rounded">Next →</button>
+                                    className="px-3 py-1 text-sm text-grey-70 hover:text-primary disabled:opacity-40 bg-dark-15 rounded">Next →</button>
                             </div>
                         </div>
                     </div>
@@ -385,7 +385,7 @@ export default function AdminPayoutsPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Monthly settled amount */}
                         <div className="bg-dark-10 rounded-lg p-5 border border-dark-20">
-                            <h3 className="text-white font-semibold mb-4 text-sm">Monthly Settled Payouts (₹)</h3>
+                            <h3 className="text-primary font-semibold mb-4 text-sm">Monthly Settled Payouts (₹)</h3>
                             {!monthlyChart.length ? (
                                 <div className="h-48 flex items-center justify-center text-grey-60 text-sm">No settlement data yet</div>
                             ) : (
@@ -404,7 +404,7 @@ export default function AdminPayoutsPage() {
 
                         {/* Top creators */}
                         <div className="bg-dark-10 rounded-lg p-5 border border-dark-20">
-                            <h3 className="text-white font-semibold mb-4 text-sm">Top Creators by Earnings</h3>
+                            <h3 className="text-primary font-semibold mb-4 text-sm">Top Creators by Earnings</h3>
                             {!topCreatorsChart.length ? (
                                 <div className="h-48 flex items-center justify-center text-grey-60 text-sm">No data yet</div>
                             ) : (
@@ -440,7 +440,7 @@ export default function AdminPayoutsPage() {
             {activeTab === 'rate' && (
                 <div className="max-w-md">
                     <div className="bg-dark-10 rounded-lg p-5 border border-dark-20">
-                        <h3 className="text-white font-semibold mb-1">Current Payout Rate</h3>
+                        <h3 className="text-primary font-semibold mb-1">Current Payout Rate</h3>
                         <p className="text-grey-70 text-sm mb-4">
                             This rate applies to all future payout requests. Existing requests use the rate at time of submission.
                         </p>
@@ -476,7 +476,7 @@ export default function AdminPayoutsPage() {
                                         <div className="flex items-center space-x-2 bg-dark-15 border border-dark-20 rounded-lg px-3 py-2">
                                             <span className="text-grey-70">₹</span>
                                             <Field name="ratePerMinute" type="number" min="0" step="0.01"
-                                                className="flex-1 bg-transparent text-white text-sm focus:outline-none" />
+                                                className="flex-1 bg-transparent text-primary text-sm focus:outline-none" />
                                             <span className="text-grey-70 text-xs">/ min</span>
                                         </div>
                                         {errors.ratePerMinute && touched.ratePerMinute && (
@@ -486,7 +486,7 @@ export default function AdminPayoutsPage() {
                                     <div>
                                         <label className="text-grey-70 text-sm mb-1 block">Currency</label>
                                         <Field as="select" name="currency"
-                                            className="w-full bg-dark-15 text-white px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45">
+                                            className="w-full bg-dark-15 text-primary px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45">
                                             <option value="INR">INR</option>
                                             <option value="USD">USD</option>
                                         </Field>
@@ -507,8 +507,8 @@ export default function AdminPayoutsPage() {
                 <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
                     <div className="bg-dark-8 rounded-xl p-6 max-w-lg w-full border border-dark-20 max-h-[90vh] overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-bold text-white">Request Detail</h2>
-                            <button onClick={() => setDetailModal(null)} className="text-grey-70 hover:text-white">✕</button>
+                            <h2 className="text-lg font-bold text-primary">Request Detail</h2>
+                            <button onClick={() => setDetailModal(null)} className="text-grey-70 hover:text-primary">✕</button>
                         </div>
                         <div className="space-y-3 text-sm">
                             <div className="grid grid-cols-2 gap-3">
@@ -524,14 +524,14 @@ export default function AdminPayoutsPage() {
                                 ].map(([label, val]) => (
                                     <div key={label}>
                                         <p className="text-grey-70 text-xs">{label}</p>
-                                        <p className="text-white">{val}</p>
+                                        <p className="text-primary">{val}</p>
                                     </div>
                                 ))}
                             </div>
                             {detailModal.adminNote && (
                                 <div className="bg-dark-10 rounded p-3 border border-dark-20">
                                     <p className="text-xs text-grey-70 mb-1">Admin Note</p>
-                                    <p className="text-white text-sm">{detailModal.adminNote}</p>
+                                    <p className="text-primary text-sm">{detailModal.adminNote}</p>
                                 </div>
                             )}
                             <div>
@@ -539,7 +539,7 @@ export default function AdminPayoutsPage() {
                                 <div className="space-y-1">
                                     {detailModal.videoBreakdown?.map((v: { videoId: string; title: string; watchMinutes: number }) => (
                                         <div key={String(v.videoId)} className="flex justify-between bg-dark-10 rounded px-3 py-2">
-                                            <span className="text-white text-xs">{v.title}</span>
+                                            <span className="text-primary text-xs">{v.title}</span>
                                             <span className="text-grey-70 text-xs">{v.watchMinutes.toFixed(1)} min</span>
                                         </div>
                                     ))}
@@ -555,11 +555,11 @@ export default function AdminPayoutsPage() {
                 <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
                     <div className="bg-dark-8 rounded-xl p-6 max-w-md w-full border border-dark-20">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-bold text-white">Reject Payout</h2>
-                            <button onClick={() => setRejectModal(null)} className="text-grey-70 hover:text-white">✕</button>
+                            <h2 className="text-lg font-bold text-primary">Reject Payout</h2>
+                            <button onClick={() => setRejectModal(null)} className="text-grey-70 hover:text-primary">✕</button>
                         </div>
                         <p className="text-grey-70 text-sm mb-4">
-                            Rejecting ₹{rejectModal.totalAmount?.toFixed(2)} for <span className="text-white">{rejectModal.creatorId?.name}</span>.
+                            Rejecting ₹{rejectModal.totalAmount?.toFixed(2)} for <span className="text-primary">{rejectModal.creatorId?.name}</span>.
                             The creator will see your note.
                         </p>
                         <Formik
@@ -572,14 +572,14 @@ export default function AdminPayoutsPage() {
                                     <div>
                                         <label className="text-grey-70 text-sm mb-1 block">Rejection Reason</label>
                                         <Field as="textarea" name="adminNote" rows={3} placeholder="e.g. Watch time could not be verified..."
-                                            className="w-full bg-dark-10 text-white px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                                            className="w-full bg-dark-10 text-primary px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
                                         {errors.adminNote && touched.adminNote && (
                                             <p className="text-red-400 text-xs mt-1">{errors.adminNote}</p>
                                         )}
                                     </div>
                                     <div className="flex space-x-3">
                                         <button type="button" onClick={() => setRejectModal(null)}
-                                            className="flex-1 bg-dark-15 text-grey-70 px-4 py-2 rounded-lg text-sm hover:text-white">Cancel</button>
+                                            className="flex-1 bg-dark-15 text-grey-70 px-4 py-2 rounded-lg text-sm hover:text-primary">Cancel</button>
                                         <button type="submit" disabled={isSubmitting}
                                             className="flex-1 bg-red-45 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-60 disabled:opacity-60">
                                             {isSubmitting ? 'Rejecting...' : 'Reject Payout'}

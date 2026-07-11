@@ -1,10 +1,26 @@
 import { baseApi } from './baseApi';
 
 export interface EarningsResponse {
-  totalEarned: number;
-  pendingPayouts: number;
-  availableToRequest: number;
-  currency: string;
+  totalEarned?: number;
+  pendingPayouts?: number;
+  availableToRequest?: number;
+  currency?: string;
+  totalAmount?: number;
+  periodStart?: string;
+  periodEnd?: string;
+  totalWatchMinutes?: number;
+  ratePerMinute?: number;
+  breakdown?: Array<{
+    videoId: string;
+    title: string;
+    monetizationType: string;
+    watchMinutes: number;
+  }>;
+  notEligible?: Array<{
+    videoId: string;
+    title: string;
+    watchMinutes: number;
+  }>;
 }
 
 export interface PayoutRequest {

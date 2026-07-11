@@ -69,12 +69,12 @@ export default function ProfilePage() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-10 text-white">Loading...</div>;
+    return <div className="text-center py-10 text-primary">Loading...</div>;
   }
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-      <h2 className="text-2xl font-bold text-white mb-6">My Profile</h2>
+      <h2 className="text-2xl font-bold text-primary mb-6">My Profile</h2>
 
       <div className="space-y-6">
         <div>
@@ -82,7 +82,7 @@ export default function ProfilePage() {
           <input
             value={formData.name}
             onChange={(e) => handleChange('name', e.target.value)}
-            className="w-full p-3 rounded-lg bg-dark-15 text-white focus:outline-none"
+            className="w-full p-3 rounded-lg bg-dark-15 text-primary focus:outline-none"
             placeholder="Your Name"
           />
         </div>
@@ -120,7 +120,7 @@ export default function ProfilePage() {
           <select
             value={formData.preferences.quality}
             onChange={(e) => handleChange('preferences.quality', e.target.value)}
-            className="w-full p-3 rounded-lg bg-dark-15 text-white"
+            className="w-full p-3 rounded-lg bg-dark-15 text-primary"
           >
             <option value="auto">Auto</option>
             <option value="1080p">1080p</option>

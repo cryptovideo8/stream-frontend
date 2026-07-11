@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Providers from "./components/Providers";
 import PageProgress from "./components/PageProgress";
-import { Toaster } from "react-hot-toast";
+import ThemedToaster from "./components/ThemedToaster";
 import { BRAND } from "./config/brand";
 
 export const viewport: Viewport = {
@@ -43,12 +43,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className="bg-dark-6 text-primary">
         <PageProgress />
         <Providers>
           {children}
-          <Toaster position="top-center" reverseOrder={false} />
+          <ThemedToaster />
         </Providers>
       </body>
     </html>

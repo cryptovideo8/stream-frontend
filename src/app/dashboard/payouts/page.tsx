@@ -61,7 +61,7 @@ export default function CreatorPayoutsPage() {
       {/* Header */}
       <div className="flex flex-wrap justify-between items-center gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white">Payouts</h1>
+          <h1 className="text-2xl font-bold text-primary">Payouts</h1>
           <p className="text-grey-70 text-sm mt-0.5">
             Earnings are calculated on <span className="text-yellow-400 font-medium">paid &amp; rent videos only</span>
           </p>
@@ -82,11 +82,11 @@ export default function CreatorPayoutsPage() {
           <InformationCircleIcon className="h-4 w-4 text-blue-400 flex-shrink-0" />
           <span>
             Current period:{' '}
-            <span className="text-white">
+            <span className="text-primary">
               {e.periodStart ? new Date(e.periodStart).toLocaleDateString() : 'Account start'}
             </span>{' '}
             →{' '}
-            <span className="text-white">{new Date(e.periodEnd).toLocaleDateString()}</span>
+            <span className="text-primary">{new Date(e.periodEnd ?? '').toLocaleDateString()}</span>
           </span>
           <span className="ml-4">
             Rate: <span className="text-green-400 font-medium">₹{e.ratePerMinute}/min</span>
@@ -105,7 +105,7 @@ export default function CreatorPayoutsPage() {
           },
           {
             label: 'Current Period Earnings',
-            value: loadingEarnings ? '—' : fmt(e?.totalAmount),
+            value: loadingEarnings ? '—' : fmt(e?.totalAmount ?? 0),
             icon: CurrencyDollarIcon,
             color: 'text-green-400',
           },
@@ -133,7 +133,7 @@ export default function CreatorPayoutsPage() {
       {/* Eligible Video Breakdown */}
       <div className="bg-dark-10 rounded-lg border border-dark-20">
         <div className="px-4 py-3 border-b border-dark-20">
-          <h3 className="text-white font-semibold text-sm">Paid/Rent Video Breakdown</h3>
+          <h3 className="text-primary font-semibold text-sm">Paid/Rent Video Breakdown</h3>
           <p className="text-grey-70 text-xs">Only these videos contribute to earnings</p>
         </div>
         <div className="overflow-x-auto">
@@ -159,7 +159,7 @@ export default function CreatorPayoutsPage() {
               <tbody>
                 {e.breakdown.map((v: any) => (
                   <tr key={String(v.videoId)} className="border-b border-gray-800/50 hover:bg-gray-800/20">
-                    <td className="px-4 py-3 text-white font-medium">{v.title}</td>
+                    <td className="px-4 py-3 text-primary font-medium">{v.title}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-0.5 rounded text-xs ${v.monetizationType === 'rent' ? 'bg-orange-900 text-orange-300' : 'bg-blue-900 text-blue-300'}`}>
                         {v.monetizationType}
@@ -205,7 +205,7 @@ export default function CreatorPayoutsPage() {
       {/* Request History */}
       <div className="bg-dark-10 rounded-lg border border-dark-20">
         <div className="px-4 py-3 border-b border-dark-20 flex items-center justify-between">
-          <h3 className="text-white font-semibold text-sm">My Payout Requests</h3>
+          <h3 className="text-primary font-semibold text-sm">My Payout Requests</h3>
           <span className="text-grey-70 text-xs">{myRequests?.total ?? 0} total</span>
         </div>
         <div className="overflow-x-auto">
@@ -232,7 +232,7 @@ export default function CreatorPayoutsPage() {
                       {new Date(r.periodStart).toLocaleDateString()} – {new Date(r.periodEnd).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 text-grey-70">{r.totalWatchMinutes.toFixed(1)} min</td>
-                    <td className="px-4 py-3 text-white font-semibold">₹{r.totalAmount.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-primary font-semibold">₹{r.totalAmount.toFixed(2)}</td>
                     <td className="px-4 py-3 text-grey-70 capitalize">{r.paymentMethod}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-0.5 rounded text-xs ${STATUS_COLORS[r.status]}`}>
@@ -250,9 +250,9 @@ export default function CreatorPayoutsPage() {
         {(myRequests?.totalPages ?? 1) > 1 && (
           <div className="px-4 py-3 flex justify-end gap-2 border-t border-dark-20">
             <button onClick={() => setMyRequestsPage((p) => Math.max(1, p - 1))} disabled={myRequestsPage === 1}
-              className="px-3 py-1 text-sm text-grey-70 hover:text-white disabled:opacity-40 bg-dark-15 rounded">← Prev</button>
-            <button onClick={() => setMyRequestsPage((p) => Math.min(myRequests?.totalPages, p + 1))} disabled={myRequestsPage >= myRequests?.totalPages}
-              className="px-3 py-1 text-sm text-grey-70 hover:text-white disabled:opacity-40 bg-dark-15 rounded">Next →</button>
+              className="px-3 py-1 text-sm text-grey-70 hover:text-primary disabled:opacity-40 bg-dark-15 rounded">← Prev</button>
+            <button onClick={() => setMyRequestsPage((p) => Math.min(myRequests?.totalPages ?? 1, p + 1))} disabled={myRequestsPage >= (myRequests?.totalPages ?? 1)}
+              className="px-3 py-1 text-sm text-grey-70 hover:text-primary disabled:opacity-40 bg-dark-15 rounded">Next →</button>
           </div>
         )}
       </div>
@@ -262,18 +262,18 @@ export default function CreatorPayoutsPage() {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-dark-8 rounded-xl p-6 max-w-md w-full border border-dark-20">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-white">Request Payout</h2>
-              <button onClick={() => setShowModal(false)} className="text-grey-70 hover:text-white">✕</button>
+              <h2 className="text-xl font-bold text-primary">Request Payout</h2>
+              <button onClick={() => setShowModal(false)} className="text-grey-70 hover:text-primary">✕</button>
             </div>
 
             <div className="bg-dark-10 rounded-lg p-3 mb-4 border border-dark-20 flex justify-between">
               <div>
                 <p className="text-xs text-grey-70">You will receive</p>
-                <p className="text-2xl font-bold text-green-400">{fmt(e?.totalAmount)}</p>
+                <p className="text-2xl font-bold text-green-400">{fmt(e?.totalAmount ?? 0)}</p>
               </div>
               <div className="text-right">
                 <p className="text-xs text-grey-70">Watch time</p>
-                <p className="text-white font-semibold">{e?.totalWatchMinutes?.toFixed(1)} min</p>
+                <p className="text-primary font-semibold">{e?.totalWatchMinutes?.toFixed(1)} min</p>
               </div>
             </div>
 
@@ -287,7 +287,7 @@ export default function CreatorPayoutsPage() {
                   <div>
                     <label className="text-grey-70 text-sm mb-1 block">Payment Method</label>
                     <Field as="select" name="paymentMethod"
-                      className="w-full bg-dark-10 text-white px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45">
+                      className="w-full bg-dark-10 text-primary px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45">
                       <option value="bank">Bank Transfer</option>
                       <option value="upi">UPI</option>
                     </Field>
@@ -298,14 +298,14 @@ export default function CreatorPayoutsPage() {
                     </label>
                     <Field as="textarea" name="paymentDetails" rows={3}
                       placeholder={values.paymentMethod === 'upi' ? 'username@upi' : 'Bank name, Account number, IFSC code...'}
-                      className="w-full bg-dark-10 text-white px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                      className="w-full bg-dark-10 text-primary px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
                     {errors.paymentDetails && touched.paymentDetails && (
                       <p className="text-red-400 text-xs mt-1">{errors.paymentDetails}</p>
                     )}
                   </div>
                   <div className="flex space-x-3 pt-1">
                     <button type="button" onClick={() => setShowModal(false)}
-                      className="flex-1 bg-dark-15 text-grey-70 px-4 py-2 rounded-lg text-sm hover:text-white">Cancel</button>
+                      className="flex-1 bg-dark-15 text-grey-70 px-4 py-2 rounded-lg text-sm hover:text-primary">Cancel</button>
                     <button type="submit" disabled={isSubmitting}
                       className="flex-1 bg-red-45 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-60 disabled:opacity-60">
                       {isSubmitting ? 'Submitting...' : 'Submit Request'}

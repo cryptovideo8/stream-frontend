@@ -96,7 +96,7 @@ function AdminSubscriptionsContent() {
         <div className="min-h-screen bg-dark-6 p-4 sm:p-6 lg:p-8">
             <div className="max-w-7xl mx-auto">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-white mb-2">Subscription management</h1>
+                    <h1 className="text-3xl font-bold text-primary mb-2">Subscription management</h1>
                     <p className="text-grey-60">
                         Super admin: manage streaming subscription plans, promos, and subscribers. Public catalogue is at{' '}
                         <a href="/subscriptions" className="text-red-45 hover:underline">/subscriptions</a>.
@@ -114,7 +114,7 @@ function AdminSubscriptionsContent() {
                                         'ring-white/60 ring-offset-2 ring-offset-red-45 focus:outline-none focus:ring-2',
                                         selected
                                             ? 'bg-red-45 text-white shadow'
-                                            : 'text-grey-60 hover:bg-dark-15 hover:text-white'
+                                            : 'text-grey-60 hover:bg-dark-15 hover:text-primary'
                                     )
                                 }
                             >

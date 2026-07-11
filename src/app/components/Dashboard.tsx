@@ -65,7 +65,7 @@ const tooltipStyle = {
   contentStyle: {
     backgroundColor: 'rgba(26,26,26,0.95)',
     backdropFilter: 'blur(8px)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: '1px solid var(--panel-border)',
     borderRadius: '12px',
     color: '#fff',
     fontSize: '12px',
@@ -133,7 +133,7 @@ export default function Dashboard() {
       `}} />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
             Welcome back, <span className="text-red-45">{userName}</span> 
             <span className="animate-wave">👋</span>
           </h1>
@@ -179,8 +179,7 @@ export default function Dashboard() {
             <Link
               key={action.label}
               href={action.href}
-              className="group flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border border-dark-20/20 hover:border-dark-25 transition-all duration-300 text-center"
-              style={{ background: 'rgba(255,255,255,0.03)' }}
+              className="group flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border border-dark-20/40 theme-soft-fill hover:border-dark-25 transition-all duration-300 text-center"
             >
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
@@ -190,7 +189,7 @@ export default function Dashboard() {
               >
                 <Icon className="h-6 w-6" style={{ color: action.color }} />
               </div>
-              <span className="text-sm font-medium text-grey-70 group-hover:text-white transition-colors">{action.label}</span>
+              <span className="text-sm font-medium text-grey-70 group-hover:text-primary transition-colors">{action.label}</span>
             </Link>
           );
         })}
@@ -240,12 +239,9 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Videos */}
-      <div
-        className="rounded-2xl overflow-hidden"
-        style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}
-      >
-        <div className="flex justify-between items-center px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <h3 className="font-semibold text-white flex items-center gap-2">
+      <div className="theme-soft-fill rounded-2xl border theme-hairline overflow-hidden">
+        <div className="flex justify-between items-center px-5 py-4 border-b theme-hairline">
+          <h3 className="font-semibold text-primary flex items-center gap-2">
             <VideoCameraIcon className="h-5 w-5 text-red-45" /> Recent Videos
           </h3>
           <Link href="/dashboard/videos" className="text-sm text-red-45 hover:text-red-55 transition-colors font-medium">
@@ -255,7 +251,7 @@ export default function Dashboard() {
         <div className="hidden sm:block overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-grey-60 text-xs font-medium uppercase tracking-wider" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <tr className="text-grey-60 text-xs font-medium uppercase tracking-wider border-b theme-hairline">
                 {['Date', 'Title', 'Views', 'Likes', 'Status', ''].map(h => (
                   <th key={h} className="py-3 px-5 text-left">{h}</th>
                 ))}
@@ -265,11 +261,10 @@ export default function Dashboard() {
               {recentVideos.map((video, i) => (
                 <tr
                   key={i}
-                  className="transition-colors hover:bg-white/[0.02]"
-                  style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+                  className="transition-colors hover:bg-dark-12/50 border-b theme-hairline"
                 >
                   <td className="py-3.5 px-5 text-grey-60 text-sm">{video.date}</td>
-                  <td className="py-3.5 px-5 text-white text-sm font-medium">{video.title}</td>
+                  <td className="py-3.5 px-5 text-primary text-sm font-medium">{video.title}</td>
                   <td className="py-3.5 px-5 text-grey-70 text-sm">{video.views}</td>
                   <td className="py-3.5 px-5 text-grey-70 text-sm">{video.likes}</td>
                   <td className="py-3.5 px-5">
@@ -281,7 +276,7 @@ export default function Dashboard() {
                     </span>
                   </td>
                   <td className="py-3.5 px-5">
-                    <button className="text-xs text-grey-60 hover:text-white border border-dark-25 hover:border-dark-30 px-3 py-1 rounded-lg transition-all">
+                    <button className="text-xs text-grey-60 hover:text-primary border border-dark-25 hover:border-dark-30 px-3 py-1 rounded-lg transition-all">
                       Edit
                     </button>
                   </td>
@@ -292,12 +287,12 @@ export default function Dashboard() {
         </div>
         
         {/* Mobile Cards Stack */}
-        <div className="sm:hidden flex flex-col divide-y divide-white/[0.04]">
+        <div className="sm:hidden flex flex-col divide-y divide-dark-20">
           {recentVideos.map((video, i) => (
-            <div key={i} className="px-5 py-4 hover:bg-white/[0.02] transition-colors flex flex-col gap-3">
+            <div key={i} className="px-5 py-4 hover:bg-dark-12/50 transition-colors flex flex-col gap-3">
               <div className="flex justify-between items-start">
                 <div>
-                  <h4 className="text-sm font-medium text-white mb-1">{video.title}</h4>
+                  <h4 className="text-sm font-medium text-primary mb-1">{video.title}</h4>
                   <p className="text-xs text-grey-60">{video.date}</p>
                 </div>
                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${video.status === 'Published'
@@ -309,10 +304,10 @@ export default function Dashboard() {
               </div>
               <div className="flex justify-between items-center text-sm text-grey-70">
                 <div className="flex gap-4">
-                  <span><strong className="text-white font-medium">{video.views}</strong> views</span>
-                  <span><strong className="text-white font-medium">{video.likes}</strong> likes</span>
+                  <span><strong className="text-primary font-medium">{video.views}</strong> views</span>
+                  <span><strong className="text-primary font-medium">{video.likes}</strong> likes</span>
                 </div>
-                <button className="text-xs text-grey-60 hover:text-white px-3 py-1.5 border border-dark-25 rounded-lg">Edit</button>
+                <button className="text-xs text-grey-60 hover:text-primary px-3 py-1.5 border border-dark-25 rounded-lg">Edit</button>
               </div>
             </div>
           ))}
@@ -320,21 +315,18 @@ export default function Dashboard() {
       </div>
 
       {/* Latest Comments */}
-      <div
-        className="rounded-2xl overflow-hidden"
-        style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}
-      >
-        <div className="flex justify-between items-center px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <h3 className="font-semibold text-white">💬 Latest Comments</h3>
+      <div className="theme-soft-fill rounded-2xl border theme-hairline overflow-hidden">
+        <div className="flex justify-between items-center px-5 py-4 border-b theme-hairline">
+          <h3 className="font-semibold text-primary">💬 Latest Comments</h3>
           <button className="text-sm text-red-45 hover:text-red-55 font-medium transition-colors">View all →</button>
         </div>
-        <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
+        <div className="divide-y divide-dark-20">
           {latestComments.map((comment) => (
             <div key={comment.id} className="px-5 py-4 hover:bg-white/[0.02] transition-colors">
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-sm font-medium text-white">{comment.user}</span>
+                    <span className="text-sm font-medium text-primary">{comment.user}</span>
                     <span className="text-xs text-grey-60">on</span>
                     <span className="text-xs text-grey-70 truncate">{comment.video}</span>
                   </div>

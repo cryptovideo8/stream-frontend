@@ -133,7 +133,7 @@ export default function Settings() {
                 {(userData?.name ?? currentUser?.name ?? 'U').charAt(0).toUpperCase()}
               </div>
               <div>
-                <p className="text-white font-semibold">{userData?.name ?? currentUser?.name}</p>
+                <p className="text-primary font-semibold">{userData?.name ?? currentUser?.name}</p>
                 <p className="text-grey-70 text-sm capitalize">{currentUser?.role}</p>
                 <button type="button" className="text-red-45 text-sm hover:text-red-60 flex items-center space-x-1 mt-1">
                   <PencilIcon className="h-3.5 w-3.5" /><span>Change Photo</span>
@@ -146,7 +146,7 @@ export default function Settings() {
                 <label className="block text-grey-70 text-sm mb-1">Full Name</label>
                 <div className="flex items-center space-x-2 bg-dark-10 border border-dark-20 rounded-lg px-3 py-2">
                   <UserIcon className="h-4 w-4 text-grey-70 flex-shrink-0" />
-                  <Field name="name" type="text" className="flex-1 bg-transparent text-white text-sm focus:outline-none" />
+                  <Field name="name" type="text" className="flex-1 bg-transparent text-primary text-sm focus:outline-none" />
                 </div>
               </div>
               <div>
@@ -161,14 +161,14 @@ export default function Settings() {
                 <label className="block text-grey-70 text-sm mb-1">Phone</label>
                 <div className="flex items-center space-x-2 bg-dark-10 border border-dark-20 rounded-lg px-3 py-2">
                   <PhoneIcon className="h-4 w-4 text-grey-70 flex-shrink-0" />
-                  <Field name="phone" type="tel" placeholder="+91 ..." className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-grey-60" />
+                  <Field name="phone" type="tel" placeholder="+91 ..." className="flex-1 bg-transparent text-primary text-sm focus:outline-none placeholder:text-grey-60" />
                 </div>
               </div>
               <div>
                 <label className="block text-grey-70 text-sm mb-1">Language</label>
                 <div className="flex items-center space-x-2 bg-dark-10 border border-dark-20 rounded-lg px-3 py-2">
                   <GlobeAltIcon className="h-4 w-4 text-grey-70 flex-shrink-0" />
-                  <Field as="select" name="language" className="flex-1 bg-transparent text-white text-sm focus:outline-none">
+                  <Field as="select" name="language" className="flex-1 bg-transparent text-primary text-sm focus:outline-none">
                     <option value="English">English</option>
                     <option value="Hindi">Hindi</option>
                     <option value="Spanish">Spanish</option>
@@ -209,7 +209,7 @@ export default function Settings() {
       <div className="bg-dark-15 rounded-lg p-4 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-white text-sm font-medium">Two-Factor Authentication</p>
+            <p className="text-primary text-sm font-medium">Two-Factor Authentication</p>
             <p className="text-grey-70 text-xs">Extra security layer for your account</p>
           </div>
           {renderToggle(securitySettings.twoFactorEnabled, () => toggleSecurity('twoFactorEnabled'))}
@@ -229,7 +229,7 @@ export default function Settings() {
           {renderToggle(securitySettings.deviceHistory, () => toggleSecurity('deviceHistory'))}
         </div>
       </div>
-      <button className="bg-dark-15 text-white px-4 py-2 rounded-lg text-sm hover:bg-dark-20 border border-dark-20">
+      <button className="bg-dark-15 text-primary px-4 py-2 rounded-lg text-sm hover:bg-dark-20 border border-dark-20">
         View Login History
       </button>
     </div>
@@ -238,11 +238,11 @@ export default function Settings() {
   const renderPaymentSettings = () => (
     <div className="space-y-4">
       <div className="bg-dark-10 rounded-lg p-4 border border-dark-20">
-        <h3 className="text-white text-sm font-semibold mb-3">Default Payment Method</h3>
+        <h3 className="text-primary text-sm font-semibold mb-3">Default Payment Method</h3>
         <select
           value={paymentSettings.defaultPaymentMethod}
           onChange={(e) => setPaymentSettings((prev) => ({ ...prev, defaultPaymentMethod: e.target.value as any }))}
-          className="w-full bg-dark-15 text-white px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45"
+          className="w-full bg-dark-15 text-primary px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45"
         >
           <option value="bank">Bank Transfer</option>
           <option value="upi">UPI</option>
@@ -250,12 +250,12 @@ export default function Settings() {
       </div>
 
       <div className="bg-dark-10 rounded-lg p-4 border border-dark-20">
-        <h3 className="text-white text-sm font-semibold mb-3">Auto-Payout Threshold</h3>
+        <h3 className="text-primary text-sm font-semibold mb-3">Auto-Payout Threshold</h3>
         <div className="flex items-center space-x-2">
           <span className="text-grey-70">₹</span>
           <input type="number" value={paymentSettings.autoPayoutThreshold}
             onChange={(e) => setPaymentSettings((prev) => ({ ...prev, autoPayoutThreshold: e.target.value }))}
-            className="flex-1 bg-dark-15 text-white px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45"
+            className="flex-1 bg-dark-15 text-primary px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45"
             min="0" step="100" />
         </div>
         <p className="text-grey-70 text-xs mt-1">Auto-payout when balance exceeds this amount</p>
@@ -264,7 +264,7 @@ export default function Settings() {
       {/* Bank Account */}
       <div className="bg-dark-10 rounded-lg p-4 border border-dark-20">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-white text-sm font-semibold">Bank Account Details</h3>
+          <h3 className="text-primary text-sm font-semibold">Bank Account Details</h3>
           {!isEditingBank && (
             <button onClick={() => setIsEditingBank(true)} className="text-red-45 hover:text-red-60">
               <PencilIcon className="h-4 w-4" />
@@ -287,7 +287,7 @@ export default function Settings() {
                       {key.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase())}
                     </label>
                     <Field name={key} type="text"
-                      className="w-full bg-dark-15 text-white px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                      className="w-full bg-dark-15 text-primary px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
                     {errors[key] && touched[key] && <p className="text-red-400 text-xs mt-0.5">{errors[key]}</p>}
                   </div>
                 ))}
@@ -309,7 +309,7 @@ export default function Settings() {
             {Object.entries(paymentSettings.bankAccount).map(([key, val]) => (
               <div key={key} className="flex justify-between">
                 <span className="text-grey-70">{key.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase())}</span>
-                <span className="text-white">{val || '—'}</span>
+                <span className="text-primary">{val || '—'}</span>
               </div>
             ))}
           </div>
@@ -319,7 +319,7 @@ export default function Settings() {
       {/* UPI */}
       <div className="bg-dark-10 rounded-lg p-4 border border-dark-20">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-white text-sm font-semibold">UPI ID</h3>
+          <h3 className="text-primary text-sm font-semibold">UPI ID</h3>
           {!isEditingUPI && (
             <button onClick={() => setIsEditingUPI(true)} className="text-red-45 hover:text-red-60">
               <PencilIcon className="h-4 w-4" />
@@ -337,7 +337,7 @@ export default function Settings() {
             {({ errors, touched, isSubmitting }) => (
               <Form className="space-y-3">
                 <Field name="upiId" type="text" placeholder="username@upi"
-                  className="w-full bg-dark-15 text-white px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
+                  className="w-full bg-dark-15 text-primary px-3 py-2 rounded-lg text-sm border border-dark-20 focus:outline-none focus:ring-1 focus:ring-red-45" />
                 {errors.upiId && touched.upiId && <p className="text-red-400 text-xs">{errors.upiId}</p>}
                 <div className="flex space-x-2">
                   <button type="submit" disabled={isSubmitting}
@@ -355,7 +355,7 @@ export default function Settings() {
         ) : (
           <div className="flex justify-between text-sm">
             <span className="text-grey-70">UPI ID</span>
-            <span className="text-white">{paymentSettings.upiId || '—'}</span>
+            <span className="text-primary">{paymentSettings.upiId || '—'}</span>
           </div>
         )}
       </div>
@@ -377,7 +377,7 @@ export default function Settings() {
       {/* Mobile menu button */}
       <div className="lg:hidden mb-4">
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="flex items-center space-x-2 bg-dark-8 px-4 py-2 rounded-lg text-grey-70 hover:text-white border border-dark-20 text-sm">
+          className="flex items-center space-x-2 bg-dark-8 px-4 py-2 rounded-lg text-grey-70 hover:text-primary border border-dark-20 text-sm">
           <span>{sections.find((s) => s.id === activeSection)?.title}</span>
           <svg className={`w-4 h-4 transition-transform ${isMobileMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -392,7 +392,7 @@ export default function Settings() {
             <button key={section.id} onClick={() => { setActiveSection(section.id); setIsMobileMenuOpen(false); }}
               className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg mb-1 text-sm transition-all ${activeSection === section.id
                   ? 'bg-red-45 text-white'
-                  : 'text-grey-70 hover:bg-dark-15 hover:text-white'
+                  : 'text-grey-70 hover:bg-dark-15 hover:text-primary'
                 }`}>
               {section.icon}
               <span>{section.title}</span>
@@ -403,7 +403,7 @@ export default function Settings() {
         {/* Main Content */}
         <div className="flex-1">
           <div className="bg-dark-8 rounded-lg p-5 border border-dark-20">
-            <h2 className="text-xl font-bold text-white mb-5">
+            <h2 className="text-xl font-bold text-primary mb-5">
               {sections.find((s) => s.id === activeSection)?.title}
             </h2>
             {renderContent()}

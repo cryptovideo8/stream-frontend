@@ -111,7 +111,7 @@ export default function AdminPlansTab() {
         <div>
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h2 className="text-xl font-bold text-white">Subscription plans (master)</h2>
+                    <h2 className="text-xl font-bold text-primary">Subscription plans (master)</h2>
                     <p className="text-sm text-grey-50 mt-1">These plans power the public pricing page at /subscriptions</p>
                 </div>
                 <button
@@ -137,7 +137,7 @@ export default function AdminPlansTab() {
                         {plans.map((plan) => (
                             <tr key={plan._id} className="hover:bg-dark-12 transition-colors">
                                 <td className="px-6 py-4">
-                                    <div className="font-semibold text-white flex items-center gap-2">
+                                    <div className="font-semibold text-primary flex items-center gap-2">
                                         {plan.name}
                                         {plan.highlight && (
                                             <span className="px-2 py-0.5 bg-red-45/20 text-red-45 text-[10px] uppercase font-bold rounded">Popular</span>
@@ -145,7 +145,7 @@ export default function AdminPlansTab() {
                                     </div>
                                     <div className="text-xs text-grey-50 mt-1">{plan.features.length} features configured</div>
                                 </td>
-                                <td className="px-6 py-4 font-medium text-white">
+                                <td className="px-6 py-4 font-medium text-primary">
                                     {plan.currency} {plan.price}
                                 </td>
                                 <td className="px-6 py-4">
@@ -161,7 +161,7 @@ export default function AdminPlansTab() {
                                 </td>
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex justify-end gap-3">
-                                        <button onClick={() => handleOpenModal(plan)} className="text-grey-50 hover:text-white transition-colors">
+                                        <button onClick={() => handleOpenModal(plan)} className="text-grey-50 hover:text-primary transition-colors">
                                             <PencilSquareIcon className="w-5 h-5" />
                                         </button>
                                         <button onClick={() => handleDelete(plan)} className="text-grey-50 hover:text-red-45 transition-colors">
@@ -186,37 +186,37 @@ export default function AdminPlansTab() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
                     <div className="bg-dark-10 border border-dark-25 rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
                         <div className="p-6 border-b border-dark-25 flex justify-between items-center">
-                            <h3 className="text-xl font-bold text-white">{editingPlan ? 'Edit Plan' : 'Create Plan'}</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="text-grey-50 hover:text-white">&times;</button>
+                            <h3 className="text-xl font-bold text-primary">{editingPlan ? 'Edit Plan' : 'Create Plan'}</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="text-grey-50 hover:text-primary">&times;</button>
                         </div>
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-grey-70 mb-1">Plan Name</label>
-                                    <input required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white" />
+                                    <input required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-grey-70 mb-1">Price</label>
                                     <div className="flex gap-2">
-                                        <input className="w-20 bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white" value={formData.currency} onChange={(e) => setFormData({ ...formData, currency: e.target.value.toUpperCase() })} />
-                                        <input required type="number" min="0" step="0.01" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="flex-1 bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white" />
+                                        <input className="w-20 bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary" value={formData.currency} onChange={(e) => setFormData({ ...formData, currency: e.target.value.toUpperCase() })} />
+                                        <input required type="number" min="0" step="0.01" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="flex-1 bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary" />
                                     </div>
                                 </div>
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-grey-70 mb-1">Validity (Months)</label>
-                                <input required type="number" min="1" value={formData.validity} onChange={(e) => setFormData({ ...formData, validity: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white" />
+                                <input required type="number" min="1" value={formData.validity} onChange={(e) => setFormData({ ...formData, validity: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary" />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-grey-70 mb-1">Description</label>
-                                <input value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white" />
+                                <input value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary" />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-grey-70 mb-1">Features (One per line)</label>
-                                <textarea rows={4} value={formData.features} onChange={(e) => setFormData({ ...formData, features: e.target.value })} placeholder="4K Ultra HD Streaming&#10;Watch on 4 Devices&#10;Ad-Free Experience" className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white whitespace-pre-wrap" />
+                                <textarea rows={4} value={formData.features} onChange={(e) => setFormData({ ...formData, features: e.target.value })} placeholder="4K Ultra HD Streaming&#10;Watch on 4 Devices&#10;Ad-Free Experience" className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary whitespace-pre-wrap" />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
@@ -227,7 +227,7 @@ export default function AdminPlansTab() {
                                         min={0}
                                         value={formData.sortOrder}
                                         onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value, 10) || 0 })}
-                                        className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white"
+                                        className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary"
                                     />
                                     <p className="text-xs text-grey-50 mt-1">Lower shows first on /subscriptions</p>
                                 </div>
@@ -238,7 +238,7 @@ export default function AdminPlansTab() {
                                         min={1}
                                         value={formData.maxScreens}
                                         onChange={(e) => setFormData({ ...formData, maxScreens: parseInt(e.target.value, 10) || 1 })}
-                                        className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-white"
+                                        className="w-full bg-dark-15 border border-dark-25 rounded-lg px-3 py-2 text-primary"
                                     />
                                 </div>
                             </div>
@@ -251,7 +251,7 @@ export default function AdminPlansTab() {
                             </div>
 
                             <div className="pt-4 flex justify-end gap-3 border-t border-dark-25">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-dark-20 text-white rounded-lg hover:bg-dark-25">Cancel</button>
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-dark-20 text-primary rounded-lg hover:bg-dark-25">Cancel</button>
                                 <button type="submit" className="px-4 py-2 bg-red-45 text-white rounded-lg hover:bg-red-55">{editingPlan ? 'Save Changes' : 'Create Plan'}</button>
                             </div>
                         </form>
