@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Search, Compass, User } from 'lucide-react';
@@ -9,8 +10,14 @@ import { selectIsAuthenticated } from '../store/slices/authSlice';
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  // Avoid SSR/client mismatch: Redux auth is hydrated from localStorage only on the client
+  const [mounted, setMounted] = useState(false);
 
-  const profileHref = isAuthenticated ? '/profile' : '/login';
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const profileHref = mounted && isAuthenticated ? '/profile' : '/login';
 
   const navItems = [
     { name: 'Home', href: '/', icon: Home, match: (path: string) => path === '/' },

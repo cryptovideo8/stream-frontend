@@ -10,14 +10,16 @@ import { selectIsAuthenticated, selectCurrentUser, setCredentials } from '../../
 import {
   useGetPlansQuery,
   useValidatePromoMutation,
-  useSubscribeToPlanMutation,
   useGetMySubscriptionQuery,
   useCancelSubscriptionMutation,
+  useGetPaymentConfigQuery,
   Plan,
   PromoValidationResponse
 } from '../../../store/api/subscriptionApi';
 import { useGetActiveUpiQuery, useSubmitAuditMutation, useGetMyAuditsQuery } from '../../../store/api/paymentApi';
 import { QRCodeSVG } from 'qrcode.react';
+import useRazorpayCheckout from '../../../hooks/useRazorpayCheckout';
+import { BRAND } from '../../../config/brand';
 
 export default function SubscriptionsPage() {
   const router = useRouter();
@@ -27,12 +29,13 @@ export default function SubscriptionsPage() {
 
   // Queries & Mutations
   const { data: plans = [], isLoading: loadingPlans } = useGetPlansQuery();
-  const { data: mySubData, isLoading: loadingMySub } = useGetMySubscriptionQuery(undefined, {
+  const { data: mySubData, isLoading: loadingMySub, refetch: refetchMySub } = useGetMySubscriptionQuery(undefined, {
     skip: !isAuthenticated,
   });
+  const { data: paymentConfig } = useGetPaymentConfigQuery();
   const [validatePromo, { isLoading: validatingPromo }] = useValidatePromoMutation();
-  const [subscribe, { isLoading: subscribing }] = useSubscribeToPlanMutation();
   const [cancelSub, { isLoading: cancelling }] = useCancelSubscriptionMutation();
+  const { openCheckout: openRazorpay, busy: razorpayBusy } = useRazorpayCheckout();
 
   const { data: myAudits = [] } = useGetMyAuditsQuery(undefined, { skip: !isAuthenticated });
 
@@ -41,10 +44,27 @@ export default function SubscriptionsPage() {
   const [promoCode, setPromoCode] = useState('');
   const [promoResult, setPromoResult] = useState<PromoValidationResponse | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('upi'); // Changed default to UPI for manual MVP
+  const [paymentMethod, setPaymentMethod] = useState<'upi' | 'razorpay'>('razorpay');
   const [transactionId, setTransactionId] = useState('');
 
-  const { data: activeUpi, isLoading: loadingActiveUpi } = useGetActiveUpiQuery(undefined, { skip: !showCheckout });
+  const gatewayEnabled = Boolean(paymentConfig?.gatewayEnabled && paymentConfig?.razorpayKeyId);
+  const manualEnabled = Boolean(paymentConfig?.manualEnabled);
+  const razorpayKeyId =
+    paymentConfig?.razorpayKeyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '';
+
+  // Sync checkout method from backend PAYMENT_MODE (single mode — no user choice)
+  useEffect(() => {
+    if (!paymentConfig) return;
+    if (paymentConfig.gatewayEnabled) {
+      setPaymentMethod('razorpay');
+    } else {
+      setPaymentMethod('upi');
+    }
+  }, [paymentConfig]);
+
+  const { data: activeUpi, isLoading: loadingActiveUpi } = useGetActiveUpiQuery(undefined, {
+    skip: !showCheckout || paymentMethod !== 'upi' || !manualEnabled,
+  });
   const [submitAudit, { isLoading: submittingAudit }] = useSubmitAuditMutation();
 
   const activeSubscription = mySubData?.active ? mySubData.subscription : null;
@@ -85,7 +105,29 @@ export default function SubscriptionsPage() {
     }
     if (!selectedPlan) return;
 
-    // For UPI manual audit
+    if (paymentMethod === 'razorpay') {
+      if (!gatewayEnabled || !razorpayKeyId) {
+        toast.error('Online payments are not available');
+        return;
+      }
+      await openRazorpay({
+        planId: selectedPlan._id,
+        planName: selectedPlan.name,
+        promoCode: promoResult?.code || promoCode || undefined,
+        keyId: razorpayKeyId,
+        user: user ? { name: user.name, email: user.email } : null,
+        onSuccess: async () => {
+          setShowCheckout(false);
+          setSelectedPlan(null);
+          setTransactionId('');
+          handleClearPromo();
+          await refetchMySub();
+        },
+      });
+      return;
+    }
+
+    // Manual UPI audit
     if (paymentMethod === 'upi') {
       if (!transactionId || transactionId.length < 10) {
         toast.error('Please enter a valid 12-digit UTR number');
@@ -108,13 +150,20 @@ export default function SubscriptionsPage() {
         return;
       }
     }
-
-    // Existing card path disabled — UPI audit is the only payment method
-    toast.error('Only UPI payment with UTR verification is supported.');
-    return;
   };
 
-  // Handle Cancel
+  const openCheckout = (plan: Plan) => {
+    if (!isAuthenticated) {
+      toast.error('Please sign in to subscribe');
+      router.push('/login');
+      return;
+    }
+    setSelectedPlan(plan);
+    handleClearPromo();
+    setPaymentMethod(gatewayEnabled ? 'razorpay' : 'upi');
+    setShowCheckout(true);
+  };
+
   const handleCancel = async () => {
     if (!confirm('Are you sure you want to cancel your subscription? You will lose access immediately.')) return;
     try {
@@ -129,17 +178,6 @@ export default function SubscriptionsPage() {
       const error = err as { data?: { message?: string } };
       toast.error(error?.data?.message || 'Failed to cancel subscription');
     }
-  };
-
-  const openCheckout = (plan: Plan) => {
-    if (!isAuthenticated) {
-      toast.error('Please sign in to subscribe');
-      router.push('/login');
-      return;
-    }
-    setSelectedPlan(plan);
-    handleClearPromo();
-    setShowCheckout(true);
   };
 
   const pendingAudits = myAudits.filter(a => a.status === 'pending');
@@ -340,34 +378,52 @@ export default function SubscriptionsPage() {
                 </div>
               )}
 
-              {/* Payment Method */}
+              {/* Payment Method — controlled by backend PAYMENT_MODE */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-grey-70 mb-2">Payment Method</label>
-                <select
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="w-full bg-dark-15 border border-dark-25 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-45 appearance-none"
-                >
-                  <option value="card">Credit / Debit Card</option>
-                  <option value="upi">UPI</option>
-                  <option value="wallet">Digital Wallet</option>
-                  <option value="bank_transfer">Bank Transfer</option>
-                </select>
+                <div className="w-full bg-dark-15 border border-dark-25 rounded-xl px-4 py-3 text-white">
+                  {gatewayEnabled
+                    ? 'Pay online (Razorpay — instant activation)'
+                    : manualEnabled
+                      ? 'UPI manual (QR + UTR — admin approval)'
+                      : 'Payments unavailable'}
+                </div>
+                {paymentConfig?.gatewayMisconfigured && (
+                  <p className="text-[11px] text-red-400 mt-2">
+                    Gateway mode is on but Razorpay keys are missing on the server.
+                  </p>
+                )}
+                {gatewayEnabled && (
+                  <p className="text-[11px] text-grey-60 mt-2">
+                    Pay securely via Razorpay. Your plan activates immediately after successful payment.
+                  </p>
+                )}
               </div>
 
-              {/* UPI Custom Checkout Flow */}
-              {paymentMethod === 'upi' && (
+              {/* Razorpay online */}
+              {gatewayEnabled && (
+                <div className="mb-6 bg-dark-15 border border-dark-25 rounded-xl p-4 text-sm text-grey-70">
+                  You will complete payment of{' '}
+                  <span className="text-white font-semibold">
+                    {selectedPlan.currency} {promoResult?.finalPrice ?? selectedPlan.price}
+                  </span>{' '}
+                  in the Razorpay checkout window.
+                </div>
+              )}
+
+              {/* UPI Custom Checkout Flow — only when PAYMENT_MODE=manual */}
+              {manualEnabled && (
                 <div className="mb-6 animate-fade-in-up">
                   {loadingActiveUpi ? (
                     <div className="h-48 bg-dark-15 border border-dark-25 rounded-xl flex items-center justify-center text-grey-60 text-sm">
-                      Loading Payment Gateway...
+                      Loading UPI details...
                     </div>
                   ) : activeUpi ? (
                     <div className="bg-dark-15 border border-dark-25 rounded-xl p-4 sm:p-6 text-center shadow-inner">
                       <p className="text-sm font-medium text-white mb-3">Pay with any UPI App</p>
                       <div className="bg-white p-2 rounded-lg inline-block mb-3 shadow-md">
                         <QRCodeSVG 
-                          value={`upi://pay?pa=${activeUpi.upiId}&pn=StreamingApp&am=${promoResult?.finalPrice ?? selectedPlan.price}&cu=INR`}
+                          value={`upi://pay?pa=${activeUpi.upiId}&pn=${encodeURIComponent(BRAND.name)}&am=${promoResult?.finalPrice ?? selectedPlan.price}&cu=INR`}
                           size={160}
                           level="H"
                         />
@@ -388,7 +444,7 @@ export default function SubscriptionsPage() {
                           onChange={(e) => setTransactionId(e.target.value.replace(/\D/g, ''))}
                         />
                         <p className="text-[11px] text-grey-50 mt-2 text-center">
-                          After successful payment, enter the Reference / UTR number above to activate your plan.
+                          After successful payment, enter the Reference / UTR number above. An admin will verify and activate your plan.
                         </p>
                       </div>
                     </div>
@@ -400,26 +456,22 @@ export default function SubscriptionsPage() {
                 </div>
               )}
 
-              {paymentMethod === 'card' && (
-                <div className="mb-6 animate-fade-in-up">
-                  <label className="block text-sm font-medium text-grey-70 mb-2">Transaction ID / UTR</label>
-                  <input
-                    type="text"
-                    className="w-full bg-dark-15 border border-dark-25 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-45"
-                    placeholder="Enter 12-digit UTR or Txn ID"
-                    value={transactionId}
-                    onChange={(e) => setTransactionId(e.target.value)}
-                  />
-                </div>
-              )}
-
               <button
                 onClick={handleSubscribe}
-                disabled={subscribing || submittingAudit}
+                disabled={
+                  submittingAudit ||
+                  razorpayBusy ||
+                  (!gatewayEnabled && !manualEnabled) ||
+                  (manualEnabled && !activeUpi && !loadingActiveUpi)
+                }
                 className="w-full py-4 bg-red-45 hover:bg-red-55 text-white font-bold rounded-xl transition-colors shadow-lg shadow-red-45/20 disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                {(subscribing || submittingAudit) && <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
-                {(subscribing || submittingAudit) ? 'Processing...' : (paymentMethod === 'upi' ? `Submit UTR for ₹${promoResult?.finalPrice ?? selectedPlan.price}` : `Pay ${selectedPlan.currency} ${promoResult?.finalPrice ?? selectedPlan.price}`)}
+                {(submittingAudit || razorpayBusy) && <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+                {(submittingAudit || razorpayBusy)
+                  ? 'Processing...'
+                  : gatewayEnabled
+                    ? `Pay ₹${promoResult?.finalPrice ?? selectedPlan.price} online`
+                    : `Submit UTR for ₹${promoResult?.finalPrice ?? selectedPlan.price}`}
               </button>
             </div>
           </div>

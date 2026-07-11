@@ -102,6 +102,62 @@ export const subscriptionApi = baseApi.injectEndpoints({
       providesTags: ['MySubscription'],
     }),
 
+    getPaymentConfig: builder.query<
+      {
+        mode: 'gateway' | 'manual';
+        manualEnabled: boolean;
+        gatewayEnabled: boolean;
+        razorpayKeyId: string | null;
+        gatewayMisconfigured?: boolean;
+      },
+      void
+    >({
+      query: () => '/subscription/payment-config',
+    }),
+
+    createRazorpayOrder: builder.mutation<
+      {
+        orderId: string;
+        amount: number;
+        currency: string;
+        keyId: string;
+        planId: string;
+        planName: string;
+        amountInr: number;
+        discountApplied: number;
+      },
+      { planId: string; promoCode?: string }
+    >({
+      query: (body) => ({
+        url: '/subscription/razorpay/create-order',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    verifyRazorpayPayment: builder.mutation<
+      {
+        success: boolean;
+        alreadyProcessed?: boolean;
+        message: string;
+        subscription?: Subscription;
+      },
+      {
+        planId: string;
+        razorpay_order_id: string;
+        razorpay_payment_id: string;
+        razorpay_signature: string;
+        promoCode?: string;
+      }
+    >({
+      query: (body) => ({
+        url: '/subscription/razorpay/verify',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['MySubscription', 'SubscriptionHistory', 'AdminSubscriptions', 'AdminSubscriptionStats'],
+    }),
+
     cancelSubscription: builder.mutation<{ message: string }, void>({
       query: () => ({
         url: '/subscription/cancel',
@@ -171,6 +227,9 @@ export const {
   useValidatePromoMutation,
   useSubscribeToPlanMutation,
   useGetMySubscriptionQuery,
+  useGetPaymentConfigQuery,
+  useCreateRazorpayOrderMutation,
+  useVerifyRazorpayPaymentMutation,
   useCancelSubscriptionMutation,
 
   useAdminGetPlansQuery,
