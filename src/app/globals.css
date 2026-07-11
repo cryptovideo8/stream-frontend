@@ -188,19 +188,21 @@
            text-white font-semibold py-3 px-6 rounded-xl
            transition-all duration-200 active:scale-[0.98]
            shadow-md shadow-red-45/20 hover:shadow-lg hover:shadow-red-45/30
-           disabled:opacity-50 disabled:cursor-not-allowed;
+           disabled:opacity-50 disabled:cursor-not-allowed
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-red-45 focus-visible:ring-offset-2 focus-visible:ring-offset-dark-6;
   }
 
   .btn-secondary {
     @apply px-4 py-2 bg-dark-15 hover:bg-dark-20 text-grey-70 hover:text-white
            rounded-lg border border-dark-25 transition-all duration-200
-           font-medium;
+           font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-dark-6;
   }
 
   .btn-icon {
     @apply flex items-center gap-2 bg-dark-12 hover:bg-dark-15 border border-dark-25
            text-grey-70 hover:text-white px-4 py-2 rounded-full
-           transition-all duration-200 text-sm font-medium;
+           transition-all duration-200 text-sm font-medium
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-dark-6;
   }
 
   .btn-icon-active {
@@ -304,11 +306,49 @@
     @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
   }
 
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .pb-safe-nav {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 4rem);
+  }
+
+  .aspect-9\/16 {
+    aspect-ratio: 9 / 16;
   }
 
   .text-shadow {

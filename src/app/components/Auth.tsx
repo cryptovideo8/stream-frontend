@@ -65,7 +65,7 @@ export default function Auth() {
     if (!isLogin) {
       if (!formData.name) newErrors.name = 'Name is required';
       if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
-      if (otpSent && !formData.otp) newErrors.otp = 'OTP is required';
+      if (otpSent && (!formData.otp || formData.otp.length < 6)) newErrors.otp = '6-digit OTP is required';
     }
     
     setErrors(newErrors);
@@ -95,7 +95,12 @@ export default function Auth() {
         const res = await login({ email: formData.email, password: formData.password }).unwrap();
         localStorage.setItem('token', res.token);
         localStorage.setItem('user', JSON.stringify(res.user));
-        toast.success('Welcome back!');
+        toast.success(
+          <div className="flex items-center gap-2">
+            <ShieldCheckIcon className="w-5 h-5 text-green-500" />
+            Welcome back!
+          </div>
+        );
         router.push('/dashboard');
       } else {
         if (!otpSent) {
@@ -109,7 +114,12 @@ export default function Auth() {
           otp: formData.otp!,
           role: formData.role
         }).unwrap();
-        toast.success('Account created! Please sign in.');
+        toast.success(
+          <div className="flex items-center gap-2">
+            <ShieldCheckIcon className="w-5 h-5 text-green-500 animate-pulse" />
+            Account created! Please sign in.
+          </div>
+        );
         setIsLogin(true);
         setOtpSent(false);
       }
@@ -137,72 +147,42 @@ export default function Auth() {
   const isLoading = isLoginLoading || isOtpLoading || isSignupLoading;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ background: '#0a0a0a' }}>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-mesh">
       {/* Animated background blobs */}
-      <div
-        className="absolute w-[600px] h-[600px] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(227,0,0,0.12) 0%, transparent 70%)',
-          top: '-200px',
-          right: '-200px',
-          animation: 'glowPulse 6s ease-in-out infinite',
-        }}
-      />
-      <div
-        className="absolute w-[400px] h-[400px] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(227,0,0,0.06) 0%, transparent 70%)',
-          bottom: '-100px',
-          left: '-100px',
-          animation: 'glowPulse 8s ease-in-out infinite reverse',
-        }}
-      />
+      <div className="absolute inset-0 bg-dark-6 opacity-90 z-0"></div>
+      <div className="absolute w-[600px] h-[600px] rounded-full pointer-events-none z-0 mix-blend-screen" style={{ background: 'radial-gradient(circle, rgba(227,0,0,0.15) 0%, transparent 70%)', top: '-200px', right: '-200px', animation: 'glowPulse 6s ease-in-out infinite' }} />
+      <div className="absolute w-[400px] h-[400px] rounded-full pointer-events-none z-0 mix-blend-screen" style={{ background: 'radial-gradient(circle, rgba(227,0,0,0.08) 0%, transparent 70%)', bottom: '-100px', left: '-100px', animation: 'glowPulse 8s ease-in-out infinite reverse' }} />
+      
+      {/* Floating Particles */}
+      {[...Array(15)].map((_, i) => (
+        <div key={i} className={`absolute w-1 h-1 rounded-full bg-red-45/40 pointer-events-none z-0 ${i % 2 === 0 ? 'animate-float' : 'animate-float-slow'}`} style={{ top: `${Math.random() * 100}%`, left: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 5}s` }} />
+      ))}
 
       {/* Auth Card */}
-      <div
-        className="relative w-full max-w-md rounded-2xl p-8 animate-fade-in"
-        style={{
-          background: 'rgba(20,20,20,0.8)',
-          backdropFilter: 'blur(24px)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: '0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)',
-        }}
-      >
+      <div className="relative w-full max-w-md rounded-2xl p-8 animate-fade-in z-10" style={{ background: 'rgba(20,20,20,0.85)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+        
         {/* Logo */}
         <div className="text-center mb-6">
-          <h1
-            className="text-3xl font-black mb-1 cursor-pointer"
-            onClick={() => router.push('/')}
-            style={{ background: 'linear-gradient(135deg, #E30000, #FF5555)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-          >
-            NightKing
-          </h1>
+          <div className="flex items-center justify-center gap-2 mb-1 cursor-pointer group" onClick={() => router.push('/')}>
+            <VideoCameraIcon className="w-8 h-8 text-red-45 group-hover:animate-bounce-subtle" />
+            <h1 className="text-3xl font-black" style={{ background: 'linear-gradient(135deg, #E30000, #FF5555)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>NightKing</h1>
+          </div>
           <div className="mt-4">
             <h2 className="text-xl font-bold text-white tracking-tight">{isLogin ? 'Welcome back' : 'Join the Revolution'}</h2>
-            <p className="text-grey-60 text-sm mt-1">
-              {isLogin ? 'Sign in to access your premium content' : 'Create an account and start streaming today'}
-            </p>
+            <p className="text-grey-60 text-sm mt-1">{isLogin ? 'Sign in to access your premium content' : 'Create an account and start streaming today'}</p>
           </div>
         </div>
 
         {/* Role Selection (Signup) */}
         {!isLogin && !otpSent && (
-          <div className="flex bg-dark-15 p-1 rounded-xl mb-6 border border-dark-25">
-             <button 
-              type="button"
-              onClick={() => setFormData({...formData, role: 'viewer'})}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all ${formData.role === 'viewer' ? 'bg-red-45 text-white shadow-lg shadow-red-500/10' : 'text-grey-60 hover:text-white'}`}
-             >
-                <UserIcon className="w-4 h-4" />
-                Viewer
+          <div className="grid grid-cols-2 gap-3 mb-6">
+             <button type="button" onClick={() => setFormData({...formData, role: 'viewer'})} className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border text-sm font-medium transition-all duration-300 ${formData.role === 'viewer' ? 'bg-red-45/10 border-red-45 text-white shadow-glow-sm' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-white hover:border-dark-30'}`}>
+                <UserIcon className={`w-6 h-6 ${formData.role === 'viewer' ? 'text-red-45' : 'text-grey-60'}`} />
+                <span>Viewer</span>
              </button>
-             <button 
-              type="button"
-              onClick={() => setFormData({...formData, role: 'creator'})}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all ${formData.role === 'creator' ? 'bg-red-45 text-white shadow-lg shadow-red-500/10' : 'text-grey-60 hover:text-white'}`}
-             >
-                <VideoCameraIcon className="w-4 h-4" />
-                Creator
+             <button type="button" onClick={() => setFormData({...formData, role: 'creator'})} className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border text-sm font-medium transition-all duration-300 ${formData.role === 'creator' ? 'bg-red-45/10 border-red-45 text-white shadow-glow-sm' : 'bg-dark-15 border-dark-25 text-grey-60 hover:text-white hover:border-dark-30'}`}>
+                <VideoCameraIcon className={`w-6 h-6 ${formData.role === 'creator' ? 'text-red-45' : 'text-grey-60'}`} />
+                <span>Creator</span>
              </button>
           </div>
         )}
@@ -221,102 +201,74 @@ export default function Auth() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && !otpSent && (
-            <div className="animate-slide-up">
-              <div className="relative">
-                <UserIcon className="input-icon" />
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="Full Name"
-                  className={`input-with-icon ${errors.name ? 'border-red-500/60 focus:ring-red-500/40' : ''}`}
-                />
-              </div>
+            <div className="animate-slide-up relative">
+              <input type="text" name="name" id="name" value={formData.name} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 w-full text-sm text-white bg-dark-15 rounded-xl border ${errors.name ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
+              <label htmlFor="name" className="absolute text-sm text-grey-60 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-red-45 cursor-text">Full Name</label>
+              <UserIcon className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-grey-60 pointer-events-none" />
               {errors.name && <p className="text-red-500 text-[10px] ml-4 mt-1">{errors.name}</p>}
             </div>
           )}
 
           {!otpSent && (
-            <div className="animate-slide-up">
-              <div className="relative">
-                <EnvelopeIcon className="input-icon" />
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Email Address"
-                  className={`input-with-icon ${errors.email ? 'border-red-500/60 focus:ring-red-500/40' : ''}`}
-                />
-              </div>
+            <div className="animate-slide-up relative">
+              <input type="email" name="email" id="email" value={formData.email} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 w-full text-sm text-white bg-dark-15 rounded-xl border ${errors.email ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
+              <label htmlFor="email" className="absolute text-sm text-grey-60 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-red-45 cursor-text">Email Address</label>
+              <EnvelopeIcon className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-grey-60 pointer-events-none" />
               {errors.email && <p className="text-red-500 text-[10px] ml-4 mt-1">{errors.email}</p>}
             </div>
           )}
 
           {!otpSent && (
-            <div className="animate-slide-up">
-              <div className="relative">
-                <LockClosedIcon className="input-icon" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="Password"
-                  className={`input-with-icon pr-11 ${errors.password ? 'border-red-500/60 focus:ring-red-500/40' : ''}`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-grey-60 hover:text-white transition-colors"
-                >
-                  {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
-                </button>
-              </div>
+            <div className="animate-slide-up relative">
+              <input type={showPassword ? 'text' : 'password'} name="password" id="password" value={formData.password} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 pr-11 w-full text-sm text-white bg-dark-15 rounded-xl border ${errors.password ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
+              <label htmlFor="password" className="absolute text-sm text-grey-60 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-red-45 cursor-text">Password</label>
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-grey-60 hover:text-white transition-colors">
+                {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+              </button>
               {errors.password && <p className="text-red-500 text-[10px] ml-4 mt-1">{errors.password}</p>}
             </div>
           )}
 
           {!isLogin && !otpSent && (
-            <div className="animate-slide-up">
-              <div className="relative">
-                <LockClosedIcon className="input-icon" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  placeholder="Confirm Password"
-                  className={`input-with-icon ${errors.confirmPassword ? 'border-red-500/60 focus:ring-red-500/40' : ''}`}
-                />
-              </div>
+            <div className="animate-slide-up relative">
+              <input type={showPassword ? 'text' : 'password'} name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} placeholder=" " className={`block px-4 pb-2.5 pt-5 pr-11 w-full text-sm text-white bg-dark-15 rounded-xl border ${errors.confirmPassword ? 'border-red-500/60 focus:ring-red-500/40' : 'border-dark-25 focus:border-red-45'} appearance-none focus:outline-none focus:ring-0 peer transition-colors`} />
+              <label htmlFor="confirmPassword" className="absolute text-sm text-grey-60 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-red-45 cursor-text">Confirm Password</label>
+              <LockClosedIcon className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-grey-60 pointer-events-none" />
               {errors.confirmPassword && <p className="text-red-500 text-[10px] ml-4 mt-1">{errors.confirmPassword}</p>}
             </div>
           )}
 
           {!isLogin && otpSent && (
             <div className="animate-scale-in">
-              <div className="relative">
-                <ShieldCheckIcon className="input-icon" />
-                <input
-                  type="text"
-                  name="otp"
-                  value={formData.otp}
-                  onChange={handleInputChange}
-                  placeholder="Enter 6-digit OTP"
-                  maxLength={6}
-                  className={`input-with-icon tracking-[1em] text-center font-bold text-lg ${errors.otp ? 'border-red-500/60 focus:ring-red-500/40' : ''}`}
-                />
+              <div className="flex justify-between gap-2 mb-2">
+                {[0,1,2,3,4,5].map((idx) => (
+                  <input
+                    key={idx}
+                    type="text"
+                    maxLength={1}
+                    value={formData.otp?.[idx] || ''}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (!/^[0-9]*$/.test(val)) return;
+                      const newOtp = (formData.otp || '').split('');
+                      newOtp[idx] = val;
+                      setFormData({...formData, otp: newOtp.join('').slice(0,6)});
+                      if (val && e.target.nextElementSibling) {
+                        (e.target.nextElementSibling as HTMLInputElement).focus();
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Backspace' && !formData.otp?.[idx] && e.currentTarget.previousElementSibling) {
+                        (e.currentTarget.previousElementSibling as HTMLInputElement).focus();
+                      }
+                    }}
+                    className={`w-12 h-14 text-center text-xl font-bold bg-dark-15 border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-red-45/40 ${errors.otp ? 'border-red-500/60' : 'border-dark-25 focus:border-red-45'}`}
+                  />
+                ))}
               </div>
               {errors.otp && <p className="text-red-500 text-[10px] ml-4 mt-1 text-center">{errors.otp}</p>}
               <div className="text-center mt-4">
-                <button 
-                  type="button" 
-                  onClick={handleSendOtp} 
-                  disabled={isLoading}
-                  className="text-xs text-grey-60 hover:text-red-45 transition-colors underline decoration-dotted underline-offset-4"
-                >
+                <button type="button" onClick={handleSendOtp} disabled={isLoading} className="text-xs text-grey-60 hover:text-red-45 transition-colors underline decoration-dotted underline-offset-4">
                   Didn&apos;t receive code? Resend
                 </button>
               </div>
@@ -334,7 +286,7 @@ export default function Auth() {
           <button 
             type="submit" 
             disabled={isLoading} 
-            className={`btn-primary mt-4 py-3 text-sm font-semibold tracking-wide ${!isLogin && !otpSent ? 'bg-white text-black hover:bg-white/90' : ''}`}
+            className={`btn-primary mt-4 py-3 text-sm font-semibold tracking-wide ${!isLogin && !otpSent ? 'bg-white text-black hover:bg-white/90 shadow-white/20' : ''}`}
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
@@ -357,7 +309,12 @@ export default function Auth() {
             {isLogin ? 'Create one now' : 'Sign in here'}
           </button>
         </p>
+
+        {/* Social Proof */}
+        <p className="text-center text-[11px] font-medium text-grey-60 mt-5 animate-fade-in flex items-center justify-center gap-1.5 opacity-80">
+          <ShieldCheckIcon className="w-3.5 h-3.5 text-green-45" /> Join 50K+ members already on NightKing
+        </p>
       </div>
     </div>
   );
-}
+}

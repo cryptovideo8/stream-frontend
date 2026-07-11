@@ -1,6 +1,6 @@
 'use client';
 import { useSearchVideosQuery, VideoDetail } from '../../store/api/videoApi';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
   FireIcon,
@@ -39,18 +39,24 @@ const CATEGORY_CHIPS = [
 // Shimmer skeleton card
 function VideoCardSkeleton() {
   return (
-    <div className="rounded-xl overflow-hidden" style={{ background: '#1a1a1a' }}>
+    <div className="rounded-xl overflow-hidden bg-dark-12 border border-dark-20/20 shadow-sm">
       <div
-        className="aspect-video"
-        style={{
-          background: 'linear-gradient(90deg, #1a1a1a 0px, #262626 40%, #1a1a1a 80%)',
-          backgroundSize: '700px 100%',
-          animation: 'shimmer 2s infinite linear',
-        }}
-      />
-      <div className="p-3 space-y-2">
-        <div className="h-4 rounded" style={{ background: 'linear-gradient(90deg, #1f1f1f 0px, #2a2a2a 40%, #1f1f1f 80%)', backgroundSize: '700px 100%', animation: 'shimmer 2s infinite linear', width: '75%' }} />
-        <div className="h-3 rounded" style={{ background: 'linear-gradient(90deg, #1f1f1f 0px, #2a2a2a 40%, #1f1f1f 80%)', backgroundSize: '700px 100%', animation: 'shimmer 2s infinite linear', width: '50%' }} />
+        className="aspect-video bg-dark-15 relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+      </div>
+      <div className="p-3 flex gap-3">
+        <div className="w-9 h-9 rounded-full bg-dark-15 flex-shrink-0 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+        </div>
+        <div className="flex-1 space-y-2 py-1">
+          <div className="h-4 rounded bg-dark-15 relative overflow-hidden w-[85%]">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+          </div>
+          <div className="h-3 rounded bg-dark-15 relative overflow-hidden w-[50%]">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -89,21 +95,39 @@ function VideoCard({ video }: VideoCardProps) {
             loading="lazy"
           />
         )}
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* Rich gradient overlay on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        {/* Hover overlay metadata */}
+        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 translate-y-2 group-hover:translate-y-0">
+          <div className="flex items-center gap-2 text-white text-xs font-medium drop-shadow-md">
+            <span className="flex items-center gap-1">
+              <FireIcon className="w-3.5 h-3.5 text-red-45 animate-pulse" />
+              {formatCount(video.stats?.views || 0)}
+            </span>
+            {video.stats?.likes && (
+              <span className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5 text-red-45 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                {formatCount(video.stats.likes)}
+              </span>
+            )}
+          </div>
+        </div>
 
         {/* Badges */}
         {isPremium && <span className="badge-premium">Premium</span>}
 
         {/* Duration badge */}
         {video.duration ? (
-          <span className="badge-duration">{formatDuration(video.duration)}</span>
+          <span className="badge-duration group-hover:opacity-0 transition-opacity">{formatDuration(video.duration)}</span>
         ) : null}
 
         {/* Play icon on hover */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <div className="w-10 h-10 rounded-full bg-red-45/90 flex items-center justify-center shadow-lg">
-            <svg className="w-5 h-5 text-white fill-current ml-0.5" viewBox="0 0 24 24">
+          <div className="w-12 h-12 rounded-full bg-red-45/90 flex items-center justify-center shadow-[0_0_20px_rgba(227,0,0,0.6)] animate-scale-in">
+            <svg className="w-6 h-6 text-white fill-current ml-1" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
           </div>
@@ -111,24 +135,30 @@ function VideoCard({ video }: VideoCardProps) {
       </div>
 
       {/* Info */}
-      <div className="p-2.5">
-        <h3 className="text-sm font-medium text-white line-clamp-2 leading-snug group-hover:text-red-45 transition-colors duration-200">
-          {video.title}
-        </h3>
-        <div className="flex items-center gap-1.5 mt-1.5 text-xs text-grey-60">
-          <span>{formatCount(video.stats?.views || 0)} views</span>
-          <span>•</span>
-          <span>{new Date(video.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+      <div className="p-2.5 flex gap-3">
+        {/* Channel Avatar */}
+        <div className="w-9 h-9 rounded-full bg-dark-15 flex-shrink-0 overflow-hidden border border-dark-25 group-hover:border-red-45/30 transition-colors">
+          <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${video.channel?.name || 'User'}`} alt="Avatar" className="w-full h-full object-cover" />
         </div>
-        {video.channel?.name && (
-          <p className="text-xs text-grey-60 mt-0.5 hover:text-grey-70 transition-colors">{video.channel.name}</p>
-        )}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-medium text-white line-clamp-2 leading-snug group-hover:text-red-45 transition-colors duration-200">
+            {video.title}
+          </h3>
+          <div className="flex items-center gap-1.5 mt-1 text-xs text-grey-60">
+            <span>{formatCount(video.stats?.views || 0)} views</span>
+            <span>•</span>
+            <span>{new Date(video.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+          </div>
+          {video.channel?.name && (
+            <p className="text-xs text-grey-60 mt-0.5 hover:text-white transition-colors truncate">{video.channel.name}</p>
+          )}
+        </div>
       </div>
     </a>
   );
 }
 
-export default function Home() {
+function HomeContent() {
   const [page, setPage] = useState(1);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -178,8 +208,8 @@ export default function Home() {
   };
 
   const { data, isLoading, isError, error } = useSearchVideosQuery({
-    page,
-    limit: 20,
+    page: 1,
+    limit: 20 * page,
     search: search || undefined,
     sortBy: urlSortBy || 'views', // Default sorting
     sortOrder: urlSortOrder || 'desc',
@@ -199,39 +229,49 @@ export default function Home() {
 
       {/* ── Hero Banner ─────────────────────────────────── */}
       {!search && featuredVideo && (
-        <div className="relative w-full overflow-hidden" style={{ height: '420px' }}>
+        <div className="relative w-full overflow-hidden h-[50vh] md:h-[420px]">
           {/* Background thumbnail */}
           <img
             src={featuredVideo.thumbnailPath || '/placeholder.jpg'}
             alt={featuredVideo.title}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: 'brightness(0.45) blur(1px)' }}
+            className="absolute inset-0 w-full h-full object-cover scale-105 animate-float-slow"
+            style={{ filter: 'brightness(0.4) blur(2px)' }}
           />
-          {/* Gradient overlays */}
-          <div className="hero-overlay absolute inset-0" />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #0F0F0F 0%, transparent 60%)' }} />
+          {/* Parallax-like gradient overlays */}
+          <div className="hero-overlay absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-dark-6 via-transparent to-transparent opacity-90" />
+          <div className="absolute inset-0 bg-gradient-to-r from-red-45/10 to-transparent mix-blend-overlay" />
 
           {/* Hero content */}
           <div className="relative h-full flex items-center max-w-[1600px] mx-auto px-6">
-            <div className="max-w-lg animate-fade-in">
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-red-45 mb-3">
+            <div className="max-w-xl animate-slide-up">
+              <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white mb-4 bg-red-45/90 px-2 py-1 rounded shadow-glow-sm">
                 <FireIcon className="h-3.5 w-3.5" /> Featured
               </span>
-              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 leading-tight text-shadow line-clamp-2">
+              <h1 className="text-3xl sm:text-5xl font-black text-white mb-4 leading-tight text-shadow line-clamp-3">
                 {featuredVideo.title}
               </h1>
-              <p className="text-grey-70 text-sm mb-6">
+              <p className="text-grey-75 text-sm sm:text-base mb-8 max-w-md">
                 {formatCount(featuredVideo.stats?.views || 0)} views
-                {featuredVideo.channel?.name && <> · {featuredVideo.channel.name}</>}
+                {featuredVideo.channel?.name && <> • {featuredVideo.channel.name}</>}
               </p>
               <a
                 href={featuredVideo.type === 'thirdparty' ? featuredVideo.filePath : `/watch/${featuredVideo._id}`}
-                className="inline-flex items-center gap-2 bg-red-45 hover:bg-red-55 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-lg shadow-red-45/30 hover:shadow-red-45/50 active:scale-95"
+                className="group relative inline-flex items-center justify-center gap-2 bg-red-45 text-white font-bold px-8 py-3.5 rounded-xl transition-all duration-300 overflow-hidden shadow-[0_0_30px_rgba(227,0,0,0.4)] hover:shadow-[0_0_40px_rgba(227,0,0,0.6)] hover:scale-105 active:scale-95"
               >
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-                Watch Now
+                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:animate-shimmer-slide skew-x-[-20deg]" />
+                <svg className="w-5 h-5 fill-current relative z-10" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                <span className="relative z-10">Watch Now</span>
               </a>
             </div>
+          </div>
+          
+          {/* Scroll down indicator */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-50 animate-bounce-subtle pointer-events-none">
+            <span className="text-[10px] text-white uppercase tracking-widest font-semibold">Scroll</span>
+            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
           </div>
         </div>
       )}
@@ -247,13 +287,16 @@ export default function Home() {
                 <button
                   key={chip.label}
                   onClick={() => handleChipClick(idx)}
-                  className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all duration-200 ${activeChip === idx
-                      ? 'bg-red-45 text-white shadow-md shadow-red-45/30'
+                  className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all duration-300 relative overflow-hidden ${activeChip === idx
+                      ? 'text-white shadow-[0_0_15px_rgba(227,0,0,0.3)]'
                       : 'bg-dark-12 text-grey-70 hover:bg-dark-15 hover:text-white border border-dark-25'
                     }`}
                 >
-                  {Icon && <Icon className="h-3.5 w-3.5" />}
-                  {chip.label}
+                  {activeChip === idx && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-45 to-red-55 -z-10" />
+                  )}
+                  {Icon && <Icon className="h-3.5 w-3.5 relative z-10" />}
+                  <span className="relative z-10">{chip.label}</span>
                 </button>
               );
             })}
@@ -275,7 +318,7 @@ export default function Home() {
         </div>
 
         {/* ── Video Grid ─────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6">
           {isLoading ? (
             [...Array(12)].map((_, i) => <VideoCardSkeleton key={i} />)
           ) : isError ? (
@@ -313,54 +356,32 @@ export default function Home() {
           )}
         </div>
 
-        {/* ── Pagination ─────────────────────────────────── */}
+        {/* ── Load More Pagination ─────────────────────────────────── */}
         {!isLoading && totalPages > 1 && (
-          <div className="mt-8 flex items-center justify-center gap-2">
-            <button
-              onClick={() => setPage(p => Math.max(p - 1, 1))}
-              disabled={page === 1}
-              className="px-4 py-2 bg-dark-12 hover:bg-dark-15 text-grey-70 hover:text-white rounded-lg border border-dark-25 disabled:opacity-40 disabled:cursor-not-allowed transition-all text-sm font-medium"
-            >
-              ← Previous
-            </button>
-
-            <div className="flex items-center gap-1">
-              {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
-                let p;
-                if (totalPages <= 7) {
-                  p = i + 1;
-                } else if (page <= 4) {
-                  p = i + 1;
-                } else if (page >= totalPages - 3) {
-                  p = totalPages - 6 + i;
-                } else {
-                  p = page - 3 + i;
-                }
-                return (
-                  <button
-                    key={p}
-                    onClick={() => setPage(p)}
-                    className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${page === p
-                        ? 'bg-red-45 text-white shadow-md shadow-red-45/30'
-                        : 'bg-dark-12 text-grey-70 hover:bg-dark-15 hover:text-white border border-dark-25'
-                      }`}
-                  >
-                    {p}
-                  </button>
-                );
-              })}
-            </div>
-
-            <button
-              onClick={() => setPage(p => p + 1)}
-              disabled={!data?.videos || data.videos.length < 20}
-              className="px-4 py-2 bg-dark-12 hover:bg-dark-15 text-grey-70 hover:text-white rounded-lg border border-dark-25 disabled:opacity-40 disabled:cursor-not-allowed transition-all text-sm font-medium"
-            >
-              Next →
-            </button>
+          <div className="mt-10 flex justify-center pb-8">
+            {(data?.videos?.length || 0) < (data?.total || 0) ? (
+              <button
+                onClick={() => setPage(p => p + 1)}
+                className="group relative inline-flex items-center gap-2 bg-dark-15 hover:bg-dark-20 border border-dark-25 hover:border-red-45/50 text-white font-medium px-8 py-3 rounded-xl transition-all duration-300"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-red-45/0 via-red-45/10 to-red-45/0 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                <SparklesIcon className="w-5 h-5 text-red-45" />
+                <span className="relative z-10">Load More</span>
+              </button>
+            ) : (
+              <p className="text-grey-60 text-sm font-medium">You've reached the end</p>
+            )}
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-dark-6 flex items-center justify-center"><div className="w-8 h-8 rounded-full border-4 border-red-45 border-t-transparent animate-spin"></div></div>}>
+      <HomeContent />
+    </Suspense>
   );
 }

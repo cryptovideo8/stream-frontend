@@ -323,7 +323,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
             )}
           </div>
 
-          <div className="watch-actions-row flex min-w-0 w-full flex-nowrap items-center gap-1.5 overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch] [scrollbar-width:thin] sm:w-auto sm:gap-2 sm:overflow-visible sm:[scrollbar-width:auto]">
+          <div className="watch-actions-row flex min-w-0 w-full flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-2 sm:w-auto">
             <div
               className="flex shrink-0 items-center rounded-full overflow-hidden border border-dark-25"
               style={{ background: '#1a1a1a' }}
@@ -336,7 +336,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                 }`}
               >
                 <HandThumbUpIcon className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
-                <span>{formatCount(localLikesCount)}</span>
+                <span key={localLikesCount} className="inline-block animate-number-change">{formatCount(localLikesCount)}</span>
               </button>
               <div className="w-px h-6 bg-dark-25" />
               <button
@@ -347,7 +347,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                 }`}
               >
                 <HandThumbDownIcon className="w-4.5 h-4.5" style={{ width: 18, height: 18 }} />
-                <span>{formatCount(localDislikesCount)}</span>
+                <span key={localDislikesCount} className="inline-block animate-number-change">{formatCount(localDislikesCount)}</span>
               </button>
             </div>
 
@@ -371,7 +371,8 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                   ref={sharePopupRef}
                   role="dialog"
                   aria-label="Share video"
-                  className="absolute right-0 mt-2 rounded-xl p-4 w-[min(100vw-2rem,18rem)] z-50 animate-scale-in"
+                  className="fixed inset-x-0 bottom-0 sm:absolute sm:right-0 sm:inset-x-auto sm:bottom-auto sm:mt-2 rounded-t-2xl sm:rounded-xl p-4 w-full sm:w-[18rem] z-50 animate-slide-in-bottom sm:animate-scale-in"
+
                   style={{
                     background: 'rgba(20,20,20,0.95)',
                     backdropFilter: 'blur(16px)',
@@ -426,7 +427,8 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
                   ref={reportPopupRef}
                   role="dialog"
                   aria-label="Report video"
-                  className="absolute right-0 mt-2 rounded-xl p-4 w-[min(100vw-2rem,18rem)] z-50 animate-scale-in"
+                  className="fixed inset-x-0 bottom-0 sm:absolute sm:right-0 sm:inset-x-auto sm:bottom-auto sm:mt-2 rounded-t-2xl sm:rounded-xl p-4 w-full sm:w-[18rem] z-50 animate-slide-in-bottom sm:animate-scale-in"
+
                   style={{
                     background: 'rgba(20,20,20,0.95)',
                     backdropFilter: 'blur(16px)',
@@ -551,13 +553,19 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
               id="watch-comment-input"
               value={commentText}
               onChange={(e) => setCommentText(e.target.value.slice(0, MAX_COMMENT_LEN))}
-              placeholder="Share your thoughts…"
-              rows={3}
+              placeholder="What do you think about this video? Join the conversation..."
+              rows={4}
               disabled={isPostingComment}
-              className="w-full bg-dark-12 text-white text-sm rounded-xl p-3 resize-none border border-dark-25 focus:outline-none focus:ring-2 focus:ring-red-45/40 focus:border-red-45/50 placeholder:text-grey-60 transition-all disabled:opacity-50"
+              className="w-full bg-dark-12 text-white text-base sm:text-sm rounded-xl p-4 resize-none border border-dark-25 focus:outline-none focus:ring-2 focus:ring-red-45/40 focus:border-red-45/50 placeholder:text-grey-60 transition-all disabled:opacity-50"
             />
             <div className="mt-2 flex items-center justify-between gap-2">
-              <span className="text-[11px] text-grey-60">
+              <span className={`text-[11px] font-medium transition-colors ${
+                commentText.length >= MAX_COMMENT_LEN 
+                  ? 'text-red-500' 
+                  : commentText.length > MAX_COMMENT_LEN * 0.9 
+                  ? 'text-amber-500' 
+                  : 'text-grey-60'
+              }`}>
                 {commentText.length}/{MAX_COMMENT_LEN}
               </span>
               <div className="flex gap-2">

@@ -2,6 +2,8 @@
 import { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import MobileBottomNav from "../../components/MobileBottomNav";
+import ScrollToTop from "../../components/ScrollToTop";
 
 export default function RootLayout({
   children,
@@ -45,9 +47,12 @@ export default function RootLayout({
           )}
 
           {/* Main Content */}
-          <div className="flex-1 min-h-full w-full">{children}</div>
+          <div className="flex-1 min-h-full w-full pb-safe-nav md:pb-0">{children}</div>
         </div>
       </div>
+      
+      <MobileBottomNav />
+      <ScrollToTop />
     </>
   );
 }

@@ -103,13 +103,25 @@ export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }
                   onMobileClose();
                 }
               }}
-              className={`flex items-center space-x-2 px-3 py-2.5 rounded-lg mb-1 transition-all duration-200 ${isActive
-                ? 'bg-red-45 text-primary'
-                : 'text-grey-70 hover:text-primary hover:bg-dark-15'
+              className={`relative flex items-center px-3 py-2.5 rounded-xl mb-1.5 transition-all duration-300 group ${isActive
+                ? 'bg-gradient-to-r from-red-45/15 to-transparent text-white'
+                : 'text-grey-60 hover:text-white hover:bg-dark-15'
                 }`}
             >
-              <Icon className="h-6 w-6 flex-shrink-0" />
-              {!isCollapsed && <span className="truncate">{item.text}</span>}
+              {isActive && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3/5 bg-red-45 rounded-r-full shadow-[0_0_10px_#E30000] animate-fade-in" />
+              )}
+              <Icon className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ml-1 ${isActive ? 'text-red-45' : 'group-hover:scale-110'}`} />
+              
+              {!isCollapsed ? (
+                <span className={`ml-3 truncate text-sm font-medium ${isActive ? 'text-white' : 'group-hover:text-white'}`}>
+                  {item.text}
+                </span>
+              ) : (
+                <div className="absolute left-14 px-2.5 py-1.5 bg-dark-20 border border-white/10 text-white text-xs font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-xl">
+                  {item.text}
+                </div>
+              )}
             </Link>
           );
         })}

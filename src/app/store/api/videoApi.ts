@@ -61,11 +61,20 @@ export interface VideoDetail {
     views: number;
     likes: number;
     dislikes: number;
+    comments?: number;
   };
   channel?: {
     _id: string;
     name: string;
     avatar?: string;
+  };
+  creatorId?: {
+    _id: string;
+    name?: string;
+    username?: string;
+    profileImage?: string;
+    avatar?: string;
+    email?: string;
   };
   createdAt: string;
   updatedAt: string;

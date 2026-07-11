@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -19,6 +19,7 @@ import {
   ArrowRightOnRectangleIcon,
   PresentationChartLineIcon,
   XMarkIcon,
+  BellIcon,
 } from '@heroicons/react/24/outline';
 import { useAppSelector } from '../store/hooks';
 import { selectCurrentUser, selectIsAuthenticated } from '../store/slices/authSlice';
@@ -31,7 +32,7 @@ interface HeaderProps {
   hideNavMenu?: boolean;
 }
 
-export default function Header({ hideNavMenu = false }: HeaderProps) {
+function HeaderContent({ hideNavMenu = false }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [profileDropDown, setProfileDropDown] = useState(false);
   const [videosDropDown, setVideosDropDown] = useState(false);
@@ -106,11 +107,11 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
 
   return (
     <header
-      className="fixed w-full z-[9999] shadow-header"
+      className="fixed w-full z-[9999] shadow-header transition-all duration-300"
       style={{
         background: 'rgba(10,10,10,0.85)',
-        backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
       }}
     >
       <div className="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
@@ -118,7 +119,7 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
         {/* Logo */}
         <Link
           href="/"
-          className="flex-shrink-0 text-xl font-black tracking-tight"
+          className="flex-shrink-0 text-xl font-black tracking-tight transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(227,0,0,0.8)]"
           style={{ background: 'linear-gradient(135deg, #E30000, #FF5555)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
         >
           NightKing
@@ -184,11 +185,16 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
                   </Link>
                 </>
               ) : (
-                <div className="relative" ref={profileRef}>
-                  <button
-                    className="flex items-center gap-2 p-1 rounded-lg hover:bg-dark-15 transition-colors"
-                    onClick={() => setProfileDropDown(!profileDropDown)}
-                  >
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <button className="relative p-2 text-grey-70 hover:text-white transition-colors group">
+                    <BellIcon className="h-5 w-5 group-hover:animate-bounce-subtle" />
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-45 rounded-full shadow-glow-red border border-dark-10"></span>
+                  </button>
+                  <div className="relative" ref={profileRef}>
+                    <button
+                      className="flex items-center gap-2 p-1 rounded-lg hover:bg-dark-15 transition-colors"
+                      onClick={() => setProfileDropDown(!profileDropDown)}
+                    >
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white overflow-hidden border-2"
                       style={{ borderColor: profileDropDown ? '#E30000' : 'rgba(255,255,255,0.1)', transition: 'border-color 0.2s' }}
@@ -235,15 +241,26 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
                     </div>
                   )}
                 </div>
-              )}
-            </>
-          )}
+              </div>
+            )}
+          </>
+        )}
         </div>
       </div>
 
-      {/* Mobile Search Bar */}
-      {mobileSearch && (
-        <div className="sm:hidden px-4 pb-3 animate-slide-up">
+      {/* Mobile Search Bar overlay */}
+      <div
+        className={`sm:hidden fixed inset-0 top-14 z-40 bg-black/80 backdrop-blur-sm transition-opacity duration-300 ${
+          mobileSearch ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setMobileSearch(false)}
+      >
+        <div
+          className={`bg-dark-10 p-4 border-b border-white/[0.08] transform transition-transform duration-300 ${
+            mobileSearch ? 'translate-y-0' : '-translate-y-full'
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
           <form onSubmit={handleSearch}>
             <div className="relative">
               <input
@@ -251,16 +268,16 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
                 placeholder="Search videos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                autoFocus
-                className="w-full h-9 bg-dark-12 rounded-full py-2 pl-4 pr-10 text-sm text-white placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 transition-all"
+                autoFocus={mobileSearch}
+                className="w-full h-11 bg-dark-15 rounded-xl py-2 pl-4 pr-11 text-sm text-white placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 transition-all shadow-input-focus"
               />
-              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-grey-60">
-                <MagnifyingGlassIcon className="h-4 w-4" />
+              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-grey-60 hover:text-red-45">
+                <MagnifyingGlassIcon className="h-5 w-5" />
               </button>
             </div>
           </form>
         </div>
-      )}
+      </div>
 
       {/* Navigation Bar */}
       {!hideNavMenu && (
@@ -342,5 +359,13 @@ export default function Header({ hideNavMenu = false }: HeaderProps) {
         </nav>
       )}
     </header>
+  );
+}
+
+export default function Header(props: HeaderProps) {
+  return (
+    <Suspense fallback={<div className="h-14 w-full bg-dark-10/80 backdrop-blur-md border-b border-white/[0.08] fixed z-[9999]" />}>
+      <HeaderContent {...props} />
+    </Suspense>
   );
 }

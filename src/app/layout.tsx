@@ -1,7 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Providers from "./components/Providers";
+import PageProgress from "./components/PageProgress";
 import { Toaster } from "react-hot-toast";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "NightKing — Premium Streaming",
@@ -22,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <PageProgress />
         <Providers>
           {children}
           <Toaster position="top-center" reverseOrder={false} />

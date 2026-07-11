@@ -63,14 +63,56 @@ const quickActions = [
 
 const tooltipStyle = {
   contentStyle: {
-    backgroundColor: '#1A1A1A',
-    border: '1px solid rgba(255,255,255,0.08)',
+    backgroundColor: 'rgba(26,26,26,0.95)',
+    backdropFilter: 'blur(8px)',
+    border: '1px solid rgba(255,255,255,0.1)',
     borderRadius: '12px',
     color: '#fff',
     fontSize: '12px',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
   },
-  labelStyle: { color: '#B3B3B3' },
+  labelStyle: { color: '#B3B3B3', marginBottom: '4px' },
 };
+
+function CountUpValue({ value }: { value: string }) {
+  const [display, setDisplay] = useState('0');
+  
+  useEffect(() => {
+    let start = 0;
+    const endNum = parseFloat(value.replace(/[^0-9.]/g, ''));
+    if (isNaN(endNum)) {
+      setDisplay(value);
+      return;
+    }
+    
+    const prefix = value.startsWith('$') ? '$' : '';
+    const suffix = value.endsWith('M') ? 'M' : value.endsWith('K') ? 'K' : '';
+    const hasDecimal = value.includes('.');
+    
+    const duration = 1500;
+    const frameRate = 1000 / 60;
+    const totalFrames = Math.round(duration / frameRate);
+    let frame = 0;
+    
+    const counter = setInterval(() => {
+      frame++;
+      const progress = frame / totalFrames;
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const current = endNum * easeOut;
+      
+      if (frame === totalFrames) {
+        clearInterval(counter);
+        setDisplay(value);
+      } else {
+        setDisplay(`${prefix}${current.toFixed(hasDecimal ? 1 : 0)}${suffix}`);
+      }
+    }, frameRate);
+    
+    return () => clearInterval(counter);
+  }, [value]);
+  
+  return <span>{display}</span>;
+}
 
 export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
@@ -85,9 +127,16 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Welcome */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes wave { 0% { transform: rotate(0deg); } 10% { transform: rotate(14deg); } 20% { transform: rotate(-8deg); } 30% { transform: rotate(14deg); } 40% { transform: rotate(-4deg); } 50% { transform: rotate(10deg); } 60% { transform: rotate(0deg); } 100% { transform: rotate(0deg); } }
+        .animate-wave { animation: wave 2s infinite; transform-origin: 70% 70%; display: inline-block; }
+      `}} />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Welcome back, <span className="text-red-45">{userName}</span> 👋</h1>
+          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+            Welcome back, <span className="text-red-45">{userName}</span> 
+            <span className="animate-wave">👋</span>
+          </h1>
           <p className="text-grey-60 text-sm mt-1">Here&apos;s what&apos;s happening with your content today.</p>
         </div>
         <Link
@@ -107,13 +156,13 @@ export default function Dashboard() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="stats-label">{kpi.label}</p>
-                  <p className="stats-value">{kpi.value}</p>
+                  <p className="stats-value">{mounted ? <CountUpValue value={kpi.value} /> : kpi.value}</p>
                   <span className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-green-400">
                     <ArrowTrendingUpIcon className="h-3 w-3" />
                     {kpi.change}
                   </span>
                 </div>
-                <div className="stats-icon-wrap" style={{ background: kpi.bg }}>
+                <div className="stats-icon-wrap" style={{ background: kpi.bg, boxShadow: `0 0 15px ${kpi.color}30` }}>
                   <Icon className="h-5 w-5" style={{ color: kpi.color }} />
                 </div>
               </div>
@@ -135,7 +184,9 @@ export default function Dashboard() {
             >
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                style={{ background: `${action.color}20` }}
+                style={{ background: `${action.color}20`, boxShadow: `0 0 0 ${action.color}00`, transition: 'all 0.3s' } as any}
+                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 0 20px ${action.color}60`; }}
+                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = `0 0 0 ${action.color}00`; }}
               >
                 <Icon className="h-6 w-6" style={{ color: action.color }} />
               </div>
@@ -153,16 +204,16 @@ export default function Dashboard() {
             <ChartBarIcon className="h-5 w-5 text-red-45" /> Growth Overview
           </h3>
           <ResponsiveContainer width="100%" height={240}>
-            <AreaChart data={viewsData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
+            <AreaChart data={viewsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#E30000" stopOpacity={0.4} />
                   <stop offset="95%" stopColor="#E30000" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#222" />
-              <XAxis dataKey="period" stroke="#555" tick={{ fontSize: 11, fill: '#999' }} />
-              <YAxis stroke="#555" tick={{ fontSize: 11, fill: '#999' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
+              <XAxis dataKey="period" stroke="#555" tick={{ fontSize: 11, fill: '#999' }} axisLine={false} tickLine={false} />
+              <YAxis stroke="#555" tick={{ fontSize: 11, fill: '#999' }} axisLine={false} tickLine={false} />
               <Tooltip {...tooltipStyle} />
               <Area type="monotone" dataKey="views" stroke="#E30000" strokeWidth={2} fillOpacity={1} fill="url(#colorViews)" />
             </AreaChart>
@@ -175,10 +226,10 @@ export default function Dashboard() {
             <CurrencyDollarIcon className="h-5 w-5 text-green-400" /> Revenue Breakdown
           </h3>
           <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={revenueData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }} barCategoryGap="30%">
-              <CartesianGrid strokeDasharray="3 3" stroke="#222" />
-              <XAxis dataKey="month" stroke="#555" tick={{ fontSize: 11, fill: '#999' }} />
-              <YAxis stroke="#555" tick={{ fontSize: 11, fill: '#999' }} />
+            <BarChart data={revenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barCategoryGap="30%">
+              <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
+              <XAxis dataKey="month" stroke="#555" tick={{ fontSize: 11, fill: '#999' }} axisLine={false} tickLine={false} />
+              <YAxis stroke="#555" tick={{ fontSize: 11, fill: '#999' }} axisLine={false} tickLine={false} />
               <Tooltip {...tooltipStyle} />
               <Legend wrapperStyle={{ fontSize: '12px', color: '#999' }} />
               <Bar dataKey="ads" name="Ad Revenue" fill="#E30000" radius={[4, 4, 0, 0]} />
@@ -201,7 +252,7 @@ export default function Dashboard() {
             View all →
           </Link>
         </div>
-        <div className="overflow-x-auto">
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="text-grey-60 text-xs font-medium uppercase tracking-wider" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
@@ -238,6 +289,33 @@ export default function Dashboard() {
               ))}
             </tbody>
           </table>
+        </div>
+        
+        {/* Mobile Cards Stack */}
+        <div className="sm:hidden flex flex-col divide-y divide-white/[0.04]">
+          {recentVideos.map((video, i) => (
+            <div key={i} className="px-5 py-4 hover:bg-white/[0.02] transition-colors flex flex-col gap-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="text-sm font-medium text-white mb-1">{video.title}</h4>
+                  <p className="text-xs text-grey-60">{video.date}</p>
+                </div>
+                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${video.status === 'Published'
+                  ? 'bg-green-400/10 text-green-400'
+                  : 'bg-amber-400/10 text-amber-400'
+                  }`}>
+                  {video.status}
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-sm text-grey-70">
+                <div className="flex gap-4">
+                  <span><strong className="text-white font-medium">{video.views}</strong> views</span>
+                  <span><strong className="text-white font-medium">{video.likes}</strong> likes</span>
+                </div>
+                <button className="text-xs text-grey-60 hover:text-white px-3 py-1.5 border border-dark-25 rounded-lg">Edit</button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
