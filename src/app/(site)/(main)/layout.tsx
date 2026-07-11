@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import MobileBottomNav from "../../components/MobileBottomNav";
@@ -35,7 +35,9 @@ export default function RootLayout({
             transform transition-transform duration-300 ease-in-out
             ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           `}>
-            <Sidebar />
+            <Suspense fallback={<div className="w-60 min-h-full bg-dark-6" />}>
+              <Sidebar />
+            </Suspense>
           </div>
 
           {/* Overlay for mobile - Only visible when mobile menu is open */}

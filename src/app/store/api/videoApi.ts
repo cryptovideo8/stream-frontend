@@ -149,6 +149,13 @@ export const videoApi = baseApi.injectEndpoints({
       }),
     }),
 
+    getCategoryCounts: builder.query<{ category: string; count: number }[], void>({
+      query: () => ({
+        url: '/video/category-counts',
+        method: 'GET',
+      }),
+    }),
+
     getVideoById: builder.query<VideoDetail, string>({
       query: (id) => `/video/${id}`,
       providesTags: (result, error, id) => [{ type: 'Video' as const, id }],
@@ -192,6 +199,7 @@ export const {
   useUploadExternalVideoMutation,
   useDeletethirdpartyVideoMutation,
   useSearchVideosQuery,
+  useGetCategoryCountsQuery,
   useGetVideoByIdQuery,
   useGetRelatedVideosQuery,
   useGetLikedVideosQuery,
