@@ -1,7 +1,9 @@
 'use client';
 import { useSearchVideosQuery, VideoDetail } from '../../store/api/videoApi';
+import { useGetContinueWatchingQuery } from '../../store/api/interactionApi';
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   FireIcon,
   ClockIcon,
@@ -9,6 +11,8 @@ import {
   StarIcon,
   TrophyIcon,
 } from '@heroicons/react/24/outline';
+import { useAppSelector } from '../../store/hooks';
+import { selectIsAuthenticated } from '../../store/slices/authSlice';
 
 function formatCount(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -70,14 +74,17 @@ function VideoCard({ video }: VideoCardProps) {
   const isPremium = ['rent', 'paid'].includes(video.monetization?.type || '');
   const href = video.type === 'thirdparty' ? video.filePath : `/watch/${video._id}`;
   const isExternal = video.type === 'thirdparty';
+  const channelHref = video.creatorId?._id ? `/channel/${video.creatorId._id}` : null;
+  const creatorLabel = video.creatorId?.name || video.channel?.name;
 
   return (
-    <a
-      href={href}
-      target={isExternal ? '_blank' : '_self'}
-      rel={isExternal ? 'noopener noreferrer' : undefined}
-      className="video-card block group"
-    >
+    <div className="video-card group">
+      <a
+        href={href}
+        target={isExternal ? '_blank' : '_self'}
+        rel={isExternal ? 'noopener noreferrer' : undefined}
+        className="block"
+      >
       {/* Thumbnail */}
       <div className="video-card-thumb">
         <img
@@ -133,28 +140,56 @@ function VideoCard({ video }: VideoCardProps) {
           </div>
         </div>
       </div>
+      </a>
 
       {/* Info */}
       <div className="p-2.5 flex gap-3">
-        {/* Channel Avatar */}
         <div className="w-9 h-9 rounded-full bg-dark-15 flex-shrink-0 overflow-hidden border border-dark-25 group-hover:border-red-45/30 transition-colors">
-          <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${video.channel?.name || 'User'}`} alt="Avatar" className="w-full h-full object-cover" />
+          {channelHref ? (
+            <Link href={channelHref} className="block w-full h-full">
+              <img
+                src={
+                  video.creatorId?.profileImage ||
+                  `https://api.dicebear.com/7.x/avataaars/svg?seed=${video.creatorId?.name || video.channel?.name || 'User'}`
+                }
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            </Link>
+          ) : (
+            <img
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${video.channel?.name || 'User'}`}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-medium text-white line-clamp-2 leading-snug group-hover:text-red-45 transition-colors duration-200">
-            {video.title}
-          </h3>
+          <a href={href} className="block">
+            <h3 className="text-sm font-medium text-white line-clamp-2 leading-snug group-hover:text-red-45 transition-colors duration-200">
+              {video.title}
+            </h3>
+          </a>
           <div className="flex items-center gap-1.5 mt-1 text-xs text-grey-60">
             <span>{formatCount(video.stats?.views || 0)} views</span>
             <span>•</span>
             <span>{new Date(video.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
           </div>
-          {video.channel?.name && (
-            <p className="text-xs text-grey-60 mt-0.5 hover:text-white transition-colors truncate">{video.channel.name}</p>
+          {creatorLabel && (
+            channelHref ? (
+              <Link
+                href={channelHref}
+                className="text-xs text-grey-60 mt-0.5 hover:text-white transition-colors truncate block"
+              >
+                {creatorLabel}
+              </Link>
+            ) : (
+              <p className="text-xs text-grey-60 mt-0.5 truncate">{creatorLabel}</p>
+            )
           )}
         </div>
       </div>
-    </a>
+    </div>
   );
 }
 
@@ -162,12 +197,30 @@ function HomeContent() {
   const [page, setPage] = useState(1);
   const searchParams = useSearchParams();
   const router = useRouter();
-  
-  const search = searchParams.get('search') || '';
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Unify text search to /search?q=
+  useEffect(() => {
+    const legacy = searchParams.get('search');
+    if (legacy) {
+      router.replace(`/search?q=${encodeURIComponent(legacy)}`);
+    }
+  }, [searchParams, router]);
+
   const urlSortBy = searchParams.get('sortBy') || undefined;
   const urlSortOrder = searchParams.get('sortOrder') as 'asc' | 'desc' | undefined;
   const urlCategory = searchParams.get('category') || undefined;
   const urlMonetization = searchParams.get('monetization') || undefined;
+
+  const { data: continueData } = useGetContinueWatchingQuery(
+    { limit: 12 },
+    { skip: !mounted || !isAuthenticated }
+  );
 
   // Derive active chip from URL
   let activeChip = 0;
@@ -202,7 +255,6 @@ function HomeContent() {
     if (q.sortOrder) params.set('sortOrder', q.sortOrder);
     if (q.category) params.set('category', q.category);
     if (q.monetization) params.set('monetization', q.monetization);
-    if (search) params.set('search', search);
 
     router.push(`/?${params.toString()}`);
   };
@@ -210,25 +262,21 @@ function HomeContent() {
   const { data, isLoading, isError, error } = useSearchVideosQuery({
     page: 1,
     limit: 20 * page,
-    search: search || undefined,
-    sortBy: urlSortBy || 'views', // Default sorting
+    sortBy: urlSortBy || 'views',
     sortOrder: urlSortOrder || 'desc',
     category: urlCategory,
     monetization: urlMonetization,
   });
 
-  useEffect(() => {
-    setPage(1);
-  }, [search]);
-
   const featuredVideo = data?.videos?.[0];
   const totalPages = Math.ceil((data?.total || 0) / 20);
+  const continueItems = continueData?.items || [];
 
   return (
     <div className="min-h-screen bg-dark-6">
 
       {/* ── Hero Banner ─────────────────────────────────── */}
-      {!search && featuredVideo && (
+      {featuredVideo && (
         <div className="relative w-full overflow-hidden h-[50vh] md:h-[420px]">
           {/* Background thumbnail */}
           <img
@@ -278,9 +326,50 @@ function HomeContent() {
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6">
 
+        {mounted && isAuthenticated && continueItems.length > 0 && (
+          <section className="mb-8" aria-labelledby="continue-watching-heading">
+            <h2 id="continue-watching-heading" className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <ClockIcon className="h-5 w-5 text-red-45" /> Continue watching
+            </h2>
+            <div className="flex gap-3 overflow-x-auto pb-3 [scrollbar-width:thin] snap-x snap-mandatory">
+              {continueItems.map((item) => {
+                const v = item.video;
+                if (!v?._id) return null;
+                const duration = item.durationSeconds || v.duration || 0;
+                const pct =
+                  duration > 0
+                    ? Math.min(100, Math.round((item.progressSeconds / duration) * 100))
+                    : 0;
+                return (
+                  <Link
+                    key={item._id}
+                    href={`/watch/${v._id}`}
+                    className="snap-start shrink-0 w-[220px] sm:w-[260px] group"
+                  >
+                    <div className="relative aspect-video rounded-xl overflow-hidden bg-dark-12 border border-dark-25">
+                      <img
+                        src={v.thumbnailPath || '/placeholder.jpg'}
+                        alt={v.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      {pct > 0 && (
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-dark-20">
+                          <div className="h-full bg-red-45" style={{ width: `${pct}%` }} />
+                        </div>
+                      )}
+                    </div>
+                    <p className="mt-2 text-sm text-white line-clamp-2 group-hover:text-red-45 transition-colors">
+                      {v.title}
+                    </p>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
         {/* ── Category Chips ─────────────────────────────── */}
-        {!search && (
-          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-2" style={{ scrollbarWidth: 'none' }}>
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-2" style={{ scrollbarWidth: 'none' }}>
             {CATEGORY_CHIPS.map((chip, idx) => {
               const Icon = chip.icon;
               return (
@@ -301,16 +390,11 @@ function HomeContent() {
               );
             })}
           </div>
-        )}
 
         {/* ── Section Heading ────────────────────────────── */}
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            {search ? (
-              <>Search Results for &ldquo;<span className="text-red-45">{search}</span>&rdquo;</>
-            ) : (
-              <><FireIcon className="h-5 w-5 text-red-45" /> Trending Videos</>
-            )}
+            <FireIcon className="h-5 w-5 text-red-45" /> Trending Videos
           </h2>
           {data?.total != null && (
             <span className="text-xs text-grey-60">{data.total.toLocaleString()} videos</span>
@@ -369,7 +453,7 @@ function HomeContent() {
                 <span className="relative z-10">Load More</span>
               </button>
             ) : (
-              <p className="text-grey-60 text-sm font-medium">You've reached the end</p>
+              <p className="text-grey-60 text-sm font-medium">You&apos;ve reached the end</p>
             )}
           </div>
         )}

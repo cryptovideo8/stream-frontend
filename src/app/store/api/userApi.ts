@@ -124,6 +124,20 @@ export const userApi = baseApi.injectEndpoints({
       }),
     }),
 
+    getPublicProfile: builder.query<
+      {
+        _id: string;
+        name?: string;
+        username?: string;
+        profileImage?: string;
+        role: string;
+        createdAt?: string;
+      },
+      string
+    >({
+      query: (id) => `/user/${id}/public`,
+    }),
+
   }),
 
 });
@@ -136,5 +150,6 @@ export const {
   useUpdateUserMutation,
   useGetPaginatedUsersQuery,
   useGetUserStatsQuery,
-  useToggleUserActiveMutation
+  useToggleUserActiveMutation,
+  useGetPublicProfileQuery,
 } = userApi;

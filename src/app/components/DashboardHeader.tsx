@@ -9,7 +9,6 @@ import {
   Cog6ToothIcon,
   HomeIcon,
   ArrowRightOnRectangleIcon,
-  BellIcon,
   PresentationChartLineIcon
 } from '@heroicons/react/24/outline';
 import { useDispatch } from 'react-redux';
@@ -108,14 +107,6 @@ export default function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderP
             <div className="w-24 h-8" />
           ) : (
             <>
-              {/* Notifications */}
-              {isAuthenticated && (
-                <button className="text-grey-70 hover:text-primary p-2 rounded-lg relative">
-                  <BellIcon className="h-6 w-6" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-45 rounded-full"></span>
-                </button>
-              )}
-
               {!isAuthenticated ? (
                 <div className="flex items-center space-x-2">
                   <Link

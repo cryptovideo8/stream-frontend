@@ -1,115 +1,93 @@
+import { BRAND } from '../../../config/brand';
+
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-dark-6 py-12 px-4">
+    <div className="min-h-screen bg-dark-6 py-12 px-4 pt-24">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-primary mb-8">Privacy Policy</h1>
-        
+        <p className="text-grey-60 text-sm mb-8">Last updated: July 11, 2026</p>
+
         <div className="space-y-8 text-grey-70">
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">1. Information We Collect</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-4">1. Adults only</h2>
             <p className="mb-4">
-              We collect information you provide directly to us when you:
+              {BRAND.name} is an adult entertainment service intended solely for persons who are 18 years of age
+              or older (or the age of majority in their jurisdiction). We do not knowingly collect personal
+              information from anyone under 18. If we learn that we have collected data from a minor, we will
+              delete it promptly.
             </p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Create an account</li>
-              <li>Subscribe to our service</li>
-              <li>Contact us for support</li>
-              <li>Fill out forms on our website</li>
-            </ul>
-            <p className="mt-4">This information may include:</p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Name and email address</li>
-              <li>Billing information</li>
-              <li>User preferences and settings</li>
-              <li>Content you upload or share</li>
-            </ul>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">2. How We Use Your Information</h2>
-            <p className="mb-4">We use the information we collect to:</p>
+            <h2 className="text-2xl font-semibold text-primary mb-4">2. Information We Collect</h2>
+            <p className="mb-4">We collect information you provide when you:</p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Provide and maintain our services</li>
-              <li>Process your payments and subscriptions</li>
-              <li>Send you important updates and notifications</li>
-              <li>Improve our services and develop new features</li>
-              <li>Protect against fraud and unauthorized access</li>
+              <li>Create an account or verify your email (OTP)</li>
+              <li>Subscribe or pay for access (payment processors may receive billing data)</li>
+              <li>Contact support or submit content reports</li>
+              <li>Upload or manage creator content</li>
             </ul>
+            <p className="mt-4">This may include name, email, account preferences, payment references (e.g. UTR / transaction IDs), IP address, device identifiers, and usage analytics.</p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">3. Information Sharing</h2>
-            <p className="mb-4">
-              We do not sell your personal information. We may share your information with:
-            </p>
+            <h2 className="text-2xl font-semibold text-primary mb-4">3. How We Use Your Information</h2>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Service providers who assist in our operations</li>
-              <li>Law enforcement when required by law</li>
-              <li>Other users when you choose to share content publicly</li>
+              <li>Provide streaming, subscriptions, and creator tools</li>
+              <li>Process payments and prevent fraud</li>
+              <li>Enforce our Terms, moderate content, and respond to legal requests</li>
+              <li>Improve the service and communicate important account notices</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">4. Data Security</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-4">4. Payment processors</h2>
             <p className="mb-4">
-              We implement appropriate technical and organizational measures to protect your
-              personal information. However, no method of transmission over the Internet is
-              100% secure.
+              Payments may be processed by third parties such as Razorpay or via manual UPI verification.
+              Those providers process payment data under their own privacy policies. We receive confirmation
+              of payment and limited transaction metadata needed to activate your plan.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">5. Your Rights</h2>
-            <p className="mb-4">You have the right to:</p>
+            <h2 className="text-2xl font-semibold text-primary mb-4">5. Information Sharing</h2>
+            <p className="mb-4">We do not sell your personal information. We may share information with:</p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Access your personal information</li>
-              <li>Correct inaccurate information</li>
-              <li>Request deletion of your information</li>
-              <li>Object to processing of your information</li>
-              <li>Export your data in a portable format</li>
+              <li>Infrastructure and email service providers that help operate the platform</li>
+              <li>Payment processors and banks involved in your transaction</li>
+              <li>Law enforcement or regulators when required by law</li>
+              <li>Other users when you publish content or profile information publicly</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">6. Cookies and Tracking</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-4">6. Cookies</h2>
             <p className="mb-4">
-              We use cookies and similar tracking technologies to collect information about
-              your browsing behavior and preferences. You can control cookie settings through
-              your browser preferences.
+              We use essential cookies and local storage for authentication, age verification, and preferences.
+              See our <a className="text-red-45" href="/cookies">Cookie Policy</a>.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">7. Children&apos;s Privacy</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-4">7. Data retention and security</h2>
             <p className="mb-4">
-              Our services are not intended for children under 13. We do not knowingly collect
-              personal information from children under 13.
+              We retain account and payment records as needed to operate the service, comply with law, and
+              resolve disputes. We use reasonable technical measures to protect data, but no online system is
+              perfectly secure.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">8. Changes to Privacy Policy</h2>
-            <p className="mb-4">
-              We may update this privacy policy from time to time. We will notify you of any
-              changes by posting the new policy on this page.
-            </p>
+            <h2 className="text-2xl font-semibold text-primary mb-4">8. Your rights</h2>
+            <p className="mb-4">Subject to applicable law, you may request access, correction, or deletion of your personal data by contacting us.</p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">9. Contact Us</h2>
-            <p className="mb-4">
-              If you have any questions about this Privacy Policy, please contact us at:
-            </p>
-            <p className="text-red-45">support@xpeacock.com</p>
+            <h2 className="text-2xl font-semibold text-primary mb-4">9. Contact</h2>
+            <p className="text-red-45">{BRAND.supportEmail}</p>
           </section>
-
-          <div className="pt-8 border-t border-dark-20">
-            <p className="text-grey-70">
-              Last updated: May 20, 2024
-            </p>
-          </div>
         </div>
       </div>
     </div>
   );
-} 
+}

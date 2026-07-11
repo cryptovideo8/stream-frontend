@@ -12,7 +12,7 @@ export type WatchListVideo = {
   createdAt?: string;
   drmEnabled?: boolean;
   stats?: { views?: number };
-  creatorId?: { name?: string; username?: string } | string;
+  creatorId?: { _id?: string; name?: string; username?: string } | string;
   monetization?: { type?: string; price?: number; currency?: string };
 };
 
@@ -102,7 +102,7 @@ export default function WatchVideoCard({
         <span>•</span>
         <span>{video.createdAt ? new Date(video.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}</span>
       </div>
-      <p className="text-xs text-grey-60 mt-0.5 hover:text-grey-70 transition-colors line-clamp-1">{creatorLabel(video)}</p>
+      <p className="text-xs text-grey-60 mt-0.5 line-clamp-1">{creatorLabel(video)}</p>
     </div>
   );
 

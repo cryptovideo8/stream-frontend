@@ -29,15 +29,6 @@ export default function Home({ params }: PageProps) {
   const sortBy = searchParams.get('sortBy') || 'views';
   const sortOrder = (searchParams.get('sortOrder') || 'desc') as 'asc' | 'desc';
 
-  console.log("sortBy", sortBy)
-  console.log("search", search)
-  console.log("category", category)
-  console.log("monetization", monetization)
-  console.log("visibility", visibility)
-  console.log("tags", tags)
-  console.log("sortBy", sortBy)
-  console.log("sortOrder", sortOrder)
-
   const { data, isLoading, isError } = useSearchVideosQuery({
     page,
     limit,
@@ -107,7 +98,11 @@ export default function Home({ params }: PageProps) {
         {/* Header with search results info */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-white">
-            {search ? `Search Results for "${search}"` : 'All Videos'}
+            {resolvedParams.id === 'liked'
+              ? 'Liked videos'
+              : search
+                ? `Search Results for "${search}"`
+                : 'All Videos'}
           </h1>
           <div className="text-gray-400">
             {totalVideos} videos found
@@ -116,11 +111,20 @@ export default function Home({ params }: PageProps) {
 
         {/* No results message */}
         {videos.length === 0 ? (
-          <div className="text-center py-12">
-            <h2 className="text-xl text-gray-400">No videos found</h2>
-            <p className="text-gray-500 mt-2">
-              Try adjusting your search criteria or browse all videos
+          <div className="text-center py-12 border border-dark-25 rounded-xl bg-dark-10">
+            <h2 className="text-xl text-white">
+              {resolvedParams.id === 'liked' ? 'No liked videos yet' : 'No videos found'}
+            </h2>
+            <p className="text-grey-60 mt-2">
+              {resolvedParams.id === 'liked'
+                ? 'Like videos while watching and they will show up here.'
+                : 'Try adjusting your search criteria or browse all videos'}
             </p>
+            {resolvedParams.id === 'liked' && (
+              <a href="/" className="inline-block mt-4 text-red-45 hover:underline text-sm">
+                Browse catalogue
+              </a>
+            )}
           </div>
         ) : (
           <>

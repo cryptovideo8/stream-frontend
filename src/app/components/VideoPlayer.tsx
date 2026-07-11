@@ -20,11 +20,15 @@ import {
   useGetCommentsQuery,
   useCreateCommentMutation,
   useReportVideoMutation,
+  useUpsertWatchHistoryMutation,
 } from '../store/api/interactionApi';
 import type { Comment, CommentAuthor } from '../store/api/interactionApi';
 import type { VideoDetail } from '../store/api/videoApi';
 import { toast } from 'react-hot-toast';
 import { usePayoutWatchHeartbeat } from '../hooks/usePayoutWatchHeartbeat';
+import { useAppSelector } from '../store/hooks';
+import { selectIsAuthenticated } from '../store/slices/authSlice';
+import Link from 'next/link';
 
 interface VideoPlayerProps {
   data: VideoDetail | null | undefined;
@@ -91,6 +95,10 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
   const videoId = data?._id;
   const skipInteraction = !videoId;
   const dataSrc = data?.src;
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const historyStartedRef = useRef(false);
+  const lastProgressSentRef = useRef(0);
+  const [upsertWatchHistory] = useUpsertWatchHistoryMutation();
 
   // Lock the first minted Bunny embed URL for this video so later refetches cannot remount the iframe.
   useEffect(() => {
@@ -135,13 +143,56 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
   }, [dislikesData]);
 
   useEffect(() => {
+    historyStartedRef.current = false;
+    lastProgressSentRef.current = 0;
+  }, [videoId]);
+
+  useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
       try {
         const payload = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-        if (payload?.event === 'play' || payload?.event === 'playing') {
+        const eventName = payload?.event || payload?.type;
+        if (eventName === 'play' || eventName === 'playing') {
           setIsPlaying(true);
-        } else if (payload?.event === 'pause' || payload?.event === 'ended') {
+          if (isAuthenticated && videoId && !historyStartedRef.current) {
+            historyStartedRef.current = true;
+            upsertWatchHistory({
+              videoId,
+              durationSeconds: typeof data?.duration === 'number' ? data.duration : undefined,
+              completed: false,
+            }).catch(() => {});
+          }
+        } else if (eventName === 'pause') {
           setIsPlaying(false);
+        } else if (eventName === 'ended') {
+          setIsPlaying(false);
+          if (isAuthenticated && videoId) {
+            upsertWatchHistory({ videoId, completed: true }).catch(() => {});
+          }
+        }
+
+        const current =
+          typeof payload?.currentTime === 'number'
+            ? payload.currentTime
+            : typeof payload?.time === 'number'
+              ? payload.time
+              : typeof payload?.seconds === 'number'
+                ? payload.seconds
+                : null;
+
+        if (
+          isAuthenticated &&
+          videoId &&
+          current != null &&
+          current - lastProgressSentRef.current >= 15
+        ) {
+          lastProgressSentRef.current = current;
+          upsertWatchHistory({
+            videoId,
+            progressSeconds: Math.floor(current),
+            durationSeconds: typeof data?.duration === 'number' ? data.duration : undefined,
+            completed: false,
+          }).catch(() => {});
         }
       } catch {
         // Ignore non-JSON messages
@@ -150,7 +201,7 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, []);
+  }, [isAuthenticated, videoId, data?.duration, upsertWatchHistory]);
 
   useEffect(() => {
     viewRecordedRef.current = false;
@@ -257,9 +308,14 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
       setReportSubmitted(true);
       setReportPopup(false);
       setReportDetails('');
-      toast.success('Thanks for reporting. The creator has been notified.');
-    } catch {
-      toast.error('Failed to submit report');
+      toast.success('Thanks for reporting. Our team will review it.');
+    } catch (err: unknown) {
+      const error = err as { status?: number; data?: { message?: string } };
+      if (error?.status === 401) {
+        toast.error('Please sign in to report content');
+      } else {
+        toast.error(error?.data?.message || 'Failed to submit report');
+      }
     }
   };
 
@@ -290,19 +346,31 @@ export default function VideoPlayer({ data }: VideoPlayerProps) {
 
         {creatorName ? (
           <div className="flex items-center gap-2 text-xs text-grey-60">
-            {data?.creatorId?.profileImage ? (
-              <img
-                src={data.creatorId.profileImage}
-                alt={creatorName}
-                className="h-5 w-5 rounded-full border border-white/[0.08] object-cover"
-              />
+            {data?.creatorId?._id ? (
+              <Link
+                href={`/channel/${data.creatorId._id}`}
+                className="flex items-center gap-2 hover:text-white transition-colors"
+              >
+                {data?.creatorId?.profileImage ? (
+                  <img
+                    src={data.creatorId.profileImage}
+                    alt={creatorName}
+                    className="h-5 w-5 rounded-full border border-white/[0.08] object-cover"
+                  />
+                ) : (
+                  <div className="h-5 w-5 rounded-full bg-dark-20 flex items-center justify-center border border-white/[0.06] text-[10px] font-bold text-grey-70">
+                    {creatorName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <span className="opacity-80">By</span>
+                <span className="text-white font-medium">{creatorName}</span>
+              </Link>
             ) : (
-              <div className="h-5 w-5 rounded-full bg-dark-20 flex items-center justify-center border border-white/[0.06] text-[10px] font-bold text-grey-70">
-                {creatorName.charAt(0).toUpperCase()}
-              </div>
+              <>
+                <span className="opacity-80">By</span>
+                <span className="text-white font-medium">{creatorName}</span>
+              </>
             )}
-            <span className="opacity-80">By</span>
-            <span className="text-white font-medium">{creatorName}</span>
           </div>
         ) : null}
 

@@ -5,8 +5,10 @@ import { API_BASE_URL } from '../../config/env'
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
+  credentials: 'include',
   prepareHeaders: (headers) => {
     if (typeof window !== 'undefined') {
+      // Temporary Bearer fallback while migrating to httpOnly API cookies
       const token = localStorage.getItem('token');
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
@@ -49,10 +51,14 @@ export const baseApi = createApi({
     'AdminSubscriptionStats',
     'Video',
     'VideoInteraction',
+    'WatchHistory',
     'UpiAccounts',
     'AdminAudits',
     'MyAudits',
     'MyTickets',
     'AdminTickets',
+    'AdminReports',
+    'VerificationDocs',
+    'AdminVerification',
   ],
-}) 
+})

@@ -14,6 +14,9 @@ import {
   ChevronRightIcon,
   ShieldCheckIcon,
   RectangleStackIcon,
+  FlagIcon,
+  LifebuoyIcon,
+  DocumentCheckIcon,
 } from '@heroicons/react/24/outline';
 import { useAppSelector } from '../store/hooks';
 import { selectCurrentUser } from '../store/slices/authSlice';
@@ -29,8 +32,9 @@ export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
   const currentUser = useAppSelector(selectCurrentUser);
-  // isSuperAdmin is only true after mount — Redux is null on SSR (localStorage unavailable)
+  // Role flags only after mount — Redux is null on SSR (localStorage unavailable)
   const isSuperAdmin = mounted && currentUser?.role === 'superadmin';
+  const isAdmin = mounted && (currentUser?.role === 'admin' || currentUser?.role === 'superadmin');
 
   useEffect(() => {
     setMounted(true);
@@ -62,6 +66,13 @@ export default function SideNavigation({ mobileOpen, onMobileClose, onCollapse }
     { text: 'Channels', icon: UserCircleIcon, path: '/dashboard/channels' },
     { text: 'Payouts', icon: CurrencyDollarIcon, path: '/dashboard/payouts' },
     { text: 'Settings', icon: Cog6ToothIcon, path: '/dashboard/settings' },
+    ...(isAdmin
+      ? [
+          { text: 'Moderation', icon: FlagIcon, path: '/dashboard/admin/moderation' },
+          { text: 'Support', icon: LifebuoyIcon, path: '/dashboard/admin/support' },
+          { text: 'Verification', icon: DocumentCheckIcon, path: '/dashboard/admin/verification' },
+        ]
+      : []),
     ...(isSuperAdmin
       ? [
         { text: 'Admin Payouts', icon: ShieldCheckIcon, path: '/dashboard/admin/payouts' },

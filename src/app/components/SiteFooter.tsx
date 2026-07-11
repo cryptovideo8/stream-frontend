@@ -102,6 +102,7 @@ export default function SiteFooter() {
                 { label: 'Cookie Policy', href: '/cookies' },
                 { label: 'FAQ', href: '/faq' },
                 { label: 'DMCA', href: '/dmca' },
+                { label: '2257 Statement', href: '/2257' },
               ].map(link => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-grey-60 hover:text-white text-sm transition-colors duration-200">
@@ -127,21 +128,6 @@ export default function SiteFooter() {
                 </a>
               </li>
             </ul>
-
-            {/* Newsletter */}
-            <div>
-              <p className="text-white text-xs font-semibold uppercase tracking-widest mb-3">Stay Updated</p>
-              <div className="relative flex items-center">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="w-full h-10 bg-dark-12 rounded-full pl-4 pr-24 text-sm text-white placeholder-grey-60 border border-dark-25 focus:outline-none focus:border-red-45/60 transition-all shadow-inner"
-                />
-                <button className="absolute right-1 top-1 bottom-1 px-4 bg-red-45 hover:bg-red-55 text-white text-xs font-semibold rounded-full transition-all shadow-md">
-                  Subscribe
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 

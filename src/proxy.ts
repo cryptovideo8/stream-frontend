@@ -5,7 +5,7 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Soft gate: cookie set by AuthProvider. API still enforces real auth.
-  const token = request.cookies.get('nk_token')?.value;
+  const token = request.cookies.get('nk_token')?.value || request.cookies.get('nk_session')?.value;
   const role = request.cookies.get('nk_role')?.value;
 
   if (pathname.startsWith('/dashboard')) {
@@ -14,7 +14,11 @@ export function proxy(request: NextRequest) {
       login.searchParams.set('next', pathname);
       return NextResponse.redirect(login);
     }
-    if (pathname.startsWith('/dashboard/admin') && role !== 'superadmin') {
+    if (
+      pathname.startsWith('/dashboard/admin') &&
+      role !== 'superadmin' &&
+      role !== 'admin'
+    ) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
     if (role === 'viewer') {

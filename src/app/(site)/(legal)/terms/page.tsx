@@ -1,101 +1,89 @@
+import { BRAND } from '../../../config/brand';
+
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-dark-6 py-12 px-4">
+    <div className="min-h-screen bg-dark-6 py-12 px-4 pt-24">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-primary mb-8">Terms of Service</h1>
-        
+        <p className="text-grey-60 text-sm mb-8">Last updated: July 11, 2026</p>
+
         <div className="space-y-8 text-grey-70">
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">1. Acceptance of Terms</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-4">1. Acceptance</h2>
             <p className="mb-4">
-              By accessing and using this website, you accept and agree to be bound by the terms
-              and provision of this agreement.
+              By accessing {BRAND.name} ({BRAND.siteUrl}), you agree to these Terms. If you do not agree, do not use the service.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">2. Use License</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-4">2. Adult content and eligibility</h2>
             <p className="mb-4">
-              Permission is granted to temporarily download one copy of the materials (information
-              or software) on xpeacock for personal, non-commercial transitory viewing only.
+              The Service contains sexually explicit adult content. You represent that you are at least 18 years old
+              (or the age of majority where you live), that you are not accessing the Service from a jurisdiction
+              where adult content is illegal, and that you will not allow minors to access your account or device
+              while using the Service.
             </p>
-            <p className="mb-4">This is the grant of a license, not a transfer of title, and under this license you may not:</p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-primary mb-4">3. License</h2>
+            <p className="mb-4">
+              We grant you a limited, personal, non-transferable license to stream content for private viewing.
+              You may not copy, redistribute, scrape, reverse engineer, or commercially exploit the Service or content
+              except as expressly allowed.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-primary mb-4">4. Subscriptions and payments</h2>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Modify or copy the materials</li>
-              <li>Use the materials for any commercial purpose</li>
-              <li>Attempt to decompile or reverse engineer any software contained on the website</li>
-              <li>Remove any copyright or other proprietary notations from the materials</li>
-              <li>Transfer the materials to another person or &quot;mirror&quot; the materials on any other server</li>
+              <li>Paid plans unlock premium content for the stated validity period.</li>
+              <li>Payments may be processed via Razorpay (instant activation) or manual UPI verification (admin approval), depending on platform configuration.</li>
+              <li>Fees are generally non-refundable except where required by law or as we expressly approve.</li>
+              <li>You are responsible for taxes and for keeping payment credentials accurate.</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">3. Subscription and Payments</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-4">5. User and creator content</h2>
             <p className="mb-4">
-              Some features of the Service require a subscription. You agree to pay all fees
-              charged to your account based on our fees, charges, and billing terms.
-            </p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Subscription fees are charged at the beginning of your subscription</li>
-              <li>Subscriptions automatically renew unless cancelled before the renewal date</li>
-              <li>Refunds may be available as described in our refund policy</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">4. User Content</h2>
-            <p className="mb-4">
-              Users may have the ability to post content. You retain ownership of your content,
-              but grant us a license to use, store, and share your content.
+              Creators retain ownership of their uploads but grant {BRAND.name} a worldwide license to host, stream,
+              transcode, and display that content. You must have all rights and consents (including model releases)
+              for anyone depicted. Prohibited content includes, without limitation: anyone under 18; non-consensual
+              intimate imagery; illegal content; CSAM; extreme violence; or content that infringes IP.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">5. Disclaimer</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-4">6. Moderation</h2>
             <p className="mb-4">
-              The materials on the website are provided on an &apos;as is&apos; basis. We make no
-              warranties, expressed or implied, and hereby disclaim and negate all other
-              warranties including, without limitation, implied warranties or conditions of
-              merchantability, fitness for a particular purpose, or non-infringement of
-              intellectual property or other violation of rights.
+              We may remove content, suspend accounts, or refuse service at our discretion for Terms violations,
+              legal risk, or reports. Automated thresholds (e.g. multiple reports) may deactivate content pending review.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">6. Limitations</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-4">7. Disclaimers and liability</h2>
             <p className="mb-4">
-              In no event shall xpeacock or its suppliers be liable for any damages (including,
-              without limitation, damages for loss of data or profit, or due to business
-              interruption) arising out of the use or inability to use the materials on the
-              website.
+              The Service is provided &quot;as is.&quot; To the fullest extent permitted by law, {BRAND.name} is not liable
+              for indirect, incidental, or consequential damages arising from use of the Service.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">7. Governing Law</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-4">8. Governing law</h2>
             <p className="mb-4">
-              These terms and conditions are governed by and construed in accordance with the
-              laws and you irrevocably submit to the exclusive jurisdiction of the courts
-              in that location.
+              These Terms are governed by the laws applicable to the operator of {BRAND.name}. Disputes will be
+              resolved in the competent courts of that jurisdiction, unless mandatory consumer protections apply otherwise.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-4">8. Changes to Terms</h2>
-            <p className="mb-4">
-              We reserve the right, at our sole discretion, to modify or replace these Terms
-              at any time. We will provide notice of any changes by posting the new Terms on
-              this page.
-            </p>
+            <h2 className="text-2xl font-semibold text-primary mb-4">9. Contact</h2>
+            <p className="text-red-45">{BRAND.supportEmail}</p>
           </section>
-
-          <div className="pt-8 border-t border-dark-20">
-            <p className="text-grey-70">
-              Last updated: May 20, 2024
-            </p>
-          </div>
         </div>
       </div>
     </div>
   );
-} 
+}

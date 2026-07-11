@@ -3,14 +3,13 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Search, Compass, User } from 'lucide-react';
+import { Home, Search, Heart, User } from 'lucide-react';
 import { useAppSelector } from '../store/hooks';
 import { selectIsAuthenticated } from '../store/slices/authSlice';
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  // Avoid SSR/client mismatch: Redux auth is hydrated from localStorage only on the client
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -18,6 +17,7 @@ export default function MobileBottomNav() {
   }, []);
 
   const profileHref = mounted && isAuthenticated ? '/profile' : '/login';
+  const likedHref = mounted && isAuthenticated ? '/liked' : '/login?next=/liked';
 
   const navItems = [
     { name: 'Home', href: '/', icon: Home, match: (path: string) => path === '/' },
@@ -28,10 +28,10 @@ export default function MobileBottomNav() {
       match: (path: string) => path === '/search' || path.startsWith('/search/'),
     },
     {
-      name: 'Categories',
-      href: '/categories',
-      icon: Compass,
-      match: (path: string) => path === '/categories' || path.startsWith('/categories/'),
+      name: 'Liked',
+      href: likedHref,
+      icon: Heart,
+      match: (path: string) => path === '/liked' || path.startsWith('/liked/'),
     },
     {
       name: 'Profile',

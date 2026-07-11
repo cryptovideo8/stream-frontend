@@ -47,6 +47,10 @@ export interface VideoDetail {
   previewPath?: string;
   /** Signed Bunny embed URL from GET /video/:id */
   src?: string;
+  /** Soft-deny teaser — no stream URL */
+  preview?: boolean;
+  requiresAuth?: boolean;
+  requiresSubscription?: boolean;
   filePath: string;
   type: 'local' | 'thirdparty';
   duration?: number;
@@ -141,6 +145,7 @@ export const videoApi = baseApi.injectEndpoints({
       sortBy?: string;
       sortOrder?: 'asc' | 'desc';
       id?: string;
+      creatorId?: string;
     }>({
       query: (params) => ({
         url: '/video/search',

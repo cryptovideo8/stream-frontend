@@ -24,6 +24,11 @@ import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/slices/authSlice';
 import toast from 'react-hot-toast';
 import { useGetGenericMasterByKeyQuery } from '../../store/api/commonApi';
+import {
+  useGetMyVerificationDocsQuery,
+  useUploadVerificationDocMutation,
+  VerificationDocType,
+} from '../../store/api/verificationApi';
 
 const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
@@ -36,8 +41,15 @@ const validationSchema = Yup.object({
 export default function ChannelDetails() {
   const [activeTab, setActiveTab] = useState('overview');
   const [mounted, setMounted] = useState(false);
+  const [showVerify, setShowVerify] = useState(false);
+  const [docType, setDocType] = useState<VerificationDocType>('id_front');
+  const [verifyFile, setVerifyFile] = useState<File | null>(null);
   const currentUser = useSelector(selectCurrentUser);
   const [updateUser] = useUpdateUserMutation();
+  const { data: myDocs } = useGetMyVerificationDocsQuery(undefined, {
+    skip: !mounted || !currentUser,
+  });
+  const [uploadDoc, { isLoading: uploadingDoc }] = useUploadVerificationDocMutation();
 
   React.useEffect(() => {
     setMounted(true);
@@ -305,14 +317,81 @@ export default function ChannelDetails() {
               <div className="flex items-center justify-between py-2 border-b border-dark-15">
                 <div>
                   <p className="text-white text-sm">Channel Verification</p>
-                  <p className="text-grey-70 text-xs">Verify to access additional features</p>
+                  <p className="text-grey-70 text-xs">Upload ID / release docs for 2257 compliance review</p>
                 </div>
-                <button type="button"
-                  className="bg-dark-15 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-dark-20 flex items-center space-x-1 border border-dark-20">
+                <button
+                  type="button"
+                  onClick={() => setShowVerify((v) => !v)}
+                  className="bg-dark-15 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-dark-20 flex items-center space-x-1 border border-dark-20"
+                >
                   <CheckBadgeIcon className="w-4 h-4 text-blue-400" />
-                  <span>Verify Now</span>
+                  <span>{showVerify ? 'Hide' : 'Verify Now'}</span>
                 </button>
               </div>
+              {showVerify && (
+                <div className="rounded-lg border border-dark-20 bg-dark-15 p-4 space-y-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <select
+                      value={docType}
+                      onChange={(e) => setDocType(e.target.value as VerificationDocType)}
+                      className="bg-dark-12 text-white text-sm rounded-lg px-3 py-2 border border-dark-25"
+                    >
+                      <option value="id_front">ID front</option>
+                      <option value="id_back">ID back</option>
+                      <option value="release">Model release</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,application/pdf"
+                      onChange={(e) => setVerifyFile(e.target.files?.[0] || null)}
+                      className="text-sm text-grey-60"
+                    />
+                    <button
+                      type="button"
+                      disabled={!verifyFile || uploadingDoc}
+                      onClick={async () => {
+                        if (!verifyFile) return;
+                        const fd = new FormData();
+                        fd.append('file', verifyFile);
+                        fd.append('docType', docType);
+                        try {
+                          await uploadDoc(fd).unwrap();
+                          toast.success('Document uploaded for review');
+                          setVerifyFile(null);
+                        } catch (err: unknown) {
+                          const error = err as { data?: { message?: string } };
+                          toast.error(error?.data?.message || 'Upload failed');
+                        }
+                      }}
+                      className="px-4 py-2 text-sm rounded-lg bg-red-45 text-white disabled:opacity-50"
+                    >
+                      {uploadingDoc ? 'Uploading…' : 'Upload'}
+                    </button>
+                  </div>
+                  {myDocs?.docs?.length ? (
+                    <ul className="space-y-2 text-xs text-grey-60">
+                      {myDocs.docs.map((d) => (
+                        <li key={d._id} className="flex justify-between gap-2">
+                          <span>
+                            {d.docType} · {d.status}
+                          </span>
+                          <a
+                            href={d.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-red-45 hover:underline"
+                          >
+                            View
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-xs text-grey-60">No documents uploaded yet.</p>
+                  )}
+                </div>
+              )}
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="text-red-400 text-sm">Delete Channel</p>

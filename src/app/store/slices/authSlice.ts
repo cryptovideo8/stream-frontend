@@ -48,11 +48,14 @@ export const authSlice = createSlice({
       state.token = token
       state.isAuthenticated = true
       if (typeof window !== 'undefined') {
+        // Temporary Bearer fallback (API also sets httpOnly nk_token cookie)
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-        // Cookies for Next.js middleware route guards (not httpOnly — API still uses Bearer)
-        document.cookie = `nk_token=${encodeURIComponent(token)}; path=/; SameSite=Lax; max-age=${7 * 24 * 60 * 60}`;
+        // Soft FE cookies for Next.js proxy (not the API JWT — that is httpOnly on API host)
+        document.cookie = `nk_session=1; path=/; SameSite=Lax; max-age=${7 * 24 * 60 * 60}`;
         document.cookie = `nk_role=${encodeURIComponent(user?.role || '')}; path=/; SameSite=Lax; max-age=${7 * 24 * 60 * 60}`;
+        // Legacy middleware cookie name kept as presence flag (role-less token value avoided)
+        document.cookie = `nk_token=1; path=/; SameSite=Lax; max-age=${7 * 24 * 60 * 60}`;
       }
     },
     logout: (state) => {
@@ -64,6 +67,7 @@ export const authSlice = createSlice({
         localStorage.removeItem('user');
         document.cookie = 'nk_token=; path=/; max-age=0';
         document.cookie = 'nk_role=; path=/; max-age=0';
+        document.cookie = 'nk_session=; path=/; max-age=0';
       }
     },
     setSubscriptionId: (state, action: PayloadAction<string>) => {

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   MagnifyingGlassIcon,
-  GlobeAltIcon,
   VideoCameraIcon,
   ChatBubbleLeftIcon,
   UserGroupIcon,
@@ -19,7 +18,7 @@ import {
   ArrowRightOnRectangleIcon,
   PresentationChartLineIcon,
   XMarkIcon,
-  BellIcon,
+  HeartIcon,
 } from '@heroicons/react/24/outline';
 import { useAppSelector } from '../store/hooks';
 import { selectCurrentUser, selectIsAuthenticated } from '../store/slices/authSlice';
@@ -59,8 +58,8 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
   }, []);
 
   useEffect(() => {
-    const search = searchParams.get('search');
-    if (search) setSearchQuery(search);
+    const q = searchParams.get('q') || searchParams.get('search');
+    if (q) setSearchQuery(q);
   }, [searchParams]);
 
   // Close dropdowns when clicking outside
@@ -96,14 +95,17 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setMobileSearch(false);
     }
   };
 
+  const likedHref = mounted && isAuthenticated ? '/liked' : '/login?next=/liked';
+
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/categories', label: 'Categories' },
+    { href: likedHref, label: 'Liked' },
   ];
 
   return (
@@ -151,12 +153,6 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
             {mobileSearch ? <XMarkIcon className="h-5 w-5" /> : <MagnifyingGlassIcon className="h-5 w-5" />}
           </button>
 
-          {/* Language */}
-          <button className="hidden sm:flex items-center gap-1 p-2 text-grey-70 hover:text-white text-sm transition-colors">
-            <GlobeAltIcon className="h-4 w-4" />
-            <span className="text-xs font-medium">EN</span>
-          </button>
-
           {/* Auth section — only render on client to avoid hydration mismatch */}
           {!mounted ? (
             /* SSR placeholder */
@@ -180,10 +176,6 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
                 </>
               ) : (
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <button className="relative p-2 text-grey-70 hover:text-white transition-colors group">
-                    <BellIcon className="h-5 w-5 group-hover:animate-bounce-subtle" />
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-45 rounded-full shadow-glow-red border border-dark-10"></span>
-                  </button>
                   <div className="relative" ref={profileRef}>
                     <button
                       className="flex items-center gap-2 p-1 rounded-lg hover:bg-dark-15 transition-colors"
@@ -302,6 +294,9 @@ function HeaderContent({ hideNavMenu = false }: HeaderProps) {
                     </Link>
                     <Link href="/?sortBy=createdAt&sortOrder=desc" className="dropdown-item">
                       <ClockIcon className="h-4 w-4" /> Newest
+                    </Link>
+                    <Link href={likedHref} className="dropdown-item">
+                      <HeartIcon className="h-4 w-4" /> Liked
                     </Link>
                     <div className="my-1 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }} />
                     <Link href="/?category=Indian" className="dropdown-item">

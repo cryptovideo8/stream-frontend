@@ -2,11 +2,12 @@ import { baseApi } from './baseApi';
 
 export interface SupportTicket {
   _id: string;
-  userId: string;
+  userId: string | { _id: string; name?: string; email?: string };
   subject: string;
   message: string;
   status: 'open' | 'in-progress' | 'resolved' | 'closed';
   priority: 'low' | 'medium' | 'high';
+  adminNotes?: string;
   createdAt: string;
 }
 
@@ -30,9 +31,23 @@ export const supportApi = baseApi.injectEndpoints({
       query: () => '/support/my-tickets',
       providesTags: ['MyTickets'],
     }),
-    getAllTickets: builder.query<SupportTicket[], void>({
-      query: () => '/support/all',
+    getAllTickets: builder.query<SupportTicket[], { status?: string } | void>({
+      query: (params) => ({
+        url: '/support/all',
+        params: params || {},
+      }),
       providesTags: ['AdminTickets'],
+    }),
+    adminUpdateTicket: builder.mutation<
+      { message: string; ticket: SupportTicket },
+      { id: string; status?: string; adminNotes?: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/support/${id}`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: ['AdminTickets'],
     }),
   }),
 });
@@ -41,4 +56,5 @@ export const {
   useCreateTicketMutation,
   useGetMyTicketsQuery,
   useGetAllTicketsQuery,
+  useAdminUpdateTicketMutation,
 } = supportApi;

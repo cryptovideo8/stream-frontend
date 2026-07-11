@@ -2,6 +2,8 @@
 import { Suspense } from 'react';
 import Header from "../components/Header";
 import SiteFooter from '../components/SiteFooter';
+import AgeGate from '../components/AgeGate';
+import CookieConsent from '../components/CookieConsent';
 
 export default function SiteLayout({
   children,
@@ -10,6 +12,7 @@ export default function SiteLayout({
 }) {
   return (
     <div className="flex flex-col min-h-screen">
+      <AgeGate />
       <Suspense fallback={<div className="h-14 bg-dark-10" />}>
         <Header />
       </Suspense>
@@ -19,6 +22,7 @@ export default function SiteLayout({
         </Suspense>
       </main>
       <SiteFooter />
+      <CookieConsent />
     </div>
   );
 }
